@@ -17,11 +17,7 @@ export default function App() {
   return (
     <>
       <NavigationContainer theme={scheme === 'dark' ? DarkTheme : DefaultTheme}>
-        {userData?
-          <RootStack/>
-          :
-          <LoginNavigator/>
-        }
+        {userData ? <RootStack /> : <LoginNavigator />}
       </NavigationContainer>
       <Toast config={toastConfig} />
     </>
