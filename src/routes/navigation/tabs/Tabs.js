@@ -4,7 +4,7 @@ import FontIcon from 'react-native-vector-icons/FontAwesome5'
 import { colors } from 'theme'
 
 // stack navigators
-import { HomeNavigator, ProfileNavigator, ConnectNavigator } from '../stacks'
+import { HomeNavigator, ProfileNavigator, HistoryNavigator } from '../stacks'
 
 const Tab = createBottomTabNavigator()
 
@@ -43,8 +43,8 @@ const TabNavigator = () => {
         }}
       />
       <Tab.Screen
-        name="ConnectTab"
-        component={ConnectNavigator}
+        name="HistoryTab"
+        component={HistoryNavigator}
         options={{
           tabBarLabel: 'History',
           tabBarIcon: ({ color, size }) => (
@@ -52,7 +52,7 @@ const TabNavigator = () => {
           ),
         }}
       />
-      {/* <Tab.Screen
+      <Tab.Screen
         name="ProfileTab"
         component={ProfileNavigator}
         options={{
@@ -61,7 +61,7 @@ const TabNavigator = () => {
             <FontIcon name="user-alt" color={color} size={size} />
           ),
         }}
-      /> */}
+      />
     </Tab.Navigator>
   )
 }

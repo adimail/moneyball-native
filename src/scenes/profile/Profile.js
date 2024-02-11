@@ -1,19 +1,19 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { Text, View, StyleSheet, ScrollView } from 'react-native'
-import { Avatar } from '@rneui/themed';
-import Dialog from "react-native-dialog"
+import { Avatar } from '@rneui/themed'
+import Dialog from 'react-native-dialog'
 import Spinner from 'react-native-loading-spinner-overlay'
 import ScreenTemplate from '../../components/ScreenTemplate'
 import Button from '../../components/Button'
 import { firestore } from '../../firebase/config'
-import { doc, deleteDoc } from 'firebase/firestore';
+import { doc, deleteDoc } from 'firebase/firestore'
 import { ColorSchemeContext } from '../../context/ColorSchemeContext'
 import { UserDataContext } from '../../context/UserDataContext'
 import { useNavigation } from '@react-navigation/native'
 import { colors, fontSize } from '../../theme'
 import { signOut, deleteUser } from 'firebase/auth'
 import { auth } from '../../firebase/config'
-import { Restart } from '../../utils/Restart';
+import { Restart } from '../../utils/Restart'
 
 export default function Profile() {
   const { userData, setUserData } = useContext(UserDataContext)
@@ -23,7 +23,7 @@ export default function Profile() {
   const { scheme } = useContext(ColorSchemeContext)
   const isDark = scheme === 'dark'
   const colorScheme = {
-    text: isDark? colors.white : colors.primaryText
+    text: isDark ? colors.white : colors.primaryText,
   }
 
   useEffect(() => {
@@ -36,12 +36,12 @@ export default function Profile() {
 
   const onSignOutPress = () => {
     signOut(auth)
-    .then(async() => {
-      await Restart()
-    })
-    .catch((error) => {
-      console.log(error.message);
-    });
+      .then(async () => {
+        await Restart()
+      })
+      .catch((error) => {
+        console.log(error.message)
+      })
   }
 
   const showDialog = () => {
@@ -60,20 +60,22 @@ export default function Profile() {
       await deleteDoc(tokensDocumentRef)
       await deleteDoc(usersDocumentRef)
       const user = auth.currentUser
-      deleteUser(user).then(() => {
-        setSpinner(false)
-        signOut(auth)
+      deleteUser(user)
         .then(() => {
-          console.log('user deleted')
+          setSpinner(false)
+          signOut(auth)
+            .then(() => {
+              console.log('user deleted')
+            })
+            .catch((error) => {
+              console.log(error.message)
+            })
         })
         .catch((error) => {
-          console.log(error.message);
-        });
-      }).catch((error) => {
-        setSpinner(false)
-        console.log(error)
-      });
-    } catch(error) {
+          setSpinner(false)
+          console.log(error)
+        })
+    } catch (error) {
       console.log(error)
     }
   }
@@ -82,22 +84,18 @@ export default function Profile() {
     <ScreenTemplate>
       <ScrollView style={styles.main}>
         <View style={styles.avatar}>
-          <Avatar
-            size="xlarge"
-            rounded
-            source={{ uri: userData.avatar }}
-          />
+          <Avatar size="xlarge" rounded source={{ uri: userData.avatar }} />
         </View>
         <Text style={[styles.field, { color: colorScheme.text }]}>Name:</Text>
-        <Text style={[styles.title, { color: colorScheme.text }]}>{userData.fullName}</Text>
+        <Text style={[styles.title, { color: colorScheme.text }]}>
+          {userData.fullName}
+        </Text>
         <Text style={[styles.field, { color: colorScheme.text }]}>Mail:</Text>
-        <Text style={[styles.title, { color: colorScheme.text }]}>{userData.email}</Text>
-        <Button
-          label='Edit'
-          color={colors.primary}
-          onPress={goDetail}
-        />
-        <Button
+        <Text style={[styles.title, { color: colorScheme.text }]}>
+          {userData.email}
+        </Text>
+        <Button label="Edit" color={colors.primary} onPress={goDetail} />
+        {/* <Button
           label='Open Modal'
           color={colors.tertiary}
           onPress={() => {
@@ -109,14 +107,16 @@ export default function Profile() {
               }
             })
           }}
-        />
+        /> */}
         <Button
-          label='Delete account'
+          label="Delete account"
           color={colors.secondary}
           onPress={showDialog}
         />
         <View style={styles.footerView}>
-          <Text onPress={onSignOutPress} style={styles.footerLink}>Sign out</Text>
+          <Text onPress={onSignOutPress} style={styles.footerLink}>
+            Sign out
+          </Text>
         </View>
       </ScrollView>
       <Dialog.Container visible={visible}>
@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: fontSize.xxxLarge,
     marginBottom: 20,
-    textAlign: 'center'
+    textAlign: 'center',
   },
   field: {
     fontSize: fontSize.middle,
@@ -152,17 +152,17 @@ const styles = StyleSheet.create({
   },
   avatar: {
     margin: 30,
-    alignSelf: "center",
+    alignSelf: 'center',
   },
   footerView: {
     flex: 1,
-    alignItems: "center",
+    alignItems: 'center',
     marginBottom: 20,
-    marginTop: 20
+    marginTop: 20,
   },
   footerLink: {
     color: colors.blueLight,
-    fontWeight: "bold",
-    fontSize: fontSize.large
+    fontWeight: 'bold',
+    fontSize: fontSize.large,
   },
 })

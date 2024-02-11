@@ -13,7 +13,7 @@ import { FollowFollowerNavigator } from '../toptabs/followfollowerNavigator'
 const Stack = createStackNavigator()
 const RootStack = createStackNavigator()
 
-export const ConnectNavigator = () => {
+export const HistoryNavigator = () => {
   const { scheme } = useContext(ColorSchemeContext)
   const { userData } = useContext(UserDataContext)
   const navigationProps = scheme === 'dark' ? darkProps : lightProps

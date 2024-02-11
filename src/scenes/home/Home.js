@@ -70,24 +70,24 @@ export default function Home() {
     )
   }
 
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerRight: () => (
-        <IconButton
-          icon="user-circle"
-          color={colors.lightPurple}
-          size={24}
-          onPress={() => headerButtonPress()}
-          containerStyle={{ paddingRight: 15 }}
-        />
-      ),
-    })
-  }, [navigation])
+  // useLayoutEffect(() => {
+  //   navigation.setOptions({
+  //     headerRight: () => (
+  //       <IconButton
+  //         icon="user-circle"
+  //         color={colors.lightPurple}
+  //         size={24}
+  //         onPress={() => headerButtonPress()}
+  //         containerStyle={{ paddingRight: 15 }}
+  //       />
+  //     ),
+  //   })
+  // }, [navigation])
 
-  const headerButtonPress = () => {
-    // alert('Render Profile Navigator')
-    navigation.navigate('Profile')
-  }
+  // const headerButtonPress = () => {
+  //   alert('Render Profile Navigator')
+  //   navigation.navigate('Profile')
+  // }
 
   useEffect(() => {
     const tokensRef = doc(firestore, 'tokens', userData.id)

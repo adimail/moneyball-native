@@ -7,7 +7,7 @@ import HeaderStyle from './headerComponents/HeaderStyle'
 
 import Home from '../../../scenes/home'
 import Detail from '../../../scenes/detail'
-import ProfileNavigator from './ProfileNavigator'
+// import ProfileNavigator from './ProfileNavigator'
 
 const Stack = createStackNavigator()
 
@@ -26,7 +26,7 @@ export const HomeNavigator = () => {
         {(ctx) => (
           <Stack.Navigator screenOptions={navigationProps}>
             <Stack.Screen
-              name="Home"
+              name="Moneyball"
               component={Home}
               options={({ navigation }) => ({
                 headerBackground:
@@ -42,7 +42,7 @@ export const HomeNavigator = () => {
                   scheme === 'dark' ? null : () => <HeaderStyle />,
               }}
             />
-            <Stack.Screen
+            {/* <Stack.Screen
               name="Profile"
               component={ProfileNavigator}
               options={{
@@ -51,7 +51,7 @@ export const HomeNavigator = () => {
                 headerBackground:
                   scheme === 'dark' ? null : () => <HeaderStyle />,
               }}
-            />
+            /> */}
           </Stack.Navigator>
         )}
       </HomeTitleContext.Consumer>
