@@ -24,6 +24,7 @@ import DateTimePicker from '@react-native-community/datetimepicker'
 import { TouchableOpacity } from 'react-native'
 import { SelectList } from 'react-native-dropdown-select-list'
 import CustomSwitch from '../../components/toggleSwitch'
+import { showToast } from '../../utils/ShowToast'
 
 export default function Home() {
   const navigation = useNavigation()
@@ -50,7 +51,7 @@ export default function Home() {
   ]
 
   // Account Information
-  const [amount, setAmount] = useState()
+  const [amount, setAmount] = useState(null)
   const [date, setDate] = useState(new Date())
   const [showDatePicker, setShowDatePicker] = useState(false)
   const [selected, setSelected] = React.useState('Rickshaw')
@@ -148,7 +149,12 @@ export default function Home() {
 
       const logInfo = `Name: ${title}\nDate: ${formattedDate}\nCategory: ${selected.value}\nAmount: ${amount}₹`
 
-      Alert.alert('Log added', logInfo)
+      // Alert.alert('Log added', logInfo)
+      showToast({
+        title: 'Log Added',
+        body: title,
+        isDark,
+      })
 
       setAmount('')
       setTitle('')
@@ -162,7 +168,7 @@ export default function Home() {
 
   const onSelectSwitch = (value) => {
     setType(value)
-    console.log(value) // This will log either 'Expenditure' or 'Savings'
+    console.log(value)
   }
 
   return (

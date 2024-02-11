@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from 'react'
+import React, { useEffect, useContext, useState } from 'react'
 import { Text, View, StyleSheet } from 'react-native'
 import ScreenTemplate from '../../components/ScreenTemplate'
 import Button from '../../components/Button'
@@ -6,6 +6,7 @@ import { colors, fontSize } from 'theme'
 import { ColorSchemeContext } from '../../context/ColorSchemeContext'
 import { UserDataContext } from '../../context/UserDataContext'
 import { useNavigation } from '@react-navigation/native'
+import CustomSwitch from '../../components/toggleSwitch'
 
 export default function Follow() {
   const navigation = useNavigation()
@@ -13,7 +14,13 @@ export default function Follow() {
   const { scheme } = useContext(ColorSchemeContext)
   const isDark = scheme === 'dark'
   const colorScheme = {
-    text: isDark? colors.white : colors.primaryText
+    text: isDark ? colors.white : colors.primaryText,
+  }
+  const [type, setType] = useState('Expenditure')
+
+  const onSelectSwitch = (value) => {
+    setType(value)
+    console.log(value)
   }
 
   useEffect(() => {
@@ -23,21 +30,30 @@ export default function Follow() {
   return (
     <ScreenTemplate>
       <View style={[styles.container]}>
-        <View style={{width:'100%'}}>
-          <Text style={[styles.field, {color: colorScheme.text}]}>Follow Screen</Text>
-          <Button
-            label='Open Modal'
+        <View style={{ width: '100%' }}>
+          <View style={{ alignItems: 'center', paddingBottom: 10 }}>
+            <CustomSwitch
+              selectionMode={1}
+              roundCorner={true}
+              option1={'Expenditure'}
+              option2={'Saving'}
+              onSelectSwitch={onSelectSwitch}
+              selectionColor={'#1C2833'}
+            />
+          </View>
+          {/* <Button
+            label="Open Modal"
             color={colors.tertiary}
             onPress={() => {
               navigation.navigate('ModalStacks', {
                 screen: 'Post',
                 params: {
                   data: userData,
-                  from: 'Follow screen'
-                }
+                  from: 'Follow screen',
+                },
               })
             }}
-          />
+          /> */}
         </View>
       </View>
     </ScreenTemplate>
@@ -48,8 +64,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
-    width:'100%'
+    justifyContent: 'top',
+    width: '100%',
+    marginTop: 30,
   },
   field: {
     fontSize: fontSize.middle,
