@@ -23,6 +23,7 @@ import Card from '../../components/expenseCard'
 import DateTimePicker from '@react-native-community/datetimepicker'
 import { TouchableOpacity } from 'react-native'
 import { SelectList } from 'react-native-dropdown-select-list'
+import CustomSwitch from '../../components/toggleSwitch'
 
 export default function Home() {
   const navigation = useNavigation()
@@ -52,15 +53,13 @@ export default function Home() {
   const [amount, setAmount] = useState()
   const [date, setDate] = useState(new Date())
   const [showDatePicker, setShowDatePicker] = useState(false)
-  const [selected, setSelected] = React.useState({
-    key: '3',
-    value: 'Rickshaw',
-  })
+  const [selected, setSelected] = React.useState('Rickshaw')
   const [title, setTitle] = useState('')
   const [category, setCategory] = useState('')
   const [isTodaySwitchOn, setIsTodaySwitchOn] = useState(
     date.toDateString() === new Date().toDateString(),
   )
+  const [type, setType] = useState('Expenditure')
 
   const handleDateChange = (event, selectedDate) => {
     setShowDatePicker(false)
@@ -161,6 +160,11 @@ export default function Home() {
     }
   }
 
+  const onSelectSwitch = (value) => {
+    setType(value)
+    console.log(value) // This will log either 'Expenditure' or 'Savings'
+  }
+
   return (
     <ScreenTemplate>
       <ScrollView style={styles.main}>
@@ -194,6 +198,17 @@ export default function Home() {
             })}
         </Text>
 
+        <View style={{ alignItems: 'center', paddingBottom: 10 }}>
+          <CustomSwitch
+            selectionMode={1}
+            roundCorner={true}
+            option1={'Expenditure'}
+            option2={'Saving'}
+            onSelectSwitch={onSelectSwitch}
+            selectionColor={'#1C2833'}
+          />
+        </View>
+
         <View style={styles.container}>
           <TextInput
             style={styles.input}
@@ -207,7 +222,7 @@ export default function Home() {
               height: 45,
               borderColor: '#BABABA',
               borderRadius: 50,
-              backgroundColor: '#DBDBDB',
+              backgroundColor: '#F2F3F4',
               width: 300,
               borderWidth: 1,
               paddingHorizontal: 10,
@@ -272,6 +287,13 @@ export default function Home() {
             <Text style={styles.buttonText}>Quick Add</Text>
           </TouchableOpacity>
 
+          <View
+            style={[
+              styles.separator,
+              { backgroundColor: isDark ? 'white' : 'gray' },
+            ]}
+          />
+
           <Text style={[styles.title, { color: isDark ? 'white' : 'gray' }]}>
             Recent Entries
           </Text>
@@ -327,7 +349,7 @@ const styles = StyleSheet.create({
     height: 45,
     borderColor: '#BABABA',
     borderRadius: 50,
-    backgroundColor: '#DBDBDB',
+    backgroundColor: '#F2F3F4',
     width: 300,
     borderWidth: 1,
     paddingHorizontal: 10,
