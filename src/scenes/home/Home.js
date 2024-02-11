@@ -22,6 +22,7 @@ import { getKilobyteSize } from '../../utils/functions'
 import Card from '../../components/expenseCard'
 import DateTimePicker from '@react-native-community/datetimepicker'
 import { TouchableOpacity } from 'react-native'
+import { SelectList } from 'react-native-dropdown-select-list'
 
 export default function Home() {
   const navigation = useNavigation()
@@ -33,6 +34,19 @@ export default function Home() {
     content: isDark ? styles.darkContent : styles.lightContent,
     text: isDark ? colors.white : colors.primaryText,
   }
+
+  const data = [
+    'Food',
+    'Stationary',
+    'Rickshaw',
+    'Metro',
+    'Accessories andt',
+    'Hygiene',
+    'Medicines',
+    'A1004',
+    'Travel',
+    'Other',
+  ]
 
   // Account Information
   const [amount, setAmount] = useState()
@@ -102,6 +116,16 @@ export default function Home() {
     return () => tokenListner()
   }, [])
 
+  const handleCategorySelection = (value) => {
+    setSelected(value)
+    const currentDate = new Date()
+    const formattedDate = currentDate.toLocaleDateString('en-GB', {
+      day: 'numeric',
+      month: 'short',
+    })
+    setTitle(`${value} ${formattedDate}`)
+  }
+
   const handleSwitchToggle = (value) => {
     setIsTodaySwitchOn(value)
     if (value) {
@@ -117,11 +141,21 @@ export default function Home() {
 
   const submitData = () => {
     if (title && selected && amount !== null) {
-      Alert.alert('Log added')
+      const formattedDate = date.toLocaleDateString('en-GB', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+      })
+
+      const logInfo = `Name: ${title}\nDate: ${formattedDate}\nCategory: ${selected.value}\nAmount: ${amount}₹`
+
+      Alert.alert('Log added', logInfo)
+
       setAmount('')
       setTitle('')
       setDate(new Date())
       setIsTodaySwitchOn(true)
+      setCategory('')
     } else {
       Alert.alert('Please fill in all required fields')
     }
@@ -151,6 +185,15 @@ export default function Home() {
           </Text>
         </View> */}
 
+        <Text style={[styles.text, { color: isDark ? 'white' : 'black' }]}>
+          {'Date: ' +
+            date.toLocaleDateString('en-GB', {
+              day: 'numeric',
+              month: 'short',
+              year: 'numeric',
+            })}
+        </Text>
+
         <View style={styles.container}>
           <TextInput
             style={styles.input}
@@ -158,24 +201,25 @@ export default function Home() {
             value={title}
             onChangeText={(text) => setTitle(text)}
           />
-          <TextInput
-            style={styles.input}
-            placeholder="Category"
-            value={category}
-            onChangeText={(text) => setCategory(text)}
+
+          <SelectList
+            boxStyles={{
+              height: 45,
+              borderColor: '#BABABA',
+              borderRadius: 50,
+              backgroundColor: '#DBDBDB',
+              width: 300,
+              borderWidth: 1,
+              paddingHorizontal: 10,
+            }}
+            dropdownTextStyles={{ color: 'grey' }}
+            setSelected={handleCategorySelection}
+            search={false}
+            data={data}
+            save="value"
+            placeholder="Select Category"
           />
-          <TextInput
-            style={[styles.input]}
-            placeholder={
-              'Date: ' +
-              date.toLocaleDateString('en-GB', {
-                day: 'numeric',
-                month: 'short',
-                year: 'numeric',
-              })
-            }
-            editable={false}
-          />
+
           <TextInput
             style={[styles.input]}
             placeholder="Enter Amount"
@@ -207,22 +251,31 @@ export default function Home() {
 
           {showDatePicker && renderDatePicker()}
 
-          <Text style={styles.title}>Recent Entries</Text>
-        </View>
-
-        {/* <Button
-          label="Open Modal"
-          color={colors.tertiary}
-          onPress={() => {
-            navigation.navigate('ModalStacks', {
-              screen: 'Post',
-              params: {
-                data: userData,
-                from: 'Home screen',
+          <TouchableOpacity
+            style={[
+              styles.button,
+              {
+                paddingHorizontal: 30,
+                backgroundColor: 'green',
               },
-            })
-          }}
-        /> */}
+            ]}
+            onPress={() => {
+              navigation.navigate('ModalStacks', {
+                screen: 'Post',
+                params: {
+                  data: userData,
+                  from: 'Home screen',
+                },
+              })
+            }}
+          >
+            <Text style={styles.buttonText}>Quick Add</Text>
+          </TouchableOpacity>
+
+          <Text style={[styles.title, { color: isDark ? 'white' : 'gray' }]}>
+            Recent Entries
+          </Text>
+        </View>
       </ScrollView>
     </ScreenTemplate>
   )
@@ -255,6 +308,11 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     textAlign: 'center',
   },
+  text: {
+    fontSize: fontSize.middle,
+    marginBottom: 15,
+    textAlign: 'center',
+  },
   field: {
     fontSize: fontSize.middle,
     textAlign: 'center',
@@ -266,7 +324,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   input: {
-    height: 40,
+    height: 45,
     borderColor: '#BABABA',
     borderRadius: 50,
     backgroundColor: '#DBDBDB',
@@ -303,7 +361,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   separator: {
-    marginVertical: 20,
+    marginVertical: 24,
     height: 1,
     width: '60%',
     alignSelf: 'center',

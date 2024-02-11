@@ -33,7 +33,7 @@ export default function Post() {
   }, [])
 
   useFocusEffect(() => {
-    setTitle(data.fullName)
+    setTitle('Quick Add')
   })
 
   const loadStorage = async () => {
@@ -74,9 +74,12 @@ export default function Post() {
     <ScreenTemplate>
       <View style={[styles.container, colorScheme.content]}>
         <Text style={[styles.field, { color: colorScheme.text }]}>
-          Post Screen
+          Quick add expences and incomes
         </Text>
-        <Text style={[styles.title, { color: colorScheme.text }]}>
+        <Text style={[styles.field, { color: colorScheme.text }]}>
+          Customise your quick adds. Save upto 10 items
+        </Text>
+        {/* <Text style={[styles.title, { color: colorScheme.text }]}>
           {data.email}
         </Text>
         <Text style={[styles.field, { color: colorScheme.text }]}>from</Text>
@@ -86,7 +89,7 @@ export default function Post() {
         </Text>
         <Text style={[styles.title, { color: colorScheme.text }]}>
           {date.date}
-        </Text>
+        </Text> */}
         <View style={{ width: '100%' }}>
           <Button
             label="Save Date"
@@ -98,11 +101,6 @@ export default function Post() {
             color={colors.secondary}
             onPress={() => onRemovePress()}
           />
-          <Button
-            label="Go to Print"
-            color={colors.tertiary}
-            onPress={() => navigation.navigate('Print')}
-          />
         </View>
       </View>
     </ScreenTemplate>
@@ -111,15 +109,15 @@ export default function Post() {
 
 const styles = StyleSheet.create({
   lightContent: {
-    backgroundColor: '#e6e6fa',
+    backgroundColor: '#839192',
   },
   darkContent: {
-    backgroundColor: '#696969',
+    backgroundColor: '#839192',
   },
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
+    padding: 10,
   },
   title: {
     fontSize: fontSize.xxxLarge,
@@ -127,7 +125,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   field: {
-    fontSize: fontSize.middle,
+    fontSize: fontSize.large,
     textAlign: 'center',
   },
 })
