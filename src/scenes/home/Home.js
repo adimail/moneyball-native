@@ -84,24 +84,30 @@ export default function Home() {
     )
   }
 
-  // useLayoutEffect(() => {
-  //   navigation.setOptions({
-  //     headerRight: () => (
-  //       <IconButton
-  //         icon="user-circle"
-  //         color={colors.lightPurple}
-  //         size={24}
-  //         onPress={() => headerButtonPress()}
-  //         containerStyle={{ paddingRight: 15 }}
-  //       />
-  //     ),
-  //   })
-  // }, [navigation])
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <IconButton
+          icon="box-open"
+          color={colors.lightPurple}
+          size={24}
+          onPress={() => headerButtonPress()}
+          containerStyle={{ paddingRight: 15 }}
+        />
+      ),
+    })
+  }, [navigation])
 
-  // const headerButtonPress = () => {
-  //   alert('Render Profile Navigator')
-  //   navigation.navigate('Profile')
-  // }
+  const headerButtonPress = () => {
+    // Alert.alert('Quick Add', 'Render Quick Add')
+    navigation.navigate('ModalStacks', {
+      screen: 'Post',
+      params: {
+        data: userData,
+        from: 'Home screen',
+      },
+    })
+  }
 
   useEffect(() => {
     const tokensRef = doc(firestore, 'tokens', userData.id)
@@ -181,12 +187,7 @@ export default function Home() {
           <Card title="Month misc. expenses" amount="50" color="#da8540" />
         </View>
 
-        <View
-          style={[
-            styles.separator,
-            { backgroundColor: isDark ? 'white' : 'gray' },
-          ]}
-        />
+        <View style={[styles.separator]} />
 
         {/* <View style={colorScheme.content}>
           <Text style={[styles.field, { color: colorScheme.text }]}>Mail:</Text>
@@ -272,7 +273,7 @@ export default function Home() {
 
           {showDatePicker && renderDatePicker()}
 
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={[
               styles.button,
               {
@@ -291,14 +292,9 @@ export default function Home() {
             }}
           >
             <Text style={styles.buttonText}>Quick Add</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
-          <View
-            style={[
-              styles.separator,
-              { backgroundColor: isDark ? 'white' : 'gray' },
-            ]}
-          />
+          <View style={[styles.separator]} />
 
           <Text style={[styles.title, { color: isDark ? 'white' : 'gray' }]}>
             Recent Entries
@@ -391,7 +387,7 @@ const styles = StyleSheet.create({
   separator: {
     marginVertical: 24,
     height: 1,
-    width: '60%',
+    width: '80%',
     alignSelf: 'center',
   },
 })

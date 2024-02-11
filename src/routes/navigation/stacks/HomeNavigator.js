@@ -42,16 +42,16 @@ export const HomeNavigator = () => {
                   scheme === 'dark' ? null : () => <HeaderStyle />,
               }}
             />
-            {/* <Stack.Screen
+            <Stack.Screen
               name="Profile"
-              component={ProfileNavigator}
+              component={Detail}
               options={{
                 headerShown: false,
                 title: ctx.title,
                 headerBackground:
                   scheme === 'dark' ? null : () => <HeaderStyle />,
               }}
-            /> */}
+            />
           </Stack.Navigator>
         )}
       </HomeTitleContext.Consumer>

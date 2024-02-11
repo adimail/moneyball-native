@@ -13,6 +13,7 @@ import { HomeTitleContext } from '../../context/HomeTitleContext'
 import { storage } from '../../utils/Storage'
 import moment from 'moment'
 import { ProfileNavigator } from '../../routes/navigation/stacks'
+import QuickAddCard from '../../components/QuickAddItem'
 
 export default function Post() {
   const route = useRoute()
@@ -76,6 +77,12 @@ export default function Post() {
         <Text style={[styles.field, { color: colorScheme.text }]}>
           Quick add expences and incomes
         </Text>
+        <QuickAddCard title="Rickshaw" amount="20" />
+        <QuickAddCard title="Rickshaw" amount="25" />
+        <QuickAddCard title="Rickshaw" amount="10" />
+        <QuickAddCard title="Metro" amount="21" />
+        <QuickAddCard title="Metro" amount="7" />
+        <QuickAddCard title="Chai" amount="12" />
         <Text style={[styles.field, { color: colorScheme.text }]}>
           Customise your quick adds. Save upto 10 items
         </Text>
@@ -92,7 +99,7 @@ export default function Post() {
         </Text> */}
         <View style={{ width: '100%' }}>
           <Button
-            label="Save Date"
+            label="New quick add"
             color={colors.primary}
             onPress={() => onSavePress()}
           />
@@ -109,10 +116,10 @@ export default function Post() {
 
 const styles = StyleSheet.create({
   lightContent: {
-    backgroundColor: '#839192',
+    backgroundColor: '#fff',
   },
   darkContent: {
-    backgroundColor: '#839192',
+    backgroundColor: '#34495E',
   },
   container: {
     flex: 1,

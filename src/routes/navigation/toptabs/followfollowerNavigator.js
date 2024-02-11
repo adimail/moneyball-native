@@ -9,19 +9,16 @@ const Tab = createMaterialTopTabNavigator()
 
 export const FollowFollowerNavigator = () => {
   return (
-    <Tab.Navigator
-      initialRouteName="FollowTab"
-      screenOptions={screenOptions}
-    >
+    <Tab.Navigator initialRouteName="FollowTab" screenOptions={screenOptions}>
       <Tab.Screen
         name="FollowTab"
         component={FollowNavigator}
-        options={{ tabBarLabel: 'Follow' }}
+        options={{ tabBarLabel: 'This Month' }}
       />
       <Tab.Screen
         name="FollowerTab"
         component={FollowerNavigator}
-        options={{ tabBarLabel: 'Follower' }}
+        options={{ tabBarLabel: 'All Time' }}
       />
     </Tab.Navigator>
   )
