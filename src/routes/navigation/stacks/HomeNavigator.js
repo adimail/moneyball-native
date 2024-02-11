@@ -7,12 +7,13 @@ import HeaderStyle from './headerComponents/HeaderStyle'
 
 import Home from '../../../scenes/home'
 import Detail from '../../../scenes/detail'
+import ProfileNavigator from './ProfileNavigator'
 
 const Stack = createStackNavigator()
 
 export const HomeNavigator = () => {
   const { scheme } = useContext(ColorSchemeContext)
-  const navigationProps = scheme === 'dark' ? darkProps:lightProps
+  const navigationProps = scheme === 'dark' ? darkProps : lightProps
   const [title, setTitle] = useState('default title')
   return (
     <HomeTitleContext.Provider
@@ -28,19 +29,31 @@ export const HomeNavigator = () => {
               name="Home"
               component={Home}
               options={({ navigation }) => ({
-                headerBackground: scheme === 'dark' ? null: () => <HeaderStyle />,
+                headerBackground:
+                  scheme === 'dark' ? null : () => <HeaderStyle />,
               })}
             />
             <Stack.Screen
               name="Detail"
               component={Detail}
-              options={{ 
+              options={{
                 title: ctx.title,
-                headerBackground: scheme === 'dark' ? null: () => <HeaderStyle />,
+                headerBackground:
+                  scheme === 'dark' ? null : () => <HeaderStyle />,
+              }}
+            />
+            <Stack.Screen
+              name="Profile"
+              component={ProfileNavigator}
+              options={{
+                headerShown: false,
+                title: ctx.title,
+                headerBackground:
+                  scheme === 'dark' ? null : () => <HeaderStyle />,
               }}
             />
           </Stack.Navigator>
-      )}
+        )}
       </HomeTitleContext.Consumer>
     </HomeTitleContext.Provider>
   )

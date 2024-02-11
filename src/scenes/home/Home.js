@@ -74,7 +74,7 @@ export default function Home() {
     navigation.setOptions({
       headerRight: () => (
         <IconButton
-          icon="align-right"
+          icon="user-circle"
           color={colors.lightPurple}
           size={24}
           onPress={() => headerButtonPress()}
@@ -85,7 +85,8 @@ export default function Home() {
   }, [navigation])
 
   const headerButtonPress = () => {
-    alert('Tapped header button')
+    // alert('Render Profile Navigator')
+    navigation.navigate('Profile')
   }
 
   useEffect(() => {
@@ -193,7 +194,7 @@ export default function Home() {
           {showDatePicker && renderDatePicker()}
         </View>
 
-        {/* <Button
+        <Button
           label="Open Modal"
           color={colors.tertiary}
           onPress={() => {
@@ -205,7 +206,7 @@ export default function Home() {
               },
             })
           }}
-        /> */}
+        />
       </ScrollView>
     </ScreenTemplate>
   )

@@ -16,17 +16,19 @@ const RootStack = createStackNavigator()
 export const ConnectNavigator = () => {
   const { scheme } = useContext(ColorSchemeContext)
   const { userData } = useContext(UserDataContext)
-  const navigationProps = scheme === 'dark' ? darkProps:lightProps
+  const navigationProps = scheme === 'dark' ? darkProps : lightProps
 
   return (
     <Stack.Navigator screenOptions={navigationProps}>
       <RootStack.Group>
         <Stack.Screen
-          name="Connect"
+          name="History"
           component={FollowFollowerNavigator}
           options={({ navigation }) => ({
-            headerBackground: scheme === 'dark' ? null: () => <HeaderStyle />,
-            headerRight: () => <HeaderRightButton from='Connect' userData={userData} />
+            headerBackground: scheme === 'dark' ? null : () => <HeaderStyle />,
+            headerRight: () => (
+              <HeaderRightButton from="Connect" userData={userData} />
+            ),
           })}
         />
       </RootStack.Group>

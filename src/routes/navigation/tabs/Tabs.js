@@ -13,16 +13,16 @@ const TabNavigator = () => {
     <Tab.Navigator
       options={{
         tabBarStyle: {
-          // backgroundColor: 'white',
-          // borderTopColor: 'gray',
-          // borderTopWidth: 1,
-          // paddingBottom: 5,
-          // paddingTop: 5,
-        }
+          backgroundColor: 'white',
+          borderTopColor: 'gray',
+          borderTopWidth: 1,
+          paddingBottom: 5,
+          paddingTop: 5,
+        },
       }}
       defaultScreenOptions={{
         headerShown: false,
-        headerTransparent: true
+        headerTransparent: true,
       }}
       screenOptions={({ route }) => ({
         headerShown: false,
@@ -38,11 +38,7 @@ const TabNavigator = () => {
         options={{
           tabBarLabel: 'Home',
           tabBarIcon: ({ color, size }) => (
-            <FontIcon
-              name="home"
-              color={color}
-              size={size}
-            />
+            <FontIcon name="home" color={color} size={size} />
           ),
         }}
       />
@@ -50,30 +46,22 @@ const TabNavigator = () => {
         name="ConnectTab"
         component={ConnectNavigator}
         options={{
-          tabBarLabel: 'Connect',
+          tabBarLabel: 'History',
           tabBarIcon: ({ color, size }) => (
-            <FontIcon
-              name="share-alt"
-              color={color}
-              size={size}
-            />
+            <FontIcon name="shopping-cart" color={color} size={size} />
           ),
         }}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name="ProfileTab"
         component={ProfileNavigator}
         options={{
           tabBarLabel: 'Profile',
           tabBarIcon: ({ color, size }) => (
-            <FontIcon
-              name="user"
-              color={color}
-              size={size}
-            />
+            <FontIcon name="user-alt" color={color} size={size} />
           ),
         }}
-      />
+      /> */}
     </Tab.Navigator>
   )
 }
