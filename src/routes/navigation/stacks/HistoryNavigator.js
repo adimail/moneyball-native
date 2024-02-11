@@ -26,9 +26,9 @@ export const HistoryNavigator = () => {
           component={FollowFollowerNavigator}
           options={({ navigation }) => ({
             headerBackground: scheme === 'dark' ? null : () => <HeaderStyle />,
-            headerRight: () => (
-              <HeaderRightButton from="Connect" userData={userData} />
-            ),
+            // headerRight: () => (
+            //   <HeaderRightButton from="History" userData={userData} />
+            // ),
           })}
         />
       </RootStack.Group>

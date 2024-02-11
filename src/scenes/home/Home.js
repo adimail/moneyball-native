@@ -137,6 +137,13 @@ export default function Home() {
           <Card title="Month misc. expenses" amount="50" color="#da8540" />
         </View>
 
+        <View
+          style={[
+            styles.separator,
+            { backgroundColor: isDark ? 'white' : 'gray' },
+          ]}
+        />
+
         {/* <View style={colorScheme.content}>
           <Text style={[styles.field, { color: colorScheme.text }]}>Mail:</Text>
           <Text style={[styles.title, { color: colorScheme.text }]}>
@@ -176,9 +183,16 @@ export default function Home() {
             value={amount}
             onChangeText={(text) => setAmount(text)}
           />
+
           <View style={styles.inline}>
             <View style={styles.switchContainer}>
-              <Text style={styles.switchLabel}>Set current date</Text>
+              <Text
+                style={
+                  (styles.switchLabel, { color: isDark ? 'white' : 'black' })
+                }
+              >
+                Set current date
+              </Text>
               <Switch
                 trackColor={{ false: '#767577', true: '#81b0ff' }}
                 thumbColor={isTodaySwitchOn ? '#fff' : '#f4f3f4'}
@@ -192,9 +206,11 @@ export default function Home() {
           </View>
 
           {showDatePicker && renderDatePicker()}
+
+          <Text style={styles.title}>Recent Entries</Text>
         </View>
 
-        <Button
+        {/* <Button
           label="Open Modal"
           color={colors.tertiary}
           onPress={() => {
@@ -206,7 +222,7 @@ export default function Home() {
               },
             })
           }}
-        />
+        /> */}
       </ScrollView>
     </ScreenTemplate>
   )
@@ -232,9 +248,10 @@ const styles = StyleSheet.create({
   main: {
     flex: 1,
     width: '100%',
+    marginTop: 20,
   },
   title: {
-    fontSize: fontSize.xxxLarge,
+    fontSize: fontSize.xLarge,
     marginBottom: 20,
     textAlign: 'center',
   },
@@ -247,7 +264,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     gap: 10,
-    paddingTop: 10,
   },
   input: {
     height: 40,
@@ -262,7 +278,7 @@ const styles = StyleSheet.create({
     height: 45,
     backgroundColor: '#408c57',
     borderRadius: 10,
-    padding: 10,
+    paddingHorizontal: 10,
     alignItems: 'center',
     display: 'flex',
     justifyContent: 'center',
@@ -284,5 +300,12 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
+    paddingVertical: 10,
+  },
+  separator: {
+    marginVertical: 20,
+    height: 1,
+    width: '60%',
+    alignSelf: 'center',
   },
 })
