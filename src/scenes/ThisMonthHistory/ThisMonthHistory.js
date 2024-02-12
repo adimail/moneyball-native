@@ -63,7 +63,22 @@ export default function ThisMonthHistory() {
       setExpenseData(expenses)
       setIncomeData(incomes)
 
-      showToast('Data refreshed', isDark)
+      const currentDate = new Date()
+      const formattedDate = currentDate.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+      })
+
+      const formattedTime = currentDate.toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+      })
+
+      showToast({
+        title: 'Data refreshed',
+        body: `Last Updated: ${formattedDate} ${formattedTime}`,
+        isDark: isDark,
+      })
     } catch (error) {
       console.error('Error fetching data:', error)
     }
@@ -105,13 +120,24 @@ export default function ThisMonthHistory() {
                 }}
               />
 
+              <View
+                style={[
+                  styles.separator,
+                  { backgroundColor: isDark ? 'white' : 'black' },
+                ]}
+              />
+
               <View style={styles.logBook}>
                 {dataToDisplay &&
                   dataToDisplay.map((log) => (
                     <View style={styles.log} key={log.id}>
                       <View>
                         <Text style={styles.title}>{log.title}</Text>
-                        <Text style={styles.date}>{log.date}</Text>
+                        <Text style={styles.date}>
+                          {new Date(
+                            log.date.seconds * 1000,
+                          ).toLocaleDateString()}
+                        </Text>
                       </View>
                       <Text style={styles.amount}>₹ {log.amount}</Text>
                     </View>
@@ -174,5 +200,11 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     backgroundColor: 'transparent',
     alignItems: 'center',
+  },
+  separator: {
+    marginVertical: 24,
+    height: 10,
+    width: '80%',
+    alignSelf: 'center',
   },
 })

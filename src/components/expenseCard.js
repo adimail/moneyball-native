@@ -2,11 +2,12 @@ import { StyleSheet } from 'react-native'
 import { View, Text } from 'react-native'
 import React from 'react'
 
-export default function Card({ title, amount, color, height }) {
+export default function Card({ title, amount, color, height, navigate }) {
   const dynamicCardStyles = {
     ...styles.card,
     backgroundColor: color ? color : styles.card.backgroundColor,
     height: height ? height : styles.card.height,
+    navigate: navigate ? navigate : 'home',
   }
 
   return (

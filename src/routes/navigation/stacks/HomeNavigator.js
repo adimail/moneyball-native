@@ -7,7 +7,6 @@ import HeaderStyle from './headerComponents/HeaderStyle'
 
 import Home from '../../../scenes/home'
 import Detail from '../../../scenes/detail'
-// import ProfileNavigator from './ProfileNavigator'
 
 const Stack = createStackNavigator()
 

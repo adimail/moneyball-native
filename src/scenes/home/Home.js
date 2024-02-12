@@ -1,4 +1,10 @@
-import React, { useEffect, useState, useContext, useLayoutEffect } from 'react'
+import React, {
+  useEffect,
+  useState,
+  useContext,
+  useLayoutEffect,
+  useMemo,
+} from 'react'
 import {
   Text,
   View,
@@ -32,6 +38,7 @@ import { TouchableOpacity } from 'react-native'
 import { SelectList } from 'react-native-dropdown-select-list'
 import CustomSwitch from '../../components/toggleSwitch'
 import { showToast } from '../../utils/ShowToast'
+import QuickAddComponent from '../../utils/quickAdd'
 
 export default function Home() {
   const navigation = useNavigation()
@@ -70,18 +77,52 @@ export default function Home() {
     date.toDateString() === new Date().toDateString(),
   )
   const [type, setType] = useState('Expenditure')
+  const [CurrentMonthExpense, setCurrentMonthExpense] = useState(0)
 
-  const MonthYear = date.toLocaleDateString('en-GB', {
-    month: 'short',
-    year: 'numeric',
-  })
+  const QuickAddData = [
+    { title: 'Rickshaw', amounts: ['20', '25', '10'] },
+    { title: 'Metro', amounts: ['21', '7', '12', '30'] },
+    { title: 'Top Up', amounts: ['19'] },
+  ]
+
+  const MonthYear = useMemo(() => {
+    return date.toLocaleDateString('en-GB', {
+      month: 'short',
+      year: 'numeric',
+    })
+  }, [date])
+
+  const handleCurrentMonthCardPress = () => {
+    navigation.navigate('History')
+  }
 
   useEffect(() => {
     const MonthYear = date.toLocaleDateString('en-GB', {
       month: 'short',
       year: 'numeric',
     })
-  }, [])
+
+    const summaryRef = doc(
+      firestore,
+      `summaries-${userData.id}`,
+      type,
+      MonthYear,
+      'Aggregate',
+    )
+
+    getDoc(summaryRef)
+      .then((docSnapshot) => {
+        if (docSnapshot.exists()) {
+          const data = docSnapshot.data()
+          setCurrentMonthExpense(data.sum || 0)
+        } else {
+          setCurrentMonthExpense(0)
+        }
+      })
+      .catch((error) => {
+        console.error('Error fetching summary document: ', error)
+      })
+  }, [date, type])
 
   const handleDateChange = (event, selectedDate) => {
     setShowDatePicker(false)
@@ -164,16 +205,38 @@ export default function Home() {
         collection(firestore, `transactions-${userData.id}`, type, MonthYear),
       )
 
-      console.log('Transaction Reference:', transactionRef)
+      const summaryRef = doc(
+        firestore,
+        `summaries-${userData.id}`,
+        type,
+        MonthYear,
+        'Aggregate',
+      )
 
-      setDoc(transactionRef, {
-        title: title,
-        category: selected,
-        amount: amount,
-        date: formattedDate,
-      })
+      // Update summary document
+      getDoc(summaryRef)
+        .then((docSnapshot) => {
+          let sum = 0
+          if (docSnapshot.exists()) {
+            const data = docSnapshot.data()
+            sum = data.sum || 0
+          }
+          sum += parseInt(amount)
+          setCurrentMonthExpense(sum)
+          return setDoc(summaryRef, { sum })
+        })
+        .then(() => {
+          // Add transaction data
+          return setDoc(transactionRef, {
+            title,
+            category: selected,
+            amount: parseInt(amount),
+            date,
+          })
+        })
         .then(() => {
           showToast({
+            title: 'Log Added',
             body: title,
             isDark,
           })
@@ -195,7 +258,6 @@ export default function Home() {
 
   const onSelectSwitch = (value) => {
     setType(value)
-    // console.log(value)
   }
 
   return (
@@ -203,19 +265,11 @@ export default function Home() {
       <ScrollView style={styles.main}>
         <View style={styles.container}>
           <Card title="Last 7 days" amount="50" />
-          <Card title="Current week" amount="50" />
-          <Card title="Current month" amount="50" />
+          <Card title="Current month" amount={CurrentMonthExpense} />
           <Card title="Month misc. expenses" amount="50" color="#da8540" />
         </View>
 
         <View style={[styles.separator]} />
-
-        {/* <View style={colorScheme.content}>
-          <Text style={[styles.field, { color: colorScheme.text }]}>Mail:</Text>
-          <Text style={[styles.title, { color: colorScheme.text }]}>
-            {userData.email}
-          </Text>
-        </View> */}
 
         <Text style={[styles.text, { color: isDark ? 'white' : 'black' }]}>
           {'Date: ' +
@@ -244,7 +298,6 @@ export default function Home() {
             value={title}
             onChangeText={(text) => setTitle(text)}
           />
-
           <SelectList
             boxStyles={{
               height: 45,
@@ -262,7 +315,6 @@ export default function Home() {
             save="value"
             placeholder="Select Category"
           />
-
           <TextInput
             style={[styles.input]}
             placeholder="Enter Amount"
@@ -270,7 +322,6 @@ export default function Home() {
             value={amount}
             onChangeText={(text) => setAmount(text)}
           />
-
           <View style={styles.inline}>
             <View style={styles.switchContainer}>
               <Text
@@ -291,9 +342,7 @@ export default function Home() {
               <Text style={styles.buttonText}>Add to database</Text>
             </TouchableOpacity>
           </View>
-
           {showDatePicker && renderDatePicker()}
-
           {/* <TouchableOpacity
             style={[
               styles.button,
@@ -314,12 +363,16 @@ export default function Home() {
           >
             <Text style={styles.buttonText}>Quick Add</Text>
           </TouchableOpacity> */}
-
-          {/* <View style={[styles.separator]} />
+          {/* 
+          <View style={[styles.separator]} />
 
           <Text style={[styles.title, { color: isDark ? 'white' : 'gray' }]}>
             Recent Entries
           </Text> */}
+          <Text style={[styles.title, { color: isDark ? 'white' : 'black' }]}>
+            Quick Add
+          </Text>
+          <QuickAddComponent data={QuickAddData} />
         </View>
       </ScrollView>
     </ScreenTemplate>
@@ -349,9 +402,11 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   title: {
-    fontSize: fontSize.xLarge,
-    marginBottom: 20,
+    fontSize: fontSize.xxxLarge,
     textAlign: 'center',
+    marginTop: 20,
+    width: '80%',
+    borderRadius: 50,
   },
   text: {
     fontSize: fontSize.middle,
