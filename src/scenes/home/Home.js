@@ -12,6 +12,7 @@ import {
   StyleSheet,
   TextInput,
   Switch,
+  Image,
   Alert,
 } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
@@ -78,10 +79,11 @@ export default function Home() {
   )
   const [type, setType] = useState('Expenditure')
   const [CurrentMonthExpense, setCurrentMonthExpense] = useState(0)
+  const [CurrentMonthIncome, setCurrentMonthIncome] = useState(0)
 
   const QuickAddData = [
     { title: 'Rickshaw', amounts: ['20', '25', '10'] },
-    { title: 'Metro', amounts: ['21', '7', '12', '30'] },
+    { title: 'Metro', amounts: ['21', '7', '12'] },
     { title: 'Top Up', amounts: ['19'] },
   ]
 
@@ -102,27 +104,42 @@ export default function Home() {
       year: 'numeric',
     })
 
-    const summaryRef = doc(
+    const expenseSummaryRef = doc(
       firestore,
       `summaries-${userData.id}`,
-      type,
+      'Expenditure',
       MonthYear,
       'Aggregate',
     )
 
-    getDoc(summaryRef)
-      .then((docSnapshot) => {
-        if (docSnapshot.exists()) {
-          const data = docSnapshot.data()
-          setCurrentMonthExpense(data.sum || 0)
+    const incomeSummaryRef = doc(
+      firestore,
+      `summaries-${userData.id}`,
+      'Income',
+      MonthYear,
+      'Aggregate',
+    )
+
+    Promise.all([getDoc(expenseSummaryRef), getDoc(incomeSummaryRef)])
+      .then(([expenseDocSnapshot, incomeDocSnapshot]) => {
+        if (expenseDocSnapshot.exists()) {
+          const expenseData = expenseDocSnapshot.data()
+          setCurrentMonthExpense(expenseData.sum || 0)
         } else {
           setCurrentMonthExpense(0)
         }
+
+        if (incomeDocSnapshot.exists()) {
+          const incomeData = incomeDocSnapshot.data()
+          setCurrentMonthIncome(incomeData.sum || 0)
+        } else {
+          setCurrentMonthIncome(0)
+        }
       })
       .catch((error) => {
-        console.error('Error fetching summary document: ', error)
+        console.error('Error fetching summary documents: ', error)
       })
-  }, [date, type])
+  }, [])
 
   const handleDateChange = (event, selectedDate) => {
     setShowDatePicker(false)
@@ -263,10 +280,22 @@ export default function Home() {
   return (
     <ScreenTemplate>
       <ScrollView style={styles.main}>
+        {/* <Text style={[styles.title, { color: isDark ? 'white' : 'black' }]}>
+          MoneyBall
+        </Text> */}
+        <Image
+          source={require('../../../assets/images/home.png')}
+          style={styles.image}
+        />
         <View style={styles.container}>
-          <Card title="Last 7 days" amount="50" />
-          <Card title="Current month" amount={CurrentMonthExpense} />
-          <Card title="Month misc. expenses" amount="50" color="#da8540" />
+          {/* <Card title="Last 7 days" amount="50" /> */}
+          <Card
+            title="Current month aggregate"
+            amount={
+              type === 'Income' ? CurrentMonthIncome : CurrentMonthExpense
+            }
+          />
+          {/* <Card title="Month misc. expenses" amount="50" color="#da8540" /> */}
         </View>
 
         <View style={[styles.separator]} />
@@ -405,8 +434,8 @@ const styles = StyleSheet.create({
     fontSize: fontSize.xxxLarge,
     textAlign: 'center',
     marginTop: 20,
-    width: '80%',
     borderRadius: 50,
+    marginVertical: 20,
   },
   text: {
     fontSize: fontSize.middle,
@@ -465,5 +494,12 @@ const styles = StyleSheet.create({
     height: 1,
     width: '80%',
     alignSelf: 'center',
+  },
+  image: {
+    width: '100%',
+    height: 200,
+    resizeMode: 'cover',
+    transform: [{ scale: 0.6 }],
+    borderRadius: 30,
   },
 })

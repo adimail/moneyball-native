@@ -19,24 +19,24 @@ const QuickAddComponent = ({ data }) => {
         data.map((item, index) => (
           <QuickAddItem key={index} title={item.title} amounts={item.amounts} />
         ))}
-      <View style={styles.item}>
-        <TouchableOpacity style={styles.plus}>
-          <IconButton
-            icon="plus"
-            color={colors.lightPurple}
-            size={80}
-            // onPress={() => headerButtonPress()}
-            containerStyle={{ paddingRight: 15 }}
-          />
-          <Text>Add new Quick Add</Text>
-        </TouchableOpacity>
+
+      <View style={styles.plus}>
+        <IconButton
+          icon="plus"
+          color={colors.lightGrayPurple}
+          size={80}
+          // onPress={() => headerButtonPress()}
+          containerStyle={{ paddingRight: 15 }}
+        />
+        <Text style={{ color: colors.black, fontSize: 18 }}>New Quick Add</Text>
       </View>
     </ScrollView>
   )
 }
 
 const QuickAddItem = ({ title, amounts }) => {
-  const [selectedAmountIndex, setSelectedAmountIndex] = useState(null)
+  const [date, setDate] = useState(new Date())
+  const [selectedAmountIndex, setSelectedAmountIndex] = useState(0)
 
   const handleAmountPress = (index) => {
     setSelectedAmountIndex((prevIndex) => (prevIndex === index ? null : index))
@@ -46,6 +46,13 @@ const QuickAddItem = ({ title, amounts }) => {
     <View style={styles.item}>
       <View style={styles.body}>
         <Text style={styles.text}>{title}</Text>
+        <Text style={{ color: 'white', paddingBottom: 5 }}>
+          {date.toLocaleDateString('en-GB', {
+            day: 'numeric',
+            month: 'short',
+            year: 'numeric',
+          })}
+        </Text>
         <View style={styles.buttons}>
           {amounts &&
             amounts.map((amount, index) => (
@@ -63,10 +70,16 @@ const QuickAddItem = ({ title, amounts }) => {
         </View>
       </View>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>Edit</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button}>
+        <IconButton
+          icon="pen"
+          color={colors.white}
+          size={24}
+          // onPress={() => headerButtonPress()}
+          containerStyle={{ paddingRight: 15 }}
+        />
+        <TouchableOpacity
+          style={[styles.button, { backgroundColor: '#408c57' }]}
+        >
           <Text style={styles.buttonText}>Add Log</Text>
         </TouchableOpacity>
       </View>
@@ -78,6 +91,9 @@ const styles = StyleSheet.create({
   buttonContainer: {
     display: 'flex',
     flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    width: 180,
   },
   scrollViewContainer: {
     flexDirection: 'row',
@@ -86,14 +102,16 @@ const styles = StyleSheet.create({
   },
   item: {
     width: 210,
-    height: 150,
+    height: 180,
     display: 'flex',
     justifyContent: 'space-between',
     padding: 20,
-    backgroundColor: 'white',
+    backgroundColor: '#2C3E50',
     alignItems: 'center',
     marginHorizontal: 15,
-    borderRadius: 10,
+    borderRadius: 20,
+    borderWidth: 0.5,
+    borderColor: 'white',
   },
   button: {
     backgroundColor: 'blue',
@@ -109,7 +127,15 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   plus: {
+    width: 210,
+    height: 180,
+    display: 'flex',
+    justifyContent: 'center',
     alignItems: 'center',
+    padding: 20,
+    backgroundColor: '#808B96',
+    marginHorizontal: 15,
+    borderRadius: 20,
   },
   body: {
     display: 'flex',
@@ -118,26 +144,33 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   text: {
-    fontSize: 18,
-    marginBottom: 10,
+    fontSize: 20,
+    color: 'white',
   },
   buttons: {
     display: 'flex',
     flexDirection: 'row',
-    gap: 25,
+    gap: 5,
+    backgroundColor: '#EAECEE',
+    width: 190,
+    padding: 8,
+    borderRadius: 100,
+    justifyContent: 'space-around',
   },
   list: {
     display: 'flex',
   },
   amountText: {
-    color: 'black',
-    fontSize: 18,
-    backgroundColor: 'green',
-    padding: 5,
-    borderRadius: 5,
+    color: 'white',
+    fontSize: 15,
+    backgroundColor: '#2C3E50',
+    padding: 2,
+    borderRadius: 100,
+    width: 41,
+    textAlign: 'center',
   },
   selectedAmount: {
-    backgroundColor: 'lightblue', // Change color to indicate selected amount
+    transform: [{ scale: 1.3 }],
   },
 })
 

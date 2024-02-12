@@ -1,5 +1,4 @@
-const defaultAvatar =
-  'https://firebasestorage.googleapis.com/v0/b/expo-boilerplate-v2.appspot.com/o/icon.png?alt=media&token=505f30e6-6702-410a-84e7-f66b3ff60daf'
+const defaultAvatar = 'https://cdn-icons-png.flaticon.com/512/6596/6596121.png'
 
 const firebaseKey = {
   apiKey: 'AIzaSyDMFtbbgUhrxIrNj-BEG2fPGlScjn6vFy8',
