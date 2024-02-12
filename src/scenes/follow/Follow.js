@@ -36,7 +36,7 @@ export default function Follow() {
               selectionMode={1}
               roundCorner={true}
               option1={'Expenditure'}
-              option2={'Saving'}
+              option2={'Income'}
               onSelectSwitch={onSelectSwitch}
               selectionColor={'#1C2833'}
             />

@@ -13,7 +13,7 @@ import IconButton from '../../components/IconButton'
 import ScreenTemplate from '../../components/ScreenTemplate'
 import Button from '../../components/Button'
 import { firestore } from '../../firebase/config'
-import { doc, onSnapshot } from 'firebase/firestore'
+import { doc, onSnapshot, getDoc, setDoc, collection } from 'firebase/firestore'
 import { colors, fontSize } from '../../theme'
 import { UserDataContext } from '../../context/UserDataContext'
 import { ColorSchemeContext } from '../../context/ColorSchemeContext'
@@ -37,18 +37,20 @@ export default function Home() {
     text: isDark ? colors.white : colors.primaryText,
   }
 
-  const data = [
+  const ExpenditureData = [
     'Food',
     'Stationary',
     'Rickshaw',
     'Metro',
-    'Accessories andt',
+    'Accessories and Internet',
     'Hygiene',
     'Medicines',
     'A1004',
     'Travel',
     'Other',
   ]
+
+  const SavingsDate = ['Mummy', 'Mama']
 
   // Account Information
   const [amount, setAmount] = useState(null)
@@ -61,6 +63,75 @@ export default function Home() {
     date.toDateString() === new Date().toDateString(),
   )
   const [type, setType] = useState('Expenditure')
+  const [expenseData, setExpenseData] = useState(null)
+  const [incomeData, setIncomeData] = useState(null)
+
+  const MonthYear = date.toLocaleDateString('en-GB', {
+    month: 'short',
+    year: 'numeric',
+  })
+
+  useEffect(() => {
+    const fetchExpenseData = async () => {
+      try {
+        const expenseSnapshot = await getDoc(ExpenseCollectionRef)
+        if (expenseSnapshot.exists()) {
+          setExpenseData(expenseSnapshot.data())
+        } else {
+          console.log('No expense data found')
+        }
+      } catch (error) {
+        console.error('Error fetching expense data:', error)
+      }
+    }
+
+    const fetchIncomeData = async () => {
+      try {
+        const incomeSnapshot = await getDoc(IncomeCollectionRef)
+        if (incomeSnapshot.exists()) {
+          setIncomeData(incomeSnapshot.data())
+        } else {
+          console.log('No income data found')
+        }
+      } catch (error) {
+        console.error('Error fetching income data:', error)
+      }
+    }
+
+    fetchExpenseData()
+    fetchIncomeData()
+  }, [ExpenseCollectionRef, IncomeCollectionRef])
+
+  useEffect(() => {
+    const MonthYear = date.toLocaleDateString('en-GB', {
+      month: 'short',
+      year: 'numeric',
+    })
+  }, [])
+
+  const ExpenseCollectionRef = doc(
+    collection(
+      firestore,
+      `transactions-${userData.id}`,
+      'Expenditure',
+      date.toLocaleDateString('en-GB', {
+        month: 'short',
+        year: 'numeric',
+      }),
+    ),
+  )
+
+  const IncomeCollectionRef = doc(
+    collection(
+      firestore,
+      `transactions-${userData.id}`,
+      'Income',
+      date.toLocaleDateString('en-GB', {
+        month: 'short',
+        year: 'numeric',
+      }),
+    ),
+  )
 
   const handleDateChange = (event, selectedDate) => {
     setShowDatePicker(false)
@@ -109,23 +180,9 @@ export default function Home() {
     })
   }
 
-  useEffect(() => {
-    const tokensRef = doc(firestore, 'tokens', userData.id)
-    const tokenListner = onSnapshot(tokensRef, (querySnapshot) => {
-      if (querySnapshot.exists) {
-        const data = querySnapshot.data()
-        setToken(data)
-      } else {
-        console.log('No such document!')
-      }
-    })
-    return () => tokenListner()
-  }, [])
-
   const handleCategorySelection = (value) => {
     setSelected(value)
-    const currentDate = new Date()
-    const formattedDate = currentDate.toLocaleDateString('en-GB', {
+    const formattedDate = date.toLocaleDateString('en-GB', {
       day: 'numeric',
       month: 'short',
     })
@@ -153,20 +210,37 @@ export default function Home() {
         year: 'numeric',
       })
 
-      const logInfo = `Name: ${title}\nDate: ${formattedDate}\nCategory: ${selected.value}\nAmount: ${amount}₹`
+      const logInfo = `Name: ${title}\nDate: ${formattedDate}\nCategory: ${selected}\nAmount: ${amount}₹`
 
-      // Alert.alert('Log added', logInfo)
-      showToast({
-        title: 'Log Added',
-        body: title,
-        isDark,
+      const transactionRef = doc(
+        collection(firestore, `transactions-${userData.id}`, type, MonthYear),
+      )
+
+      console.log('Transaction Reference:', transactionRef)
+
+      setDoc(transactionRef, {
+        title: title,
+        category: selected,
+        amount: amount,
+        date: formattedDate,
       })
+        .then(() => {
+          showToast({
+            title: 'Log Added',
+            body: title,
+            isDark,
+          })
 
-      setAmount('')
-      setTitle('')
-      setDate(new Date())
-      setIsTodaySwitchOn(true)
-      setCategory('')
+          setAmount('')
+          setTitle('')
+          setDate(new Date())
+          setIsTodaySwitchOn(true)
+          setCategory('')
+        })
+        .catch((error) => {
+          console.error('Error adding document: ', error)
+          Alert.alert('Error', 'Failed to add log. Please try again.')
+        })
     } else {
       Alert.alert('Please fill in all required fields')
     }
@@ -210,7 +284,7 @@ export default function Home() {
             selectionMode={1}
             roundCorner={true}
             option1={'Expenditure'}
-            option2={'Saving'}
+            option2={'Income'}
             onSelectSwitch={onSelectSwitch}
             selectionColor={'#1C2833'}
           />
@@ -237,7 +311,7 @@ export default function Home() {
             dropdownTextStyles={{ color: 'grey' }}
             setSelected={handleCategorySelection}
             search={false}
-            data={data}
+            data={type === 'Expenditure' ? ExpenditureData : SavingsDate}
             save="value"
             placeholder="Select Category"
           />
