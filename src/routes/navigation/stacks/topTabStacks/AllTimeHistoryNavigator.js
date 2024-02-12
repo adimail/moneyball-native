@@ -1,21 +1,18 @@
 import React, { useContext } from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
 
-import Follow from '../../../../scenes/follow'
+import AllTimeHistory from '../../../../scenes/AllTimeHistory'
 
 const Stack = createStackNavigator()
 
-export const FollowNavigator = () => {
+export const AllTimeHistoryNavigator = () => {
   return (
     <Stack.Navigator
       screenOptions={({ route, navigation }) => ({
         headerShown: false,
       })}
     >
-      <Stack.Screen
-        name="Follow"
-        component={Follow}
-      />
+      <Stack.Screen name="AllTimeHistory" component={AllTimeHistory} />
     </Stack.Navigator>
   )
 }

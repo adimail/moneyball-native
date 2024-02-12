@@ -8,7 +8,7 @@ import { lightProps, darkProps } from './navigationProps/navigationProps'
 import HeaderStyle from './headerComponents/HeaderStyle'
 import HeaderRightButton from '../../../components/HeaderRightButton'
 
-import { FollowFollowerNavigator } from '../toptabs/followfollowerNavigator'
+import { HistoryNavigatorTabs } from '../toptabs/HistoryNavigatorTabs'
 import IconButton from '../../../components/IconButton'
 import { colors } from '../../../theme'
 import { useNavigation } from '@react-navigation/native'
@@ -37,7 +37,7 @@ export const HistoryNavigator = () => {
       <RootStack.Group>
         <Stack.Screen
           name="History"
-          component={FollowFollowerNavigator}
+          component={HistoryNavigatorTabs}
           options={({ navigation }) => ({
             headerBackground: scheme === 'dark' ? null : () => <HeaderStyle />,
             headerRight: () => (

@@ -1,5 +1,5 @@
 import React, { useEffect, useContext, useState, useMemo } from 'react'
-import { Text, View, StyleSheet } from 'react-native'
+import { Text, View, StyleSheet, ScrollView } from 'react-native'
 import ScreenTemplate from '../../components/ScreenTemplate'
 import Button from '../../components/Button'
 import { colors, fontSize } from 'theme'
@@ -13,7 +13,7 @@ import Log from '../../components/log'
 import Card from '../../components/expenseCard'
 import { showToast } from '../../utils/ShowToast'
 
-export default function Follow() {
+export default function ThisMonthHistory() {
   const navigation = useNavigation()
   const { userData } = useContext(UserDataContext)
   const { scheme } = useContext(ColorSchemeContext)
@@ -83,47 +83,52 @@ export default function Follow() {
 
   return (
     <ScreenTemplate>
-      <View style={styles.container}>
-        <View style={styles.content}>
-          <View style={{ width: '100%' }}>
-            <Button
-              label={'Refresh'}
-              color={colors.primary}
-              onPress={() => {
-                fetchDataForCurrentMonth()
-              }}
+      <ScrollView>
+        <View style={styles.container}>
+          <View>
+            <CustomSwitch
+              selectionMode={1}
+              roundCorner={true}
+              option1={'Expenditure'}
+              option2={'Income'}
+              onSelectSwitch={onSelectSwitch}
+              selectionColor={'#1C2833'}
             />
+          </View>
+          <View style={styles.content}>
+            <View style={{ width: '100%' }}>
+              <Button
+                label={'Refresh'}
+                color={colors.primary}
+                onPress={() => {
+                  fetchDataForCurrentMonth()
+                }}
+              />
 
-            <View style={styles.logBook}>
-              {dataToDisplay &&
-                dataToDisplay.map((log) => (
-                  <View style={styles.log} key={log.id}>
-                    <View>
-                      <Text style={styles.title}>{log.title}</Text>
-                      <Text style={styles.date}>{log.date}</Text>
+              <View style={styles.logBook}>
+                {dataToDisplay &&
+                  dataToDisplay.map((log) => (
+                    <View style={styles.log} key={log.id}>
+                      <View>
+                        <Text style={styles.title}>{log.title}</Text>
+                        <Text style={styles.date}>{log.date}</Text>
+                      </View>
+                      <Text style={styles.amount}>₹ {log.amount}</Text>
                     </View>
-                    <Text style={styles.amount}>₹ {log.amount}</Text>
-                  </View>
-                ))}
+                  ))}
+              </View>
             </View>
           </View>
         </View>
-        <View style={styles.switchContainer}>
-          <CustomSwitch
-            selectionMode={1}
-            roundCorner={true}
-            option1={'Expenditure'}
-            option2={'Income'}
-            onSelectSwitch={onSelectSwitch}
-            selectionColor={'#1C2833'}
-          />
-        </View>
-      </View>
+      </ScrollView>
     </ScreenTemplate>
   )
 }
 
 const styles = StyleSheet.create({
+  scrollViewContent: {
+    flexGrow: 1,
+  },
   container: {
     flex: 1,
     alignItems: 'center',
