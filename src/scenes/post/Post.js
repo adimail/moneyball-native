@@ -101,12 +101,12 @@ export default function Post() {
           <Button
             label="New quick add"
             color={colors.primary}
-            onPress={() => onSavePress()}
+            // onPress={() => onSavePress()}
           />
           <Button
             label="Remove Date"
             color={colors.secondary}
-            onPress={() => onRemovePress()}
+            // onPress={() => onRemovePress()}
           />
         </View>
       </View>

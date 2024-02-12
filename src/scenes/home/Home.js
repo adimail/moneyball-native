@@ -13,7 +13,14 @@ import IconButton from '../../components/IconButton'
 import ScreenTemplate from '../../components/ScreenTemplate'
 import Button from '../../components/Button'
 import { firestore } from '../../firebase/config'
-import { doc, onSnapshot, getDoc, setDoc, collection } from 'firebase/firestore'
+import {
+  doc,
+  onSnapshot,
+  getDoc,
+  getDocs,
+  setDoc,
+  collection,
+} from 'firebase/firestore'
 import { colors, fontSize } from '../../theme'
 import { UserDataContext } from '../../context/UserDataContext'
 import { ColorSchemeContext } from '../../context/ColorSchemeContext'
@@ -63,8 +70,6 @@ export default function Home() {
     date.toDateString() === new Date().toDateString(),
   )
   const [type, setType] = useState('Expenditure')
-  const [expenseData, setExpenseData] = useState(null)
-  const [incomeData, setIncomeData] = useState(null)
 
   const MonthYear = date.toLocaleDateString('en-GB', {
     month: 'short',
@@ -72,66 +77,11 @@ export default function Home() {
   })
 
   useEffect(() => {
-    const fetchExpenseData = async () => {
-      try {
-        const expenseSnapshot = await getDoc(ExpenseCollectionRef)
-        if (expenseSnapshot.exists()) {
-          setExpenseData(expenseSnapshot.data())
-        } else {
-          console.log('No expense data found')
-        }
-      } catch (error) {
-        console.error('Error fetching expense data:', error)
-      }
-    }
-
-    const fetchIncomeData = async () => {
-      try {
-        const incomeSnapshot = await getDoc(IncomeCollectionRef)
-        if (incomeSnapshot.exists()) {
-          setIncomeData(incomeSnapshot.data())
-        } else {
-          console.log('No income data found')
-        }
-      } catch (error) {
-        console.error('Error fetching income data:', error)
-      }
-    }
-
-    fetchExpenseData()
-    fetchIncomeData()
-  }, [ExpenseCollectionRef, IncomeCollectionRef])
-
-  useEffect(() => {
     const MonthYear = date.toLocaleDateString('en-GB', {
       month: 'short',
       year: 'numeric',
     })
   }, [])
-
-  const ExpenseCollectionRef = doc(
-    collection(
-      firestore,
-      `transactions-${userData.id}`,
-      'Expenditure',
-      date.toLocaleDateString('en-GB', {
-        month: 'short',
-        year: 'numeric',
-      }),
-    ),
-  )
-
-  const IncomeCollectionRef = doc(
-    collection(
-      firestore,
-      `transactions-${userData.id}`,
-      'Income',
-      date.toLocaleDateString('en-GB', {
-        month: 'short',
-        year: 'numeric',
-      }),
-    ),
-  )
 
   const handleDateChange = (event, selectedDate) => {
     setShowDatePicker(false)
@@ -210,8 +160,6 @@ export default function Home() {
         year: 'numeric',
       })
 
-      const logInfo = `Name: ${title}\nDate: ${formattedDate}\nCategory: ${selected}\nAmount: ${amount}₹`
-
       const transactionRef = doc(
         collection(firestore, `transactions-${userData.id}`, type, MonthYear),
       )
@@ -226,7 +174,6 @@ export default function Home() {
       })
         .then(() => {
           showToast({
-            title: 'Log Added',
             body: title,
             isDark,
           })
@@ -248,7 +195,7 @@ export default function Home() {
 
   const onSelectSwitch = (value) => {
     setType(value)
-    console.log(value)
+    // console.log(value)
   }
 
   return (
@@ -368,11 +315,11 @@ export default function Home() {
             <Text style={styles.buttonText}>Quick Add</Text>
           </TouchableOpacity> */}
 
-          <View style={[styles.separator]} />
+          {/* <View style={[styles.separator]} />
 
           <Text style={[styles.title, { color: isDark ? 'white' : 'gray' }]}>
             Recent Entries
-          </Text>
+          </Text> */}
         </View>
       </ScrollView>
     </ScreenTemplate>

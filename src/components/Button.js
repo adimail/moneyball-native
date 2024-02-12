@@ -25,9 +25,8 @@ export default function Button(props) {
 
 const styles = StyleSheet.create({
   button: {
-    marginLeft: 30,
-    marginRight: 30,
-    marginTop: 20,
+    marginHorizontal: 10,
+    marginVertical: 10,
     height: 48,
     borderRadius: 5,
     alignItems: 'center',

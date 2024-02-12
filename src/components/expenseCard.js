@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   amount: {
-    fontSize: 15,
+    fontSize: 18,
     color: 'white',
   },
 })
