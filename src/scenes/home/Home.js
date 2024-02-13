@@ -390,7 +390,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: fontSize.xxxLarge,
     textAlign: 'center',
-    marginTop: 10,
+    marginTop: 20,
     borderRadius: 50,
   },
   text: {
@@ -439,6 +439,7 @@ const styles = StyleSheet.create({
     width: 300,
     justifyContent: 'space-around',
     alignItems: 'center',
+    paddingBottom: 6.8,
   },
   switchContainer: {
     display: 'flex',

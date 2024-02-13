@@ -12,10 +12,19 @@ import IconButton from '../components/IconButton'
 import { colors } from '../theme'
 import { submitData } from './SubmitUserData'
 import { showToast } from './ShowToast'
+import FontIcon from 'react-native-vector-icons/FontAwesome5'
 
 const QuickAddComponent = ({ data, userData, setCurrentMonthExpense }) => {
   const { scheme } = useContext(ColorSchemeContext)
   const isDark = scheme === 'dark'
+
+  const handleNewQuickAdd = () => {
+    showToast({
+      title: 'New quick add added',
+      body: 'You can add upto 10 quick adds',
+      isDark,
+    })
+  }
 
   const handleAddLog = (title, amount, category) => {
     const type = 'Expenditure'
@@ -59,16 +68,16 @@ const QuickAddComponent = ({ data, userData, setCurrentMonthExpense }) => {
           />
         ))}
 
-      <View style={styles.plus}>
-        <IconButton
-          icon="plus"
-          color={colors.lightGrayPurple}
-          size={80}
-          // onPress={() => headerButtonPress()}
-          containerStyle={{ paddingRight: 15 }}
-        />
-        <Text style={{ color: colors.black, fontSize: 18 }}>New Quick Add</Text>
-      </View>
+      <TouchableOpacity onPress={() => handleNewQuickAdd()}>
+        <View style={[styles.item, { alignItems: 'center' }]}>
+          <FontIcon name="plus" color={colors.white} size={81} />
+          <Text
+            style={{ color: colors.white, fontSize: 18, textAlign: 'center' }}
+          >
+            New Quick Add
+          </Text>
+        </View>
+      </TouchableOpacity>
     </ScrollView>
   )
 }
@@ -85,8 +94,10 @@ const QuickAddItem = ({ title, amounts, category, userData, handleAddLog }) => {
   return (
     <View style={styles.item}>
       <View style={styles.body}>
-        <Text style={styles.text}>{title}</Text>
-        <Text style={{ color: 'white', paddingBottom: 5 }}>{category}</Text>
+        <Text style={[styles.text, { color: 'white', paddingBottom: 5 }]}>
+          {title}
+        </Text>
+
         <View style={styles.buttons}>
           {amounts &&
             amounts.map((amount, index) => (
@@ -139,7 +150,7 @@ const styles = StyleSheet.create({
   },
   item: {
     width: 222,
-    height: 180,
+    height: 150,
     display: 'flex',
     justifyContent: 'space-between',
     padding: 10,
@@ -163,22 +174,12 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
   },
-  plus: {
-    width: 210,
-    height: 180,
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-    backgroundColor: '#808B96',
-    marginHorizontal: 15,
-    borderRadius: 20,
-  },
   body: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
+    height: '50%',
   },
   text: {
     fontSize: 20,
