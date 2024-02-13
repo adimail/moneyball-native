@@ -13,6 +13,8 @@ import IconButton from '../../../components/IconButton'
 import { colors } from '../../../theme'
 import { useNavigation } from '@react-navigation/native'
 
+import { MaterialIcons } from '@expo/vector-icons'
+
 const Stack = createStackNavigator()
 const RootStack = createStackNavigator()
 

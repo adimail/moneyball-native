@@ -17,26 +17,30 @@ export default function Detail() {
   const { scheme } = useContext(ColorSchemeContext)
   const isDark = scheme === 'dark'
   const colorScheme = {
-    content: isDark? styles.darkContent : styles.lightContent,
-    text: isDark? colors.white : colors.primaryText
+    content: isDark ? styles.darkContent : styles.lightContent,
+    text: isDark ? colors.white : colors.primaryText,
   }
 
   useFocusEffect(() => {
     setTitle(title)
-  });
-
-  useEffect(() => {
-    console.log('Detail screen')
-  }, [])
+  })
 
   return (
     <ScreenTemplate>
       <ScrollView style={styles.main}>
         <View style={colorScheme.content}>
-          <Text style={[styles.field, {color: colorScheme.text}]}>{userData.id}</Text>
-          <Text style={[styles.field, {color: colorScheme.text}]}>{userData.fullName}</Text>
-          <Text style={[styles.field, {color: colorScheme.text}]}>{userData.email}</Text>
-          <Text style={[styles.field, {color: colorScheme.text}]}>{userData.avatar}</Text>
+          <Text style={[styles.field, { color: colorScheme.text }]}>
+            {userData.id}
+          </Text>
+          <Text style={[styles.field, { color: colorScheme.text }]}>
+            {userData.fullName}
+          </Text>
+          <Text style={[styles.field, { color: colorScheme.text }]}>
+            {userData.email}
+          </Text>
+          <Text style={[styles.field, { color: colorScheme.text }]}>
+            {userData.avatar}
+          </Text>
         </View>
         <Button
           label={`Back to ${from}`}
@@ -77,7 +81,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: fontSize.xxxLarge,
     marginBottom: 20,
-    textAlign: 'center'
+    textAlign: 'center',
   },
   field: {
     fontSize: fontSize.middle,

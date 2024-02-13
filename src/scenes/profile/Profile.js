@@ -26,10 +26,6 @@ export default function Profile() {
     text: isDark ? colors.white : colors.primaryText,
   }
 
-  useEffect(() => {
-    console.log('Profile screen')
-  }, [])
-
   const goDetail = () => {
     navigation.navigate('Edit', { userData: userData })
   }

@@ -16,7 +16,6 @@ import {
   Alert,
 } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
-import IconButton from '../../components/IconButton'
 import ScreenTemplate from '../../components/ScreenTemplate'
 import Button from '../../components/Button'
 import { firestore } from '../../firebase/config'
@@ -40,6 +39,8 @@ import { SelectList } from 'react-native-dropdown-select-list'
 import CustomSwitch from '../../components/toggleSwitch'
 import { showToast } from '../../utils/ShowToast'
 import QuickAddComponent from '../../utils/quickAdd'
+import { MaterialIcons } from '@expo/vector-icons'
+import { submitData } from '../../utils/SubmitUserData'
 
 export default function Home() {
   const navigation = useNavigation()
@@ -161,13 +162,15 @@ export default function Home() {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <IconButton
-          icon="code"
-          color={colors.lightPurple}
-          size={24}
-          onPress={() => headerButtonPress()}
-          containerStyle={{ paddingRight: 15 }}
-        />
+        <View style={{ paddingRight: 10 }}>
+          <MaterialIcons
+            name="category"
+            size={35}
+            color="black"
+            onPress={() => headerButtonPress()}
+            color={colors.lightPurple}
+          />
+        </View>
       ),
     })
   }, [navigation])
@@ -216,47 +219,17 @@ export default function Home() {
     }
   }, [isTodaySwitchOn])
 
-  const submitData = () => {
+  const HandleSubmitData = () => {
     if (title && selected && amount !== null) {
-      const formattedDate = date.toLocaleDateString('en-GB', {
-        day: 'numeric',
-        month: 'short',
-        year: 'numeric',
-      })
-
-      const transactionRef = doc(
-        collection(firestore, `transactions-${userData.id}`, type, MonthYear),
-      )
-
-      const summaryRef = doc(
-        firestore,
-        `summaries-${userData.id}`,
+      submitData(
         type,
-        MonthYear,
-        'Aggregate',
+        title,
+        amount,
+        category,
+        userData,
+        date,
+        setCurrentMonthExpense,
       )
-
-      // Update summary document
-      getDoc(summaryRef)
-        .then((docSnapshot) => {
-          let sum = 0
-          if (docSnapshot.exists()) {
-            const data = docSnapshot.data()
-            sum = data.sum || 0
-          }
-          sum += parseInt(amount)
-          setCurrentMonthExpense(sum)
-          return setDoc(summaryRef, { sum })
-        })
-        .then(() => {
-          // Add transaction data
-          return setDoc(transactionRef, {
-            title,
-            category: selected,
-            amount: parseInt(amount),
-            date,
-          })
-        })
         .then(() => {
           showToast({
             title: 'Log Added',
@@ -287,14 +260,17 @@ export default function Home() {
     <ScreenTemplate>
       <ScrollView style={styles.main}>
         <View style={[styles.top]}>
-          <View style={styles.container}>
+          <TouchableOpacity
+            style={styles.container}
+            onPress={handleCurrentMonthCardPress}
+          >
             <Card
               title="Current month aggregate"
               amount={
                 type === 'Income' ? CurrentMonthIncome : CurrentMonthExpense
               }
             />
-          </View>
+          </TouchableOpacity>
 
           <View style={[styles.separator]} />
 
@@ -318,7 +294,13 @@ export default function Home() {
             />
           </View>
 
-          <View style={styles.container}>
+          <View
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 10,
+            }}
+          >
             <TextInput
               style={styles.input}
               placeholder="Title"
@@ -335,8 +317,8 @@ export default function Home() {
                 borderWidth: 1,
                 paddingHorizontal: 10,
               }}
-              dropdownTextStyles={{ color: 'black' }}
-              dropdownStyles={{ backgroundColor: '#543f7082' }}
+              dropdownTextStyles={{ fontSize: 14, color: 'white' }}
+              dropdownStyles={{ backgroundColor: '#1c2833ba' }}
               setSelected={handleCategorySelection}
               search={false}
               data={type === 'Expenditure' ? ExpenditureData : SavingsDate}
@@ -362,7 +344,10 @@ export default function Home() {
                   onValueChange={handleSwitchToggle}
                 />
               </View>
-              <TouchableOpacity style={styles.button} onPress={submitData}>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={HandleSubmitData}
+              >
                 <Text style={styles.buttonText}>Add to database</Text>
               </TouchableOpacity>
             </View>
@@ -372,7 +357,11 @@ export default function Home() {
         <Text style={[styles.title, { color: isDark ? 'white' : 'black' }]}>
           Quick Add
         </Text>
-        <QuickAddComponent data={QuickAddData} />
+        <QuickAddComponent
+          data={QuickAddData}
+          userData={userData}
+          setCurrentMonthExpense={setCurrentMonthExpense}
+        />
       </ScrollView>
     </ScreenTemplate>
   )
@@ -391,7 +380,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.gray,
     padding: 20,
     borderRadius: 5,
-    marginTop: 30,
     marginLeft: 30,
     marginRight: 30,
   },
@@ -402,7 +390,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: fontSize.xxxLarge,
     textAlign: 'center',
-    marginTop: 20,
+    marginTop: 10,
     borderRadius: 50,
   },
   text: {
@@ -420,6 +408,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     gap: 10,
+    paddingTop: 10,
   },
   input: {
     height: 45,
@@ -456,7 +445,6 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 10,
   },
   separator: {
     marginVertical: 10,
@@ -464,15 +452,7 @@ const styles = StyleSheet.create({
     width: '80%',
     alignSelf: 'center',
   },
-  image: {
-    width: '100%',
-    height: 200,
-    resizeMode: 'cover',
-    transform: [{ scale: 0.6 }],
-    borderRadius: 30,
-  },
   top: {
-    paddingTop: 30,
     backgroundColor: colors.lightPurple,
     borderBottomLeftRadius: 60,
     borderBottomRightRadius: 60,

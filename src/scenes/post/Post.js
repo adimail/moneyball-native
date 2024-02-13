@@ -18,6 +18,7 @@ import CustomSwitch from '../../components/toggleSwitch'
 import { firestore } from '../../firebase/config'
 import { collection, doc, setDoc, updateDoc } from 'firebase/firestore'
 import { showToast } from '../../utils/ShowToast'
+import IconButton from '../../components/IconButton'
 
 export default function Post() {
   const { scheme } = useContext(ColorSchemeContext)
@@ -37,6 +38,10 @@ export default function Post() {
   const ExpenditureData = userData && userData['expenditure categories']
   const SavingsData = userData && userData['income categories']
 
+  useFocusEffect(() => {
+    setTitle('Custom Categories')
+  })
+
   useEffect(() => {
     if (
       userData &&
@@ -55,6 +60,15 @@ export default function Post() {
         ...(type === 'Expenditure' ? ExpenditureData : SavingsData),
         newCategory,
       ]
+
+      if (updatedCategories.length > 9) {
+        showToast({
+          title: 'Stack Overflow',
+          body: 'You can Add upto 9 max categories',
+          isDark,
+        })
+        return
+      }
 
       if (type === 'Expenditure') {
         setUserData((prevUserData) => ({
@@ -80,8 +94,6 @@ export default function Post() {
       })
 
       setNewCategory('')
-    } else {
-      console.error('New category is undefined or null')
     }
   }
 
@@ -145,9 +157,6 @@ export default function Post() {
             onSelectSwitch={onSelectSwitch}
             selectionColor={'#1C2833'}
           />
-          <Text style={[styles.title, { color: isDark ? 'white' : 'black' }]}>
-            Categories
-          </Text>
 
           <View style={styles.inputContainer}>
             <TextInput
@@ -157,20 +166,24 @@ export default function Post() {
               placeholder="Enter new category"
               placeholderTextColor={isDark ? 'white' : 'black'}
             />
-            {/* Add category button */}
             <Button
-              title={`Add ${
+              title={`Add New ${
                 type === 'Expenditure' ? 'Expense' : 'Income'
               } Category`}
               onPress={() => addCategory(newCategory, type)}
-              color={colors.primary}
+              color={
+                (type === 'Expenditure' && expenseCategories.length > 8) ||
+                (type === 'Income' && incomeCategories.length > 8)
+                  ? colors.pink
+                  : colors.primary
+              }
             />
           </View>
 
           <Text style={[styles.title, { color: isDark ? 'white' : 'black' }]}>
             {type === 'Expenditure'
-              ? 'Expenditure Categories'
-              : 'Income Categories'}
+              ? `Expenditure Categories ${expenseCategories.length}/9`
+              : `Income Categories ${incomeCategories.length}/9`}
           </Text>
 
           {type === 'Expenditure' ? (
@@ -182,19 +195,18 @@ export default function Post() {
                   >
                     {item}
                   </Text>
-                  <Button
-                    title="Remove"
+                  <IconButton
+                    icon="trash"
+                    color={colors.primary}
+                    size={20}
                     onPress={() => removeCategory(item, type)}
-                    color={colors.danger}
+                    containerStyle={{ paddingRight: 15 }}
                   />
                 </View>
               ))}
             </View>
           ) : (
             <View>
-              <Text style={[styles.subtitle, colorScheme.text]}>
-                Income Categories
-              </Text>
               {incomeCategories.map((item, index) => (
                 <View style={styles.categoryItem} key={index}>
                   <Text
@@ -202,10 +214,12 @@ export default function Post() {
                   >
                     {item}
                   </Text>
-                  <Button
-                    title="Remove"
+                  <IconButton
+                    icon="trash"
+                    color={colors.primary}
+                    size={20}
                     onPress={() => removeCategory(item, type)}
-                    color={colors.danger} // Adjust button color
+                    containerStyle={{ paddingRight: 15 }}
                   />
                 </View>
               ))}
@@ -241,18 +255,21 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   inputContainer: {
-    flexDirection: 'row',
+    display: 'flex',
+    flexDirection: 'column',
+    width: '100%',
     alignItems: 'center',
-    marginBottom: 10,
+    marginVertical: 30,
+    gap: 10,
   },
   input: {
-    flex: 1,
     borderWidth: 1,
     borderColor: '#ccc',
-    borderRadius: 5,
+    borderRadius: 50,
     paddingHorizontal: 10,
-    marginRight: 10,
-    color: colors.primaryText, // Adjust input text color
+    color: colors.primaryText,
+    width: '80%',
+    height: 45,
   },
   categoryItem: {
     flexDirection: 'row',
@@ -260,8 +277,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     borderWidth: 1,
     borderColor: '#ccc',
-    borderRadius: 5,
+    backgroundColor: '#7676768f',
+    borderRadius: 15,
     padding: 10,
-    marginBottom: 5,
+    marginVertical: 8,
+    width: '80%',
+    height: 60,
   },
 })

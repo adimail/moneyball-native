@@ -40,10 +40,6 @@ export default function Edit() {
     progress: isDark ? styles.darkprogress : styles.progress,
   }
 
-  useEffect(() => {
-    console.log('Edit screen')
-  }, [])
-
   const ImageChoiceAndUpload = async () => {
     try {
       if (Platform.OS === 'ios') {
