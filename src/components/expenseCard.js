@@ -1,6 +1,7 @@
 import { StyleSheet } from 'react-native'
 import { View, Text } from 'react-native'
 import React from 'react'
+import { colors } from '../theme'
 
 export default function Card({ title, amount, color, height, navigate }) {
   const dynamicCardStyles = {
@@ -22,13 +23,11 @@ const styles = StyleSheet.create({
   card: {
     display: 'flex',
     width: '80%',
-    backgroundColor: '#3b8a85',
-    paddingLeft: 10,
-    paddingRight: 10,
-    paddingBottom: 5,
-    paddingTop: 5,
+    backgroundColor: colors.primaryText,
+    paddingHorizontal: 20,
+    paddingVertical: 5,
     padding: 6,
-    borderRadius: 10,
+    borderRadius: 18,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -36,12 +35,12 @@ const styles = StyleSheet.create({
     height: 50,
   },
   title: {
-    fontSize: 18,
-    fontWeight: 'bold',
+    fontSize: 17,
     marginBottom: 5,
     color: 'white',
   },
   amount: {
+    fontWeight: 'bold',
     fontSize: 18,
     color: 'white',
   },

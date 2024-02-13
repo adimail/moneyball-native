@@ -42,7 +42,7 @@ export const HistoryNavigator = () => {
             headerBackground: scheme === 'dark' ? null : () => <HeaderStyle />,
             headerRight: () => (
               <IconButton
-                icon="box-open"
+                icon="code"
                 color={colors.lightPurple}
                 size={24}
                 onPress={() => headerButtonPress()}

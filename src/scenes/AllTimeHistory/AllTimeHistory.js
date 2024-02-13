@@ -131,7 +131,7 @@ export default function AllTimeHistory() {
                 {dataToDisplay &&
                   dataToDisplay.map((log) => (
                     <View style={styles.log} key={log.id}>
-                      <View>
+                      <View style={styles.column}>
                         <Text style={styles.title}>{log.title}</Text>
                         <Text style={styles.date}>
                           {new Date(
@@ -173,21 +173,25 @@ const styles = StyleSheet.create({
     gap: 9,
   },
   amount: {
-    fontSize: 21,
+    fontSize: 20,
+    color: 'white',
   },
   title: {
+    color: 'white',
     fontSize: 18,
   },
   date: {
-    fontSize: 12,
+    color: 'white',
+    fontSize: 11,
   },
   log: {
     display: 'flex',
     borderRadius: 9,
     paddingVertical: 9,
     paddingHorizontal: 10,
-    width: '90%',
-    backgroundColor: '#B7950B',
+    width: '87%',
+    height: 68,
+    backgroundColor: colors.primaryText,
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
@@ -206,5 +210,8 @@ const styles = StyleSheet.create({
     height: 10,
     width: '80%',
     alignSelf: 'center',
+  },
+  column: {
+    justifyContent: 'space-between',
   },
 })

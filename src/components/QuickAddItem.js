@@ -2,7 +2,7 @@ import { StyleSheet, View, Text } from 'react-native'
 import React from 'react'
 import colors from 'theme'
 
-export default function QuickAddCard({ title, amount, color, height }) {
+export default function QuickAddModal({ title, amount, color, height }) {
   const dynamicCardStyles = {
     ...styles.card,
     backgroundColor: color ? color : styles.card.backgroundColor,

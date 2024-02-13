@@ -1,115 +1,218 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { Text, View, StyleSheet } from 'react-native'
-import ScreenTemplate from '../../components/ScreenTemplate'
-import Button from '../../components/Button'
 import {
-  useRoute,
-  useFocusEffect,
-  useNavigation,
-} from '@react-navigation/native'
-import { colors, fontSize } from 'theme'
+  Text,
+  View,
+  TextInput,
+  StyleSheet,
+  Button,
+  Alert,
+  ScrollView,
+} from 'react-native'
+import ScreenTemplate from '../../components/ScreenTemplate'
+import { useFocusEffect } from '@react-navigation/native'
 import { ColorSchemeContext } from '../../context/ColorSchemeContext'
 import { HomeTitleContext } from '../../context/HomeTitleContext'
-import { storage } from '../../utils/Storage'
-import moment from 'moment'
-import { ProfileNavigator } from '../../routes/navigation/stacks'
-import QuickAddCard from '../../components/QuickAddItem'
+import { UserDataContext } from '../../context/UserDataContext'
+import { colors } from '../../theme'
+import CustomSwitch from '../../components/toggleSwitch'
+import { firestore } from '../../firebase/config'
+import { collection, doc, setDoc, updateDoc } from 'firebase/firestore'
+import { showToast } from '../../utils/ShowToast'
 
 export default function Post() {
-  const route = useRoute()
-  const { data, from } = route.params
   const { scheme } = useContext(ColorSchemeContext)
-  const [date, setDate] = useState('')
   const { setTitle } = useContext(HomeTitleContext)
-  const navigation = useNavigation()
+  const { userData, setUserData } = useContext(UserDataContext)
   const isDark = scheme === 'dark'
   const colorScheme = {
     content: isDark ? styles.darkContent : styles.lightContent,
     text: isDark ? colors.white : colors.primaryText,
   }
+  const [type, setType] = useState('Expenditure')
+  const [newCategory, setNewCategory] = useState('')
+  const [expenseCategories, setExpenseCategories] = useState([])
+  const [incomeCategories, setIncomeCategories] = useState([])
+  const textColor = isDark ? 'white' : 'black'
+
+  const ExpenditureData = userData && userData['expenditure categories']
+  const SavingsData = userData && userData['income categories']
 
   useEffect(() => {
-    console.log('Post screen')
-    loadStorage()
-  }, [])
+    if (
+      userData &&
+      userData['expenditure categories'] &&
+      userData['income categories']
+    ) {
+      setExpenseCategories(userData['expenditure categories'])
+      setIncomeCategories(userData['income categories'])
+    }
+  }, [userData])
 
-  useFocusEffect(() => {
-    setTitle('Quick Add')
-  })
+  // function to add a category
+  const addCategory = (newCategory, type) => {
+    if (newCategory) {
+      const updatedCategories = [
+        ...(type === 'Expenditure' ? ExpenditureData : SavingsData),
+        newCategory,
+      ]
 
-  const loadStorage = async () => {
-    try {
-      const result = await storage.load({ key: 'date' })
-      setDate(result)
-    } catch (e) {
-      const result = { date: 'no data' }
-      setDate(result)
+      if (type === 'Expenditure') {
+        setUserData((prevUserData) => ({
+          ...prevUserData,
+          'expenditure categories': updatedCategories,
+        }))
+      } else {
+        setUserData((prevUserData) => ({
+          ...prevUserData,
+          'income categories': updatedCategories,
+        }))
+      }
+
+      const userDocRef = doc(firestore, 'users', userData.id)
+      updateDoc(userDocRef, {
+        [type.toLowerCase() + ' categories']: updatedCategories,
+      })
+
+      showToast({
+        title: 'Category Added',
+        body: newCategory,
+        isDark,
+      })
+
+      setNewCategory('')
+    } else {
+      console.error('New category is undefined or null')
     }
   }
 
-  const saveStorage = () => {
-    const today = moment().toString()
-    storage.save({
-      key: 'date',
-      data: {
-        date: today,
-      },
-    })
+  // Function to remove a category
+  const removeCategory = (category, type) => {
+    Alert.alert(
+      'Confirm',
+      `Are you sure you want to remove the category "${category}"?`,
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Remove',
+          onPress: () => {
+            const updatedCategories = (
+              type === 'Expenditure' ? ExpenditureData : SavingsData
+            ).filter((cat) => cat !== category)
+            if (type === 'Expenditure') {
+              setUserData((prevUserData) => ({
+                ...prevUserData,
+                'expenditure categories': updatedCategories,
+              }))
+            } else {
+              setUserData((prevUserData) => ({
+                ...prevUserData,
+                'income categories': updatedCategories,
+              }))
+            }
+
+            const userDocRef = doc(firestore, 'users', userData.id)
+            if (type === 'Expenditure') {
+              updateDoc(userDocRef, {
+                'expenditure categories': updatedCategories,
+              })
+            } else {
+              updateDoc(userDocRef, {
+                'income categories': updatedCategories,
+              })
+            }
+          },
+        },
+      ],
+    )
   }
 
-  const removeStorage = () => {
-    storage.remove({ key: 'date' })
-  }
-
-  const onSavePress = () => {
-    saveStorage()
-    loadStorage()
-  }
-
-  const onRemovePress = () => {
-    removeStorage()
-    loadStorage()
+  const onSelectSwitch = (value) => {
+    setType(value)
   }
 
   return (
     <ScreenTemplate>
-      <View style={[styles.container, colorScheme.content]}>
-        <Text style={[styles.field, { color: colorScheme.text }]}>
-          Quick add expences and incomes
-        </Text>
-        <QuickAddCard title="Rickshaw" amount="20" />
-        <QuickAddCard title="Rickshaw" amount="25" />
-        <QuickAddCard title="Rickshaw" amount="10" />
-        <QuickAddCard title="Metro" amount="21" />
-        <QuickAddCard title="Metro" amount="7" />
-        <QuickAddCard title="Chai" amount="12" />
-        <Text style={[styles.field, { color: colorScheme.text }]}>
-          Customise your quick adds. Save upto 10 items
-        </Text>
-        {/* <Text style={[styles.title, { color: colorScheme.text }]}>
-          {data.email}
-        </Text>
-        <Text style={[styles.field, { color: colorScheme.text }]}>from</Text>
-        <Text style={[styles.title, { color: colorScheme.text }]}>{from}</Text>
-        <Text style={[styles.field, { color: colorScheme.text }]}>
-          Latest save date
-        </Text>
-        <Text style={[styles.title, { color: colorScheme.text }]}>
-          {date.date}
-        </Text> */}
-        <View style={{ width: '100%' }}>
-          <Button
-            label="New quick add"
-            color={colors.primary}
-            // onPress={() => onSavePress()}
+      <ScrollView>
+        <View style={styles.container}>
+          <CustomSwitch
+            selectionMode={1}
+            roundCorner={true}
+            option1={'Expenditure'}
+            option2={'Income'}
+            onSelectSwitch={onSelectSwitch}
+            selectionColor={'#1C2833'}
           />
-          <Button
-            label="Remove Date"
-            color={colors.secondary}
-            // onPress={() => onRemovePress()}
-          />
+          <Text style={[styles.title, { color: isDark ? 'white' : 'black' }]}>
+            Categories
+          </Text>
+
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={[styles.input, { color: isDark ? 'white' : 'black' }]}
+              value={newCategory}
+              onChangeText={setNewCategory}
+              placeholder="Enter new category"
+              placeholderTextColor={isDark ? 'white' : 'black'}
+            />
+            {/* Add category button */}
+            <Button
+              title={`Add ${
+                type === 'Expenditure' ? 'Expense' : 'Income'
+              } Category`}
+              onPress={() => addCategory(newCategory, type)}
+              color={colors.primary}
+            />
+          </View>
+
+          <Text style={[styles.title, { color: isDark ? 'white' : 'black' }]}>
+            {type === 'Expenditure'
+              ? 'Expenditure Categories'
+              : 'Income Categories'}
+          </Text>
+
+          {type === 'Expenditure' ? (
+            <View>
+              {expenseCategories.map((item, index) => (
+                <View style={styles.categoryItem} key={index}>
+                  <Text
+                    style={[styles.text, { color: isDark ? 'white' : 'black' }]}
+                  >
+                    {item}
+                  </Text>
+                  <Button
+                    title="Remove"
+                    onPress={() => removeCategory(item, type)}
+                    color={colors.danger}
+                  />
+                </View>
+              ))}
+            </View>
+          ) : (
+            <View>
+              <Text style={[styles.subtitle, colorScheme.text]}>
+                Income Categories
+              </Text>
+              {incomeCategories.map((item, index) => (
+                <View style={styles.categoryItem} key={index}>
+                  <Text
+                    style={[styles.text, { color: isDark ? 'white' : 'black' }]}
+                  >
+                    {item}
+                  </Text>
+                  <Button
+                    title="Remove"
+                    onPress={() => removeCategory(item, type)}
+                    color={colors.danger} // Adjust button color
+                  />
+                </View>
+              ))}
+            </View>
+          )}
         </View>
-      </View>
+      </ScrollView>
     </ScreenTemplate>
   )
 }
@@ -127,12 +230,38 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   title: {
-    fontSize: fontSize.xxxLarge,
+    fontSize: 20,
     marginBottom: 20,
     textAlign: 'center',
   },
-  field: {
-    fontSize: fontSize.large,
+  subtitle: {
+    fontSize: 20,
+    marginTop: 10,
+    marginBottom: 5,
     textAlign: 'center',
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  input: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    marginRight: 10,
+    color: colors.primaryText, // Adjust input text color
+  },
+  categoryItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 5,
   },
 })

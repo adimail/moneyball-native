@@ -17,7 +17,12 @@ const QuickAddComponent = ({ data }) => {
     >
       {data &&
         data.map((item, index) => (
-          <QuickAddItem key={index} title={item.title} amounts={item.amounts} />
+          <QuickAddItem
+            key={index}
+            title={item.title}
+            amounts={item.amounts}
+            category={item.category}
+          />
         ))}
 
       <View style={styles.plus}>
@@ -34,7 +39,7 @@ const QuickAddComponent = ({ data }) => {
   )
 }
 
-const QuickAddItem = ({ title, amounts }) => {
+const QuickAddItem = ({ title, amounts, category }) => {
   const [date, setDate] = useState(new Date())
   const [selectedAmountIndex, setSelectedAmountIndex] = useState(0)
 
@@ -46,13 +51,7 @@ const QuickAddItem = ({ title, amounts }) => {
     <View style={styles.item}>
       <View style={styles.body}>
         <Text style={styles.text}>{title}</Text>
-        <Text style={{ color: 'white', paddingBottom: 5 }}>
-          {date.toLocaleDateString('en-GB', {
-            day: 'numeric',
-            month: 'short',
-            year: 'numeric',
-          })}
-        </Text>
+        <Text style={{ color: 'white', paddingBottom: 5 }}>{category}</Text>
         <View style={styles.buttons}>
           {amounts &&
             amounts.map((amount, index) => (
@@ -101,16 +100,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 25,
   },
   item: {
-    width: 210,
+    width: 222,
     height: 180,
     display: 'flex',
     justifyContent: 'space-between',
-    padding: 20,
-    backgroundColor: '#2C3E50',
+    padding: 10,
+    backgroundColor: colors.primaryText,
     alignItems: 'center',
     marginHorizontal: 15,
     borderRadius: 20,
-    borderWidth: 0.5,
+    borderWidth: 0.3,
     borderColor: 'white',
   },
   button: {

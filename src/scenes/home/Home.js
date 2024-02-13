@@ -51,21 +51,11 @@ export default function Home() {
     content: isDark ? styles.darkContent : styles.lightContent,
     text: isDark ? colors.white : colors.primaryText,
   }
+  const [newCategory, setNewCategory] = useState('')
 
-  const ExpenditureData = [
-    'Food',
-    'Stationary',
-    'Rickshaw',
-    'Metro',
-    'Accessories and Internet',
-    'Hygiene',
-    'Medicines',
-    'A1004',
-    'Travel',
-    'Other',
-  ]
-
-  const SavingsDate = ['Mummy', 'Mama']
+  // expense categories
+  const ExpenditureData = userData && userData['expenditure categories']
+  const SavingsDate = userData && userData['income categories']
 
   // Account Information
   const [amount, setAmount] = useState(null)
@@ -82,9 +72,9 @@ export default function Home() {
   const [CurrentMonthIncome, setCurrentMonthIncome] = useState(0)
 
   const QuickAddData = [
-    { title: 'Rickshaw', amounts: ['20', '25', '10'] },
-    { title: 'Metro', amounts: ['21', '7', '12'] },
-    { title: 'Top Up', amounts: ['19'] },
+    { title: 'Rickshaw', category: 'Rickshaw', amounts: ['20', '25', '10'] },
+    { title: 'Metro', category: 'Metro', amounts: ['21', '7', '12'] },
+    { title: 'Top Up', category: 'Accessories and Internet', amounts: ['19'] },
   ]
 
   const MonthYear = useMemo(() => {
@@ -148,6 +138,11 @@ export default function Home() {
       setIsTodaySwitchOn(
         selectedDate.toDateString() === new Date().toDateString(),
       )
+      const formattedDate = selectedDate.toLocaleDateString('en-GB', {
+        day: 'numeric',
+        month: 'short',
+      })
+      setTitle(`${selected} ${formattedDate}`)
     }
   }
 
@@ -167,7 +162,7 @@ export default function Home() {
     navigation.setOptions({
       headerRight: () => (
         <IconButton
-          icon="box-open"
+          icon="code"
           color={colors.lightPurple}
           size={24}
           onPress={() => headerButtonPress()}
@@ -201,6 +196,17 @@ export default function Home() {
     setIsTodaySwitchOn(value)
     if (value) {
       setDate(new Date())
+      const formattedDate = new Date().toLocaleDateString('en-GB', {
+        day: 'numeric',
+        month: 'short',
+      })
+      setTitle(`${selected} ${formattedDate}`)
+    } else {
+      const formattedDate = date.toLocaleDateString('en-GB', {
+        day: 'numeric',
+        month: 'short',
+      })
+      setTitle(`${selected} ${formattedDate}`)
     }
   }
 
@@ -280,129 +286,93 @@ export default function Home() {
   return (
     <ScreenTemplate>
       <ScrollView style={styles.main}>
-        {/* <Text style={[styles.title, { color: isDark ? 'white' : 'black' }]}>
-          MoneyBall
-        </Text> */}
-        <Image
-          source={require('../../../assets/images/home.png')}
-          style={styles.image}
-        />
-        <View style={styles.container}>
-          {/* <Card title="Last 7 days" amount="50" /> */}
-          <Card
-            title="Current month aggregate"
-            amount={
-              type === 'Income' ? CurrentMonthIncome : CurrentMonthExpense
-            }
-          />
-          {/* <Card title="Month misc. expenses" amount="50" color="#da8540" /> */}
-        </View>
-
-        <View style={[styles.separator]} />
-
-        <Text style={[styles.text, { color: isDark ? 'white' : 'black' }]}>
-          {'Date: ' +
-            date.toLocaleDateString('en-GB', {
-              day: 'numeric',
-              month: 'short',
-              year: 'numeric',
-            })}
-        </Text>
-
-        <View style={{ alignItems: 'center', paddingBottom: 10 }}>
-          <CustomSwitch
-            selectionMode={1}
-            roundCorner={true}
-            option1={'Expenditure'}
-            option2={'Income'}
-            onSelectSwitch={onSelectSwitch}
-            selectionColor={'#1C2833'}
-          />
-        </View>
-
-        <View style={styles.container}>
-          <TextInput
-            style={styles.input}
-            placeholder="Title"
-            value={title}
-            onChangeText={(text) => setTitle(text)}
-          />
-          <SelectList
-            boxStyles={{
-              height: 45,
-              borderColor: '#BABABA',
-              borderRadius: 50,
-              backgroundColor: '#F2F3F4',
-              width: 300,
-              borderWidth: 1,
-              paddingHorizontal: 10,
-            }}
-            dropdownTextStyles={{ color: 'grey' }}
-            setSelected={handleCategorySelection}
-            search={false}
-            data={type === 'Expenditure' ? ExpenditureData : SavingsDate}
-            save="value"
-            placeholder="Select Category"
-          />
-          <TextInput
-            style={[styles.input]}
-            placeholder="Enter Amount"
-            keyboardType="numeric"
-            value={amount}
-            onChangeText={(text) => setAmount(text)}
-          />
-          <View style={styles.inline}>
-            <View style={styles.switchContainer}>
-              <Text
-                style={
-                  (styles.switchLabel, { color: isDark ? 'white' : 'black' })
-                }
-              >
-                Set current date
-              </Text>
-              <Switch
-                trackColor={{ false: '#767577', true: '#81b0ff' }}
-                thumbColor={isTodaySwitchOn ? '#fff' : '#f4f3f4'}
-                value={isTodaySwitchOn}
-                onValueChange={handleSwitchToggle}
-              />
-            </View>
-            <TouchableOpacity style={styles.button} onPress={submitData}>
-              <Text style={styles.buttonText}>Add to database</Text>
-            </TouchableOpacity>
+        <View style={[styles.top]}>
+          <View style={styles.container}>
+            <Card
+              title="Current month aggregate"
+              amount={
+                type === 'Income' ? CurrentMonthIncome : CurrentMonthExpense
+              }
+            />
           </View>
-          {showDatePicker && renderDatePicker()}
-          {/* <TouchableOpacity
-            style={[
-              styles.button,
-              {
-                paddingHorizontal: 30,
-                backgroundColor: 'green',
-              },
-            ]}
-            onPress={() => {
-              navigation.navigate('ModalStacks', {
-                screen: 'Post',
-                params: {
-                  data: userData,
-                  from: 'Home screen',
-                },
-              })
-            }}
-          >
-            <Text style={styles.buttonText}>Quick Add</Text>
-          </TouchableOpacity> */}
-          {/* 
+
           <View style={[styles.separator]} />
 
-          <Text style={[styles.title, { color: isDark ? 'white' : 'gray' }]}>
-            Recent Entries
-          </Text> */}
-          <Text style={[styles.title, { color: isDark ? 'white' : 'black' }]}>
-            Quick Add
+          <Text style={[styles.text, { color: 'white' }]}>
+            {'Date: ' +
+              date.toLocaleDateString('en-GB', {
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric',
+              })}
           </Text>
-          <QuickAddComponent data={QuickAddData} />
+
+          <View style={{ alignItems: 'center', paddingBottom: 10 }}>
+            <CustomSwitch
+              selectionMode={1}
+              roundCorner={true}
+              option1={'Expenditure'}
+              option2={'Income'}
+              onSelectSwitch={onSelectSwitch}
+              selectionColor={'#1C2833'}
+            />
+          </View>
+
+          <View style={styles.container}>
+            <TextInput
+              style={styles.input}
+              placeholder="Title"
+              value={title}
+              onChangeText={(text) => setTitle(text)}
+            />
+            <SelectList
+              boxStyles={{
+                height: 45,
+                borderColor: '#BABABA',
+                borderRadius: 50,
+                backgroundColor: '#F2F3F4',
+                width: 300,
+                borderWidth: 1,
+                paddingHorizontal: 10,
+              }}
+              dropdownTextStyles={{ color: 'black' }}
+              dropdownStyles={{ backgroundColor: '#543f7082' }}
+              setSelected={handleCategorySelection}
+              search={false}
+              data={type === 'Expenditure' ? ExpenditureData : SavingsDate}
+              save="value"
+              placeholder="Select Category"
+            />
+            <TextInput
+              style={[styles.input]}
+              placeholder="Enter Amount"
+              keyboardType="numeric"
+              value={amount}
+              onChangeText={(text) => setAmount(text)}
+            />
+            <View style={styles.inline}>
+              <View style={styles.switchContainer}>
+                <Text style={(styles.switchLabel, { color: 'white' })}>
+                  Set current date
+                </Text>
+                <Switch
+                  trackColor={{ false: '#767577', true: '#81b0ff' }}
+                  thumbColor={isTodaySwitchOn ? '#fff' : '#f4f3f4'}
+                  value={isTodaySwitchOn}
+                  onValueChange={handleSwitchToggle}
+                />
+              </View>
+              <TouchableOpacity style={styles.button} onPress={submitData}>
+                <Text style={styles.buttonText}>Add to database</Text>
+              </TouchableOpacity>
+            </View>
+            {showDatePicker && renderDatePicker()}
+          </View>
         </View>
+        <Text style={[styles.title, { color: isDark ? 'white' : 'black' }]}>
+          Quick Add
+        </Text>
+        <QuickAddComponent data={QuickAddData} />
       </ScrollView>
     </ScreenTemplate>
   )
@@ -428,19 +398,18 @@ const styles = StyleSheet.create({
   main: {
     flex: 1,
     width: '100%',
-    marginTop: 20,
   },
   title: {
     fontSize: fontSize.xxxLarge,
     textAlign: 'center',
     marginTop: 20,
     borderRadius: 50,
-    marginVertical: 20,
   },
   text: {
-    fontSize: fontSize.middle,
-    marginBottom: 15,
+    fontSize: fontSize.large,
+    marginBottom: 10,
     textAlign: 'center',
+    fontSize: 20,
   },
   field: {
     fontSize: fontSize.middle,
@@ -490,7 +459,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   separator: {
-    marginVertical: 24,
+    marginVertical: 10,
     height: 1,
     width: '80%',
     alignSelf: 'center',
@@ -501,5 +470,11 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
     transform: [{ scale: 0.6 }],
     borderRadius: 30,
+  },
+  top: {
+    paddingTop: 30,
+    backgroundColor: colors.lightPurple,
+    borderBottomLeftRadius: 60,
+    borderBottomRightRadius: 60,
   },
 })
