@@ -1,8 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react'
-import { Text, View, StyleSheet, ScrollView } from 'react-native'
+import { Text, View, StyleSheet, ScrollView, Alert } from 'react-native'
 import { Avatar } from '@rneui/themed'
-import Dialog from 'react-native-dialog'
-import Spinner from 'react-native-loading-spinner-overlay'
 import ScreenTemplate from '../../components/ScreenTemplate'
 import Button from '../../components/Button'
 import { firestore } from '../../firebase/config'
@@ -18,8 +16,6 @@ import { Restart } from '../../utils/Restart'
 export default function Profile() {
   const { userData, setUserData } = useContext(UserDataContext)
   const navigation = useNavigation()
-  const [visible, setVisible] = useState(false)
-  const [spinner, setSpinner] = useState(false)
   const { scheme } = useContext(ColorSchemeContext)
   const isDark = scheme === 'dark'
   const colorScheme = {
@@ -40,40 +36,41 @@ export default function Profile() {
       })
   }
 
-  const showDialog = () => {
-    setVisible(true)
-  }
-
-  const handleCancel = () => {
-    setVisible(false)
-  }
-
   const accountDelete = async () => {
-    try {
-      setSpinner(true)
-      const tokensDocumentRef = doc(firestore, 'tokens', userData.id)
-      const usersDocumentRef = doc(firestore, 'users', userData.id)
-      await deleteDoc(tokensDocumentRef)
-      await deleteDoc(usersDocumentRef)
-      const user = auth.currentUser
-      deleteUser(user)
-        .then(() => {
-          setSpinner(false)
-          signOut(auth)
-            .then(() => {
-              console.log('user deleted')
-            })
-            .catch((error) => {
-              console.log(error.message)
-            })
-        })
-        .catch((error) => {
-          setSpinner(false)
-          console.log(error)
-        })
-    } catch (error) {
-      console.log(error)
-    }
+    alert(
+      'Delete Account',
+      'Are you sure you want to delete your account?',
+      [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        { text: 'Yes', onPress: () => confirmAccountDeletion() },
+      ],
+      { cancelable: false },
+    )
+  }
+
+  const confirmAccountDeletion = async () => {
+    const tokensDocumentRef = doc(firestore, 'tokens', userData.id)
+    const usersDocumentRef = doc(firestore, 'users', userData.id)
+    await deleteDoc(tokensDocumentRef)
+    await deleteDoc(usersDocumentRef)
+    const user = auth.currentUser
+    deleteUser(user)
+      .then(() => {
+        signOut(auth)
+          .then(() => {
+            console.log('user deleted')
+          })
+          .catch((error) => {
+            console.log(error.message)
+          })
+      })
+      .catch((error) => {
+        console.log(error)
+      })
   }
 
   return (
@@ -91,23 +88,10 @@ export default function Profile() {
           {userData.email}
         </Text>
         <Button label="Edit" color={colors.primary} onPress={goDetail} />
-        {/* <Button
-          label='Open Modal'
-          color={colors.tertiary}
-          onPress={() => {
-            navigation.navigate('ModalStacks', {
-              screen: 'Post',
-              params: {
-                data: userData,
-                from: 'Profile screen'
-              }
-            })
-          }}
-        /> */}
         <Button
           label="Delete account"
           color={colors.secondary}
-          onPress={showDialog}
+          onPress={accountDelete}
         />
         <View style={styles.footerView}>
           <Text onPress={onSignOutPress} style={styles.footerLink}>
@@ -115,19 +99,6 @@ export default function Profile() {
           </Text>
         </View>
       </ScrollView>
-      <Dialog.Container visible={visible}>
-        <Dialog.Title>Delete account</Dialog.Title>
-        <Dialog.Description>
-          Do you want to delete this account? You cannot undo this action.
-        </Dialog.Description>
-        <Dialog.Button label="Cancel" onPress={handleCancel} />
-        <Dialog.Button label="Delete" onPress={accountDelete} />
-      </Dialog.Container>
-      <Spinner
-        visible={spinner}
-        textStyle={{ color: colors.white }}
-        overlayColor="rgba(0,0,0,0.5)"
-      />
     </ScreenTemplate>
   )
 }
@@ -149,6 +120,9 @@ const styles = StyleSheet.create({
   avatar: {
     margin: 30,
     alignSelf: 'center',
+    borderWidth: 7,
+    borderColor: 'gray',
+    borderRadius: 500,
   },
   footerView: {
     flex: 1,

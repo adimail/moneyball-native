@@ -42,15 +42,6 @@ export const HistoryNavigator = () => {
           component={HistoryNavigatorTabs}
           options={({ navigation }) => ({
             headerBackground: scheme === 'dark' ? null : () => <HeaderStyle />,
-            headerRight: () => (
-              <IconButton
-                icon="code"
-                color={colors.lightPurple}
-                size={24}
-                onPress={() => headerButtonPress()}
-                containerStyle={{ paddingRight: 15 }}
-              />
-            ),
           })}
         />
       </RootStack.Group>

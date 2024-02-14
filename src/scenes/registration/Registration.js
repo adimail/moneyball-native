@@ -54,6 +54,8 @@ export default function Registration() {
         email,
         fullName,
         avatar: defaultAvatar,
+        expenditure: ['college', 'food'],
+        income: ['parents', 'internship'],
       }
       const usersRef = doc(firestore, 'users', uid)
       await setDoc(usersRef, data)

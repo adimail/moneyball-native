@@ -1,4 +1,5 @@
-const defaultAvatar = 'https://cdn-icons-png.flaticon.com/512/6596/6596121.png'
+const defaultAvatar =
+  'https://www.hollywoodreporter.com/wp-content/uploads/2011/12/pittdesk_a.jpg'
 
 const firebaseKey = {
   apiKey: 'AIzaSyDMFtbbgUhrxIrNj-BEG2fPGlScjn6vFy8',

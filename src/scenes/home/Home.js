@@ -55,8 +55,8 @@ export default function Home() {
   const [newCategory, setNewCategory] = useState('')
 
   // expense categories
-  const ExpenditureData = userData && userData['expenditure categories']
-  const SavingsDate = userData && userData['income categories']
+  const ExpenditureData = userData && userData['expenditure']
+  const SavingsDate = userData && userData['income']
 
   // Account Information
   const [amount, setAmount] = useState(null)
@@ -71,6 +71,9 @@ export default function Home() {
   const [type, setType] = useState('Expenditure')
   const [CurrentMonthExpense, setCurrentMonthExpense] = useState(0)
   const [CurrentMonthIncome, setCurrentMonthIncome] = useState(0)
+
+  const isExpenditureDataEmpty = ExpenditureData.length === 0
+  const isSavingsDateEmpty = SavingsDate.length === 0
 
   const QuickAddData = [
     { title: 'Rickshaw', category: 'Rickshaw', amounts: ['20', '25', '10'] },
@@ -173,7 +176,7 @@ export default function Home() {
             name="category"
             size={35}
             color="black"
-            onPress={() => headerButtonPress()}
+            onPress={() => NavigateToCategories()}
             color={colors.lightPurple}
           />
         </View>
@@ -181,7 +184,7 @@ export default function Home() {
     })
   }, [navigation])
 
-  const headerButtonPress = () => {
+  const NavigateToCategories = () => {
     // Alert.alert('Quick Add', 'Render Quick Add')
     navigation.navigate('ModalStacks', {
       screen: 'Post',
@@ -254,7 +257,7 @@ export default function Home() {
           Alert.alert('Error', 'Failed to add log. Please try again.')
         })
     } else {
-      Alert.alert('Please fill in all required fields')
+      alert('Please fill in all required fields')
     }
   }
 
@@ -313,24 +316,38 @@ export default function Home() {
               value={title}
               onChangeText={(text) => setTitle(text)}
             />
-            <SelectList
-              boxStyles={{
-                height: 45,
-                borderColor: '#BABABA',
-                borderRadius: 50,
-                backgroundColor: '#F2F3F4',
-                width: 300,
-                borderWidth: 1,
-                paddingHorizontal: 10,
-              }}
-              dropdownTextStyles={{ fontSize: 14, color: 'white' }}
-              dropdownStyles={{ backgroundColor: '#1c2833ba' }}
-              setSelected={handleCategorySelection}
-              search={false}
-              data={type === 'Expenditure' ? ExpenditureData : SavingsDate}
-              save="value"
-              placeholder="Select Category"
-            />
+            {!isExpenditureDataEmpty && !isSavingsDateEmpty ? (
+              <SelectList
+                boxStyles={{
+                  height: 45,
+                  borderColor: '#BABABA',
+                  borderRadius: 50,
+                  backgroundColor: '#F2F3F4',
+                  width: 300,
+                  borderWidth: 1,
+                  paddingHorizontal: 10,
+                }}
+                dropdownTextStyles={{ fontSize: 14, color: 'white' }}
+                dropdownStyles={{ backgroundColor: '#1c2833ba' }}
+                setSelected={handleCategorySelection}
+                search={false}
+                data={type === 'Expenditure' ? ExpenditureData : SavingsDate}
+                save="value"
+                placeholder="Select Category"
+              />
+            ) : (
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <TouchableOpacity
+                  style={styles.buttonDanger}
+                  onPress={NavigateToCategories}
+                >
+                  <Text style={[styles.buttonText]}>
+                    Click here to add categories
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            )}
+
             <TextInput
               style={[styles.input]}
               placeholder="Enter Amount"
@@ -428,6 +445,16 @@ const styles = StyleSheet.create({
   button: {
     height: 45,
     backgroundColor: '#408c57',
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    alignItems: 'center',
+    display: 'flex',
+    justifyContent: 'center',
+    alignContent: 'center',
+  },
+  buttonDanger: {
+    height: 45,
+    backgroundColor: colors.pink,
     borderRadius: 10,
     paddingHorizontal: 10,
     alignItems: 'center',

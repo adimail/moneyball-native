@@ -13,7 +13,7 @@ import Log from '../../components/log'
 import Card from '../../components/expenseCard'
 import { showToast } from '../../utils/ShowToast'
 
-export default function AllTImeHistory() {
+export default function AllTimeHistory() {
   const navigation = useNavigation()
   const { userData } = useContext(UserDataContext)
   const { scheme } = useContext(ColorSchemeContext)
@@ -124,16 +124,29 @@ export default function AllTImeHistory() {
 
             <View style={styles.logBook}>
               {dataToDisplay &&
-                dataToDisplay.map((log) => (
-                  <View style={styles.log} key={log.id}>
-                    <View style={styles.column}>
-                      <Text style={styles.title}>{log.title}</Text>
-                      <Text style={styles.date}>
-                        {new Date(log.date.seconds * 1000).toLocaleDateString()}
-                      </Text>
+                (dataToDisplay.length === 0 ? (
+                  <Text
+                    style={[
+                      styles.title,
+                      { color: isDark ? 'white' : 'black' },
+                    ]}
+                  >
+                    No data to display
+                  </Text>
+                ) : (
+                  dataToDisplay.map((log) => (
+                    <View style={styles.log} key={log.id}>
+                      <View style={styles.column}>
+                        <Text style={styles.title}>{log.title}</Text>
+                        <Text style={styles.date}>
+                          {new Date(
+                            log.date.seconds * 1000,
+                          ).toLocaleDateString()}
+                        </Text>
+                      </View>
+                      <Text style={styles.amount}>₹ {log.amount}</Text>
                     </View>
-                    <Text style={styles.amount}>₹ {log.amount}</Text>
-                  </View>
+                  ))
                 ))}
             </View>
           </View>

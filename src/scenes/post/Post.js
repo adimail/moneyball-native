@@ -35,21 +35,17 @@ export default function Post() {
   const [incomeCategories, setIncomeCategories] = useState([])
   const textColor = isDark ? 'white' : 'black'
 
-  const ExpenditureData = userData && userData['expenditure categories']
-  const SavingsData = userData && userData['income categories']
+  const ExpenditureData = userData && userData['expenditure']
+  const SavingsData = userData && userData['income']
 
   useFocusEffect(() => {
     setTitle('Custom Categories')
   })
 
   useEffect(() => {
-    if (
-      userData &&
-      userData['expenditure categories'] &&
-      userData['income categories']
-    ) {
-      setExpenseCategories(userData['expenditure categories'])
-      setIncomeCategories(userData['income categories'])
+    if (userData && userData['expenditure'] && userData['income']) {
+      setExpenseCategories(userData['expenditure'])
+      setIncomeCategories(userData['income'])
     }
   }, [userData])
 
@@ -73,12 +69,12 @@ export default function Post() {
       if (type === 'Expenditure') {
         setUserData((prevUserData) => ({
           ...prevUserData,
-          'expenditure categories': updatedCategories,
+          expenditure: updatedCategories,
         }))
       } else {
         setUserData((prevUserData) => ({
           ...prevUserData,
-          'income categories': updatedCategories,
+          income: updatedCategories,
         }))
       }
 
@@ -116,23 +112,23 @@ export default function Post() {
             if (type === 'Expenditure') {
               setUserData((prevUserData) => ({
                 ...prevUserData,
-                'expenditure categories': updatedCategories,
+                expenditure: updatedCategories,
               }))
             } else {
               setUserData((prevUserData) => ({
                 ...prevUserData,
-                'income categories': updatedCategories,
+                income: updatedCategories,
               }))
             }
 
             const userDocRef = doc(firestore, 'users', userData.id)
             if (type === 'Expenditure') {
               updateDoc(userDocRef, {
-                'expenditure categories': updatedCategories,
+                expenditure: updatedCategories,
               })
             } else {
               updateDoc(userDocRef, {
-                'income categories': updatedCategories,
+                income: updatedCategories,
               })
             }
           },
@@ -182,8 +178,8 @@ export default function Post() {
 
           <Text style={[styles.title, { color: isDark ? 'white' : 'black' }]}>
             {type === 'Expenditure'
-              ? `Expenditure Categories ${expenseCategories.length}/9`
-              : `Income Categories ${incomeCategories.length}/9`}
+              ? `expenditure ${expenseCategories.length}/9`
+              : `income ${incomeCategories.length}/9`}
           </Text>
 
           {type === 'Expenditure' ? (
