@@ -26,10 +26,12 @@ const QuickAddComponent = ({
   const handleAddLog = (title, amount, category) => {
     const type = 'Expenditure'
 
+    const amountInt = parseInt(amount)
+
     submitData(
       type,
       title,
-      amount,
+      amountInt,
       category,
       userData,
       new Date(),

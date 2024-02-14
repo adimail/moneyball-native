@@ -4,7 +4,6 @@ import {
   View,
   TextInput,
   StyleSheet,
-  Button,
   Alert,
   ScrollView,
 } from 'react-native'
@@ -16,10 +15,17 @@ import { UserDataContext } from '../../context/UserDataContext'
 import { colors } from '../../theme'
 import CustomSwitch from '../../components/toggleSwitch'
 import { firestore } from '../../firebase/config'
-import { collection, doc, setDoc, updateDoc } from 'firebase/firestore'
+import {
+  collection,
+  doc,
+  setDoc,
+  updateDoc,
+  arrayUnion,
+} from 'firebase/firestore'
 import { showToast } from '../../utils/ShowToast'
 import IconButton from '../../components/IconButton'
 import { SelectList } from 'react-native-dropdown-select-list'
+import Button from '../../components/Button'
 
 export default function QuickAdd() {
   const { scheme } = useContext(ColorSchemeContext)
@@ -34,9 +40,9 @@ export default function QuickAdd() {
   const ExpenditureData = userData && userData['expenditure']
 
   // Quick Add information
-  const [name, setName] = useState('')
+  const [title, setName] = useState('')
   const [category, setCategory] = useState('')
-  const [amount, setAmount] = useState(null)
+  const [amounts, setAmount] = useState([])
 
   useFocusEffect(() => {
     setTitle('Quick Add Shortcuts')
@@ -46,18 +52,93 @@ export default function QuickAdd() {
     setType(value)
   }
 
+  const handlGenrateQuickAdd = async () => {
+    if (!title || !category || !amounts) {
+      Alert.alert('Error', 'Please fill in all fields.')
+      return
+    }
+
+    const filteredAmounts = amounts.filter((amount) => amount !== '')
+
+    if (filteredAmounts.length === 0) {
+      Alert.alert('Error', 'Please fill in at least one amount.')
+      return
+    }
+
+    const newQuickAdd = { category, title, amounts: filteredAmounts }
+    console.log(newQuickAdd)
+
+    const userDocRef = doc(firestore, 'users', userData.id)
+
+    // Update Firestore document with new quick add
+    try {
+      await updateDoc(userDocRef, {
+        quickadd: arrayUnion(newQuickAdd),
+      })
+
+      showToast({
+        title: 'Success',
+        body: `New Quick Add Generated`,
+        isDark: isDark,
+      })
+
+      setName('')
+      setAmount([])
+      setCategory('')
+    } catch (error) {
+      console.error('Error updating document: ', error)
+      showToast({
+        title: 'Error',
+        body: 'Failed to generate Quick Add. Please try again later.',
+        isDark: isDark,
+      })
+    }
+  }
+
   return (
     <ScreenTemplate>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.container}>
+          <Text style={[styles.title, { color: isDark ? 'white' : 'black' }]}>
+            Create a new template for Quick Add
+          </Text>
           <View style={styles.inputContainer}>
             <TextInput
               style={[styles.input, { color: isDark ? 'white' : 'black' }]}
-              value={name}
+              value={title}
               onChangeText={setName}
               placeholder="Title"
               placeholderTextColor={isDark ? 'white' : 'black'}
             />
+            <View>
+              {[1, 2, 3].map((index) => (
+                <View style={styles.inline} key={index}>
+                  <Text
+                    style={[
+                      styles.title,
+                      { color: isDark ? 'white' : 'black' },
+                    ]}
+                  >
+                    Amount {index}
+                  </Text>
+                  <TextInput
+                    style={[
+                      styles.numeric,
+                      { color: isDark ? 'white' : 'black' },
+                    ]}
+                    keyboardType="numeric"
+                    value={amounts[index - 1]}
+                    onChangeText={(value) => {
+                      const newAmounts = [...amounts]
+                      newAmounts[index - 1] = value
+                      setAmount(newAmounts)
+                    }}
+                    placeholder={`Amount ${index}`}
+                    placeholderTextColor={isDark ? 'white' : 'black'}
+                  />
+                </View>
+              ))}
+            </View>
             <SelectList
               boxStyles={{
                 height: 45,
@@ -70,7 +151,7 @@ export default function QuickAdd() {
               }}
               dropdownTextStyles={{ fontSize: 14, color: 'white' }}
               dropdownStyles={{ backgroundColor: '#1c2833ba' }}
-              setSelected={() => {
+              setSelected={(value) => {
                 setCategory(value)
               }}
               search={false}
@@ -78,15 +159,15 @@ export default function QuickAdd() {
               save="value"
               placeholder="Select Category"
             />
-            <TextInput
-              style={[styles.input, { color: isDark ? 'white' : 'black' }]}
-              keyboardType="numeric"
-              value={amount}
-              onChangeText={setAmount}
-              placeholder="Amount"
-              placeholderTextColor={isDark ? 'white' : 'black'}
-            />
           </View>
+
+          <Button
+            label={'Generate Quick Add'}
+            color={colors.primary}
+            onPress={() => {
+              handlGenrateQuickAdd()
+            }}
+          />
         </View>
       </ScrollView>
     </ScreenTemplate>
@@ -107,7 +188,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
-    marginBottom: 20,
+    marginVertical: 10,
     textAlign: 'center',
   },
   subtitle: {
@@ -150,5 +231,19 @@ const styles = StyleSheet.create({
   cat: {
     width: '100%',
     maxWidth: 600,
+  },
+  inline: {
+    display: 'flex',
+    gap: 15,
+    flexDirection: 'row',
+  },
+  numeric: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 50,
+    paddingHorizontal: 10,
+    color: colors.primaryText,
+    width: 200,
+    height: 45,
   },
 })

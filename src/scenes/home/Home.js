@@ -75,17 +75,13 @@ export default function Home() {
   const isExpenditureDataEmpty = false
   const isSavingsDateEmpty = false
 
-  const QuickAddData = [
-    { title: 'Rickshaw', category: 'Rickshaw', amounts: ['20', '25', '10'] },
-    { title: 'Metro', category: 'Metro', amounts: ['21', '7', '12'] },
-    { title: 'Top Up', category: 'Accessories and Internet', amounts: ['19'] },
-    { title: 'Rickshaw', category: 'Rickshaw', amounts: ['20', '25', '10'] },
-    { title: 'Metro', category: 'Metro', amounts: ['21', '7', '12'] },
-    { title: 'Top Up', category: 'Accessories and Internet', amounts: ['19'] },
-    { title: 'Rickshaw', category: 'Rickshaw', amounts: ['20', '25', '10'] },
-    { title: 'Metro', category: 'Metro', amounts: ['21', '7', '12'] },
-    { title: 'Top Up', category: 'Accessories and Internet', amounts: ['19'] },
-  ]
+  const QuickAddData = userData && userData['quickadd']
+
+  // const QuickAddData = [
+  //   { title: 'Rickshaw', category: 'Rickshaw', amounts: ['20', '25', '10'] },
+  //   { title: 'Metro', category: 'Metro', amounts: ['21', '7', '12'] },
+  //   { title: 'Top Up', category: 'Accessories and Internet', amounts: ['19'] },
+  // ]
 
   const MonthYear = useMemo(() => {
     return date.toLocaleDateString('en-GB', {
