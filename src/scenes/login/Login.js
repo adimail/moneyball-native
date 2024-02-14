@@ -54,37 +54,38 @@ export default function Login() {
 
   return (
     <ScreenTemplate>
-      <KeyboardAwareScrollView
-        style={styles.main}
-        keyboardShouldPersistTaps="always"
-      >
-        <Logo />
-        <TextInputBox
-          placeholder="E-mail"
-          onChangeText={(text) => setEmail(text)}
-          autoCapitalize="none"
-          value={email}
-          keyboardType={'email-address'}
-        />
-        <TextInputBox
-          secureTextEntry={true}
-          placeholder="Password"
-          onChangeText={(text) => setPassword(text)}
-          value={password}
-          autoCapitalize="none"
-        />
-        <Button
-          label="Log in"
-          color={colors.primary}
-          onPress={() => onLoginPress()}
-        />
-        <View style={styles.footerView}>
-          <Text style={[styles.footerText, { color: colorScheme.text }]}>
-            Don't have an account?{' '}
-            <Text onPress={onFooterLinkPress} style={styles.footerLink}>
-              Sign up
+      <KeyboardAwareScrollView keyboardShouldPersistTaps="always">
+        <View style={styles.main}>
+          <Logo />
+          <View style={styles.input}>
+            <TextInputBox
+              placeholder="E-mail"
+              onChangeText={(text) => setEmail(text)}
+              autoCapitalize="none"
+              value={email}
+              keyboardType={'email-address'}
+            />
+            <TextInputBox
+              secureTextEntry={true}
+              placeholder="Password"
+              onChangeText={(text) => setPassword(text)}
+              value={password}
+              autoCapitalize="none"
+            />
+            <Button
+              label="Log in"
+              color={colors.primary}
+              onPress={() => onLoginPress()}
+            />
+          </View>
+          <View style={styles.footerView}>
+            <Text style={[styles.footerText, { color: colorScheme.text }]}>
+              Don't have an account?{' '}
+              <Text onPress={onFooterLinkPress} style={styles.footerLink}>
+                Sign up
+              </Text>
             </Text>
-          </Text>
+          </View>
         </View>
       </KeyboardAwareScrollView>
       <Spinner
@@ -100,6 +101,8 @@ const styles = StyleSheet.create({
   main: {
     flex: 1,
     width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   footerView: {
     flex: 1,
@@ -114,5 +117,9 @@ const styles = StyleSheet.create({
     color: colors.blueLight,
     fontWeight: 'bold',
     fontSize: fontSize.large,
+  },
+  input: {
+    width: '100%',
+    maxWidth: 500,
   },
 })

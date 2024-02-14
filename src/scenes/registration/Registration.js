@@ -65,50 +65,51 @@ export default function Registration() {
 
   return (
     <ScreenTemplate>
-      <KeyboardAwareScrollView
-        style={styles.main}
-        keyboardShouldPersistTaps="always"
-      >
-        <Logo />
-        <TextInputBox
-          placeholder="Your Name"
-          onChangeText={(text) => setFullName(text)}
-          value={fullName}
-          autoCapitalize="none"
-        />
-        <TextInputBox
-          placeholder="E-mail"
-          onChangeText={(text) => setEmail(text)}
-          value={email}
-          autoCapitalize="none"
-          keyboardType="email-address"
-        />
-        <TextInputBox
-          secureTextEntry={true}
-          placeholder="Password"
-          onChangeText={(text) => setPassword(text)}
-          value={password}
-          autoCapitalize="none"
-        />
-        <TextInputBox
-          secureTextEntry={true}
-          placeholder="Confirm Password"
-          onChangeText={(text) => setConfirmPassword(text)}
-          value={confirmPassword}
-          autoCapitalize="none"
-        />
-        <Button
-          label="Agree and Create account"
-          color={colors.primary}
-          onPress={() => onRegisterPress()}
-        />
-        <View style={styles.footerView}>
-          <Text style={[styles.footerText, { color: colorScheme.text }]}>
-            Already got an account?{' '}
-            <Text onPress={onFooterLinkPress} style={styles.footerLink}>
-              Log in
-            </Text>
-          </Text>
+      <KeyboardAwareScrollView keyboardShouldPersistTaps="always">
+        <View style={styles.main}>
+          <Logo />
+          <View style={styles.input}>
+            <TextInputBox
+              placeholder="Your Name"
+              onChangeText={(text) => setFullName(text)}
+              value={fullName}
+              autoCapitalize="none"
+            />
+            <TextInputBox
+              placeholder="E-mail"
+              onChangeText={(text) => setEmail(text)}
+              value={email}
+              autoCapitalize="none"
+              keyboardType="email-address"
+            />
+            <TextInputBox
+              secureTextEntry={true}
+              placeholder="Password"
+              onChangeText={(text) => setPassword(text)}
+              value={password}
+              autoCapitalize="none"
+            />
+            <TextInputBox
+              secureTextEntry={true}
+              placeholder="Confirm Password"
+              onChangeText={(text) => setConfirmPassword(text)}
+              value={confirmPassword}
+              autoCapitalize="none"
+            />
+            <Button
+              label="Agree and Create account"
+              color={colors.primary}
+              onPress={() => onRegisterPress()}
+            />
+            <View style={styles.footerView}>
+              <Text style={[styles.footerText, { color: colorScheme.text }]}>
+                Already got an account?{' '}
+                <Text onPress={onFooterLinkPress} style={styles.footerLink}>
+                  Log in
+                </Text>
+              </Text>
+            </View>
+          </View>
         </View>
       </KeyboardAwareScrollView>
       <Spinner
@@ -124,6 +125,8 @@ const styles = StyleSheet.create({
   main: {
     flex: 1,
     width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   footerView: {
     flex: 1,
@@ -141,5 +144,9 @@ const styles = StyleSheet.create({
   },
   link: {
     textAlign: 'center',
+  },
+  input: {
+    width: '100%',
+    maxWidth: 500,
   },
 })
