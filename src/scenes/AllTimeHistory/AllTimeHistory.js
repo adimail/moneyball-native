@@ -98,7 +98,7 @@ export default function AllTimeHistory() {
 
   return (
     <ScreenTemplate>
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.container}>
           <View>
             <CustomSwitch

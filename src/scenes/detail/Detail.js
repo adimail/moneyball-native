@@ -27,7 +27,7 @@ export default function Detail() {
 
   return (
     <ScreenTemplate>
-      <ScrollView style={styles.main}>
+      <ScrollView style={styles.main} showsVerticalScrollIndicator={false}>
         <View style={colorScheme.content}>
           <Text style={[styles.field, { color: colorScheme.text }]}>
             {userData.id}

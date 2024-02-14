@@ -76,6 +76,12 @@ export default function Home() {
     { title: 'Rickshaw', category: 'Rickshaw', amounts: ['20', '25', '10'] },
     { title: 'Metro', category: 'Metro', amounts: ['21', '7', '12'] },
     { title: 'Top Up', category: 'Accessories and Internet', amounts: ['19'] },
+    { title: 'Rickshaw', category: 'Rickshaw', amounts: ['20', '25', '10'] },
+    { title: 'Metro', category: 'Metro', amounts: ['21', '7', '12'] },
+    { title: 'Top Up', category: 'Accessories and Internet', amounts: ['19'] },
+    { title: 'Rickshaw', category: 'Rickshaw', amounts: ['20', '25', '10'] },
+    { title: 'Metro', category: 'Metro', amounts: ['21', '7', '12'] },
+    { title: 'Top Up', category: 'Accessories and Internet', amounts: ['19'] },
   ]
 
   const MonthYear = useMemo(() => {
@@ -258,7 +264,7 @@ export default function Home() {
 
   return (
     <ScreenTemplate>
-      <ScrollView style={styles.main}>
+      <ScrollView style={styles.main} showsVerticalScrollIndicator={false}>
         <View style={[styles.top]}>
           <TouchableOpacity
             style={styles.container}
@@ -458,7 +464,7 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 60,
     borderBottomRightRadius: 60,
     width: '100%',
-    maxWidth: 800,
+    // maxWidth: 1400,
     alignSelf: 'center',
   },
 })

@@ -55,6 +55,7 @@ const QuickAddComponent = ({ data, userData, setCurrentMonthExpense }) => {
     <ScrollView
       horizontal={true}
       contentContainerStyle={styles.scrollViewContainer}
+      showsVerticalScrollIndicator={false}
     >
       {data &&
         data.map((item, index) => (
@@ -118,7 +119,14 @@ const QuickAddItem = ({ title, amounts, category, userData, handleAddLog }) => {
         <IconButton
           icon="pen"
           color={colors.white}
-          size={24}
+          size={20}
+          // onPress={() => headerButtonPress()}
+          containerStyle={{ paddingRight: 15 }}
+        />
+        <IconButton
+          icon="trash"
+          color={colors.white}
+          size={20}
           // onPress={() => headerButtonPress()}
           containerStyle={{ paddingRight: 15 }}
         />

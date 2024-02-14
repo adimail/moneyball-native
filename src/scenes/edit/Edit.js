@@ -146,6 +146,7 @@ export default function Edit() {
       <KeyboardAwareScrollView
         style={styles.main}
         keyboardShouldPersistTaps="always"
+        showsVerticalScrollIndicator={false}
       >
         <View style={styles.avatar}>
           <Avatar

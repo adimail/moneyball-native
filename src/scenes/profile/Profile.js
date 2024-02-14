@@ -78,7 +78,7 @@ export default function Profile() {
 
   return (
     <ScreenTemplate>
-      <ScrollView style={styles.main}>
+      <ScrollView style={styles.main} showsVerticalScrollIndicator={false}>
         <View style={styles.avatar}>
           <Avatar size="xlarge" rounded source={{ uri: userData.avatar }} />
         </View>

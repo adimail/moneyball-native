@@ -65,7 +65,10 @@ export default function Registration() {
 
   return (
     <ScreenTemplate>
-      <KeyboardAwareScrollView keyboardShouldPersistTaps="always">
+      <KeyboardAwareScrollView
+        keyboardShouldPersistTaps="always"
+        showsVerticalScrollIndicator={false}
+      >
         <View style={styles.main}>
           <Logo />
           <View style={styles.input}>

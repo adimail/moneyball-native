@@ -147,7 +147,7 @@ export default function Post() {
 
   return (
     <ScreenTemplate>
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.container}>
           <CustomSwitch
             selectionMode={1}
