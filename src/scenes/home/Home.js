@@ -62,7 +62,7 @@ export default function Home() {
   const [amount, setAmount] = useState(null)
   const [date, setDate] = useState(new Date())
   const [showDatePicker, setShowDatePicker] = useState(false)
-  const [selected, setSelected] = React.useState('Rickshaw')
+  const [selected, setSelected] = React.useState('')
   const [title, setTitle] = useState('')
   const [category, setCategory] = useState('')
   const [isTodaySwitchOn, setIsTodaySwitchOn] = useState(
@@ -72,8 +72,8 @@ export default function Home() {
   const [CurrentMonthExpense, setCurrentMonthExpense] = useState(0)
   const [CurrentMonthIncome, setCurrentMonthIncome] = useState(0)
 
-  const isExpenditureDataEmpty = ExpenditureData.length === 0
-  const isSavingsDateEmpty = SavingsDate.length === 0
+  const isExpenditureDataEmpty = false
+  const isSavingsDateEmpty = false
 
   const QuickAddData = [
     { title: 'Rickshaw', category: 'Rickshaw', amounts: ['20', '25', '10'] },
@@ -188,6 +188,17 @@ export default function Home() {
     // Alert.alert('Quick Add', 'Render Quick Add')
     navigation.navigate('ModalStacks', {
       screen: 'Post',
+      params: {
+        data: userData,
+        from: 'Home screen',
+      },
+    })
+  }
+
+  const NavigateToQuickAdd = () => {
+    // Alert.alert('Quick Add', 'Render Quick Add')
+    navigation.navigate('ModalStacks', {
+      screen: 'QuickAdd',
       params: {
         data: userData,
         from: 'Home screen',
@@ -384,6 +395,7 @@ export default function Home() {
           data={QuickAddData}
           userData={userData}
           setCurrentMonthExpense={setCurrentMonthExpense}
+          NavigateToQuickAdd={NavigateToQuickAdd}
         />
       </ScrollView>
     </ScreenTemplate>

@@ -37,7 +37,7 @@ export default function Profile() {
   }
 
   const accountDelete = async () => {
-    alert(
+    Alert.alert(
       'Delete Account',
       'Are you sure you want to delete your account?',
       [

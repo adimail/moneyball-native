@@ -24,15 +24,15 @@ export const HistoryNavigator = () => {
   const { userData } = useContext(UserDataContext)
   const navigationProps = scheme === 'dark' ? darkProps : lightProps
 
-  const headerButtonPress = () => {
-    navigation.navigate('ModalStacks', {
-      screen: 'Post',
-      params: {
-        data: userData,
-        from: 'Home screen',
-      },
-    })
-  }
+  // const headerButtonPress = () => {
+  //   navigation.navigate('ModalStacks', {
+  //     screen: 'Post',
+  //     params: {
+  //       data: userData,
+  //       from: 'Home screen',
+  //     },
+  //   })
+  // }
 
   return (
     <Stack.Navigator screenOptions={navigationProps}>

@@ -14,17 +14,14 @@ import { submitData } from './SubmitUserData'
 import { showToast } from './ShowToast'
 import FontIcon from 'react-native-vector-icons/FontAwesome5'
 
-const QuickAddComponent = ({ data, userData, setCurrentMonthExpense }) => {
+const QuickAddComponent = ({
+  data,
+  userData,
+  setCurrentMonthExpense,
+  NavigateToQuickAdd,
+}) => {
   const { scheme } = useContext(ColorSchemeContext)
   const isDark = scheme === 'dark'
-
-  const handleNewQuickAdd = () => {
-    showToast({
-      title: 'New quick add added',
-      body: 'You can add upto 10 quick adds',
-      isDark,
-    })
-  }
 
   const handleAddLog = (title, amount, category) => {
     const type = 'Expenditure'
@@ -69,7 +66,7 @@ const QuickAddComponent = ({ data, userData, setCurrentMonthExpense }) => {
           />
         ))}
 
-      <TouchableOpacity onPress={() => handleNewQuickAdd()}>
+      <TouchableOpacity onPress={() => NavigateToQuickAdd()}>
         <View style={[styles.item, { alignItems: 'center' }]}>
           <FontIcon name="plus" color={colors.white} size={81} />
           <Text

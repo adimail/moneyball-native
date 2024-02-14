@@ -50,7 +50,7 @@ export default function Post() {
   }, [userData])
 
   // function to add a category
-  const addCategory = (newCategory, type) => {
+  const addCategory = async (newCategory, type) => {
     if (newCategory) {
       const updatedCategories = [
         ...(type === 'Expenditure' ? ExpenditureData : SavingsData),
@@ -60,41 +60,60 @@ export default function Post() {
       if (updatedCategories.length > 9) {
         showToast({
           title: 'Stack Overflow',
-          body: 'You can Add upto 9 max categories',
+          body: 'You can Add up to 9 max categories',
           isDark,
         })
         return
       }
 
-      if (type === 'Expenditure') {
-        setUserData((prevUserData) => ({
-          ...prevUserData,
-          expenditure: updatedCategories,
-        }))
-      } else {
-        setUserData((prevUserData) => ({
-          ...prevUserData,
-          income: updatedCategories,
-        }))
+      try {
+        const userDocRef = doc(firestore, 'users', userData.id)
+        await updateDoc(userDocRef, {
+          [type.toLowerCase()]: updatedCategories,
+        })
+
+        if (type === 'Expenditure') {
+          setUserData((prevUserData) => ({
+            ...prevUserData,
+            expenditure: updatedCategories,
+          }))
+        } else {
+          setUserData((prevUserData) => ({
+            ...prevUserData,
+            income: updatedCategories,
+          }))
+        }
+
+        showToast({
+          title: 'Category Added',
+          body: newCategory,
+          isDark,
+        })
+
+        setNewCategory('')
+      } catch (error) {
+        console.error('Error adding category:', error.message)
+        showToast({
+          title: 'Error',
+          body: 'Failed to add category. Please try again.',
+          isDark,
+        })
       }
-
-      const userDocRef = doc(firestore, 'users', userData.id)
-      updateDoc(userDocRef, {
-        [type.toLowerCase() + ' categories']: updatedCategories,
-      })
-
-      showToast({
-        title: 'Category Added',
-        body: newCategory,
-        isDark,
-      })
-
-      setNewCategory('')
     }
   }
 
   // Function to remove a category
   const removeCategory = (category, type) => {
+    const updatedCategories =
+      type === 'Expenditure' ? [...ExpenditureData] : [...SavingsData]
+
+    if (updatedCategories.length === 1) {
+      alert('You shall have atleast one category in the list.', [
+        { text: 'OK', style: 'cancel' },
+      ])
+      return
+    }
+
     Alert.alert(
       'Confirm',
       `Are you sure you want to remove the category "${category}"?`,
@@ -105,10 +124,11 @@ export default function Post() {
         },
         {
           text: 'Remove',
-          onPress: () => {
+          onPress: async () => {
             const updatedCategories = (
               type === 'Expenditure' ? ExpenditureData : SavingsData
             ).filter((cat) => cat !== category)
+
             if (type === 'Expenditure') {
               setUserData((prevUserData) => ({
                 ...prevUserData,
@@ -123,13 +143,9 @@ export default function Post() {
 
             const userDocRef = doc(firestore, 'users', userData.id)
             if (type === 'Expenditure') {
-              updateDoc(userDocRef, {
-                expenditure: updatedCategories,
-              })
+              await updateDoc(userDocRef, { expenditure: updatedCategories })
             } else {
-              updateDoc(userDocRef, {
-                income: updatedCategories,
-              })
+              await updateDoc(userDocRef, { income: updatedCategories })
             }
           },
         },
