@@ -187,7 +187,7 @@ export default function Post() {
           </Text>
 
           {type === 'Expenditure' ? (
-            <View>
+            <View style={styles.cat}>
               {expenseCategories.map((item, index) => (
                 <View style={styles.categoryItem} key={index}>
                   <Text
@@ -206,7 +206,7 @@ export default function Post() {
               ))}
             </View>
           ) : (
-            <View>
+            <View style={styles.cat}>
               {incomeCategories.map((item, index) => (
                 <View style={styles.categoryItem} key={index}>
                   <Text
@@ -274,6 +274,7 @@ const styles = StyleSheet.create({
   categoryItem: {
     flexDirection: 'row',
     alignItems: 'center',
+    alignSelf: 'center',
     justifyContent: 'space-between',
     borderWidth: 1,
     borderColor: '#ccc',
@@ -283,5 +284,9 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     width: '80%',
     height: 60,
+  },
+  cat: {
+    width: '100%',
+    maxWidth: 600,
   },
 })

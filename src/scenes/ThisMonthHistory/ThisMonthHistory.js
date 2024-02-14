@@ -98,77 +98,62 @@ export default function ThisMonthHistory() {
 
   return (
     <ScreenTemplate>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={styles.container}>
-          <View>
-            <CustomSwitch
-              selectionMode={1}
-              roundCorner={true}
-              option1={'Expenditure'}
-              option2={'Income'}
-              onSelectSwitch={onSelectSwitch}
-              selectionColor={'#1C2833'}
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        style={{ paddingTop: 20 }}
+      >
+        <CustomSwitch
+          selectionMode={1}
+          roundCorner={true}
+          option1={'Expenditure'}
+          option2={'Income'}
+          onSelectSwitch={onSelectSwitch}
+          selectionColor={'#1C2833'}
+        />
+        <View style={styles.content}>
+          <View style={{ width: '100%', alignItems: 'center' }}>
+            <Button
+              label={'Refresh'}
+              color={colors.primary}
+              onPress={() => {
+                fetchDataForCurrentMonth()
+              }}
             />
-          </View>
-          <View style={styles.content}>
-            <View style={{ width: '100%' }}>
-              <Button
-                label={'Refresh'}
-                color={colors.primary}
-                onPress={() => {
-                  fetchDataForCurrentMonth()
-                }}
-              />
 
-              <View
-                style={[
-                  styles.separator,
-                  { backgroundColor: isDark ? 'white' : 'black' },
-                ]}
-              />
+            <View style={[styles.separator]} />
 
-              <View style={styles.logBook}>
-                {dataToDisplay &&
-                  dataToDisplay.map((log) => (
-                    <View style={styles.log} key={log.id}>
-                      <View style={styles.column}>
-                        <Text style={styles.title}>{log.title}</Text>
-                        <Text style={styles.date}>
-                          {new Date(
-                            log.date.seconds * 1000,
-                          ).toLocaleDateString()}
-                        </Text>
-                      </View>
-                      <Text style={styles.amount}>₹ {log.amount}</Text>
+            <View style={styles.logBook}>
+              {dataToDisplay &&
+                dataToDisplay.map((log) => (
+                  <View style={styles.log} key={log.id}>
+                    <View style={styles.column}>
+                      <Text style={styles.title}>{log.title}</Text>
+                      <Text style={styles.date}>
+                        {new Date(log.date.seconds * 1000).toLocaleDateString()}
+                      </Text>
                     </View>
-                  ))}
-              </View>
+                    <Text style={styles.amount}>₹ {log.amount}</Text>
+                  </View>
+                ))}
             </View>
           </View>
         </View>
+        <View style={[styles.separator]} />
       </ScrollView>
     </ScreenTemplate>
   )
 }
 
 const styles = StyleSheet.create({
-  scrollViewContent: {
-    flexGrow: 1,
-  },
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'top',
-    width: '100%',
-    marginTop: 30,
-  },
   field: {
     fontSize: fontSize.middle,
     textAlign: 'center',
   },
   logBook: {
     width: '100%',
+    maxWidth: 1000,
     alignItems: 'center',
+    alignSelf: 'center',
     display: 'flex',
     gap: 9,
   },
@@ -206,7 +191,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   separator: {
-    marginVertical: 24,
+    marginVertical: 20,
     height: 10,
     width: '80%',
     alignSelf: 'center',
