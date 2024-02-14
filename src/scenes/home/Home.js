@@ -457,5 +457,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.lightPurple,
     borderBottomLeftRadius: 60,
     borderBottomRightRadius: 60,
+    width: '100%',
+    maxWidth: 800,
+    alignSelf: 'center',
   },
 })
