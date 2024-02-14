@@ -12,6 +12,7 @@ import { firestore } from '../../firebase/config'
 import Log from '../../components/log'
 import Card from '../../components/expenseCard'
 import { showToast } from '../../utils/ShowToast'
+import IconButton from '../../components/IconButton'
 
 export default function ThisMonthHistory() {
   const navigation = useNavigation()
@@ -132,7 +133,24 @@ export default function ThisMonthHistory() {
                         {new Date(log.date.seconds * 1000).toLocaleDateString()}
                       </Text>
                     </View>
-                    <Text style={styles.amount}>₹ {log.amount}</Text>
+                    <View
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        alignSelf: 'center',
+                        alignItems: 'center',
+                        gap: 10,
+                      }}
+                    >
+                      <Text style={styles.amount}>₹ {log.amount}</Text>
+                      <IconButton
+                        icon="trash"
+                        color={colors.white}
+                        size={15}
+                        // onPress={() => headerButtonPress()}
+                        containerStyle={{ paddingRight: 15 }}
+                      />
+                    </View>
                   </View>
                 ))}
             </View>
@@ -173,7 +191,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     borderRadius: 9,
     paddingVertical: 9,
-    paddingHorizontal: 10,
+    paddingLeft: 15,
     width: '87%',
     height: 68,
     backgroundColor: colors.primaryText,
