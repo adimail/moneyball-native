@@ -119,14 +119,14 @@ const QuickAddItem = ({ title, amounts, category, userData, handleAddLog }) => {
         <IconButton
           icon="pen"
           color={colors.white}
-          size={18}
+          size={20}
           // onPress={() => headerButtonPress()}
           containerStyle={{ paddingRight: 15 }}
         />
         <IconButton
           icon="trash"
           color={colors.white}
-          size={18}
+          size={20}
           // onPress={() => headerButtonPress()}
           containerStyle={{ paddingRight: 15 }}
         />
