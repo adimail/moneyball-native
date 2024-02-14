@@ -13,6 +13,7 @@ import { colors } from '../theme'
 import { submitData } from './SubmitUserData'
 import { showToast } from './ShowToast'
 import FontIcon from 'react-native-vector-icons/FontAwesome5'
+import { MaterialCommunityIcons } from '@expo/vector-icons'
 
 const QuickAddComponent = ({
   data,
@@ -68,16 +69,45 @@ const QuickAddComponent = ({
           />
         ))}
 
-      <TouchableOpacity onPress={() => NavigateToQuickAdd()}>
-        <View style={[styles.item, { alignItems: 'center' }]}>
-          <FontIcon name="plus" color={colors.white} size={81} />
+      {data.length <= 3 ? (
+        <TouchableOpacity onPress={() => NavigateToQuickAdd()}>
+          <View style={[styles.item, { alignItems: 'center' }]}>
+            <FontIcon name="plus" color={colors.white} size={81} />
+            <Text
+              style={{ color: colors.white, fontSize: 18, textAlign: 'center' }}
+            >
+              New Quick Add
+            </Text>
+          </View>
+        </TouchableOpacity>
+      ) : (
+        <View
+          style={{
+            width: 155,
+            height: 150,
+            display: 'flex',
+            justifyContent: 'space-between',
+            padding: 10,
+            backgroundColor: colors.primaryText,
+            alignItems: 'center',
+            marginHorizontal: 15,
+            borderRadius: 20,
+            borderWidth: 0.3,
+            borderColor: 'white',
+          }}
+        >
+          <MaterialCommunityIcons
+            name="car-speed-limiter"
+            size={55}
+            color="#fff"
+          />
           <Text
-            style={{ color: colors.white, fontSize: 18, textAlign: 'center' }}
+            style={{ color: colors.white, fontSize: 15, textAlign: 'center' }}
           >
-            New Quick Add
+            You have reached the maximum limit of quick adds (4)
           </Text>
         </View>
-      </TouchableOpacity>
+      )}
     </ScrollView>
   )
 }

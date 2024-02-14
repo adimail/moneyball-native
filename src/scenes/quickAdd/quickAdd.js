@@ -26,8 +26,10 @@ import { showToast } from '../../utils/ShowToast'
 import IconButton from '../../components/IconButton'
 import { SelectList } from 'react-native-dropdown-select-list'
 import Button from '../../components/Button'
+import { useNavigation } from '@react-navigation/native'
 
 export default function QuickAdd() {
+  const navigation = useNavigation()
   const { scheme } = useContext(ColorSchemeContext)
   const { setTitle } = useContext(HomeTitleContext)
   const { userData, setUserData } = useContext(UserDataContext)
@@ -85,6 +87,8 @@ export default function QuickAdd() {
       setName('')
       setAmount([])
       setCategory('')
+
+      navigation.goBack()
     } catch (error) {
       console.error('Error updating document: ', error)
       showToast({
