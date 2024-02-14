@@ -30,9 +30,9 @@ import { useNavigation } from '@react-navigation/native'
 
 export default function QuickAdd() {
   const navigation = useNavigation()
-  const { scheme } = useContext(ColorSchemeContext)
   const { setTitle } = useContext(HomeTitleContext)
   const { userData, setUserData } = useContext(UserDataContext)
+  const { scheme } = useContext(ColorSchemeContext)
   const isDark = scheme === 'dark'
   const colorScheme = {
     content: isDark ? styles.darkContent : styles.lightContent,

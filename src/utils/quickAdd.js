@@ -14,6 +14,7 @@ import { submitData } from './SubmitUserData'
 import { showToast } from './ShowToast'
 import FontIcon from 'react-native-vector-icons/FontAwesome5'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
+import { deleteQuickAdd } from './deletequickadd'
 
 const QuickAddComponent = ({
   data,
@@ -66,6 +67,7 @@ const QuickAddComponent = ({
             category={item.category}
             userData={userData}
             handleAddLog={handleAddLog}
+            deleteQuickAdd={deleteQuickAdd}
           />
         ))}
 
@@ -112,13 +114,40 @@ const QuickAddComponent = ({
   )
 }
 
-const QuickAddItem = ({ title, amounts, category, userData, handleAddLog }) => {
+const QuickAddItem = ({
+  title,
+  amounts,
+  category,
+  userData,
+  handleAddLog,
+  deleteQuickAdd,
+}) => {
+  const { scheme } = useContext(ColorSchemeContext)
+  const isDark = scheme === 'dark'
+
   const [selectedAmountIndex, setSelectedAmountIndex] = useState(0)
 
   const handleAmountPress = (index) => {
     setSelectedAmountIndex((prevIndex) =>
       prevIndex === index ? prevIndex : index,
     )
+  }
+
+  const handleDeleteQuickAdd = async () => {
+    try {
+      await deleteQuickAdd(userData.id, title)
+      showToast({
+        title: 'Success',
+        body: 'Quick Add deleted',
+        isDark: isDark,
+      })
+    } catch (error) {
+      console.error('Error deleting quick add:', error)
+      Alert.alert(
+        'Error',
+        'Failed to delete Quick Add. Please try again later.',
+      )
+    }
   }
 
   return (
@@ -156,7 +185,7 @@ const QuickAddItem = ({ title, amounts, category, userData, handleAddLog }) => {
           icon="trash"
           color={colors.white}
           size={20}
-          // onPress={() => headerButtonPress()}
+          onPress={handleDeleteQuickAdd} // Call handleDeleteQuickAdd function on press
           containerStyle={{ paddingRight: 15 }}
         />
         <TouchableOpacity
