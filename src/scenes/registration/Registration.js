@@ -56,6 +56,10 @@ export default function Registration() {
         avatar: defaultAvatar,
         expenditure: ['college', 'food'],
         income: ['parents', 'internship'],
+        quickadd: [
+          { title: 'Metro', category: 'Metro', amounts: ['21', '7', '12'] },
+        ],
+        joined: new Date(),
       }
       const usersRef = doc(firestore, 'users', uid)
       await setDoc(usersRef, data)

@@ -14,6 +14,7 @@ import {
   Switch,
   Image,
   Alert,
+  RefreshControl,
 } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import ScreenTemplate from '../../components/ScreenTemplate'
@@ -30,7 +31,6 @@ import {
 import { colors, fontSize } from '../../theme'
 import { UserDataContext } from '../../context/UserDataContext'
 import { ColorSchemeContext } from '../../context/ColorSchemeContext'
-import { sendNotification } from '../../utils/SendNotification'
 import { getKilobyteSize } from '../../utils/functions'
 import Card from '../../components/expenseCard'
 import DateTimePicker from '@react-native-community/datetimepicker'
@@ -52,25 +52,36 @@ export default function Home() {
     content: isDark ? styles.darkContent : styles.lightContent,
     text: isDark ? colors.white : colors.primaryText,
   }
-  const [newCategory, setNewCategory] = useState('')
+
+  const [refreshing, setRefreshing] = useState(false)
+
+  const onRefresh = () => {
+    setRefreshing(true)
+    fetchSummaryData()
+    setTimeout(() => {
+      setRefreshing(false)
+    }, 2000)
+  }
 
   // expense categories
   const ExpenditureData = userData && userData['expenditure']
   const SavingsDate = userData && userData['income']
 
   // Account Information
+  const [title, setTitle] = useState('')
   const [amount, setAmount] = useState(null)
   const [date, setDate] = useState(new Date())
-  const [showDatePicker, setShowDatePicker] = useState(false)
+  const [type, setType] = useState('Expenditure')
   const [selected, setSelected] = React.useState('')
-  const [title, setTitle] = useState('')
   const [category, setCategory] = useState('')
+
+  const [CurrentMonthExpense, setCurrentMonthExpense] = useState(0)
+  const [CurrentMonthIncome, setCurrentMonthIncome] = useState(0)
+
+  const [showDatePicker, setShowDatePicker] = useState(false)
   const [isTodaySwitchOn, setIsTodaySwitchOn] = useState(
     date.toDateString() === new Date().toDateString(),
   )
-  const [type, setType] = useState('Expenditure')
-  const [CurrentMonthExpense, setCurrentMonthExpense] = useState(0)
-  const [CurrentMonthIncome, setCurrentMonthIncome] = useState(0)
 
   const isExpenditureDataEmpty = false
   const isSavingsDateEmpty = false
@@ -94,7 +105,7 @@ export default function Home() {
     navigation.navigate('History')
   }
 
-  useEffect(() => {
+  const fetchSummaryData = async () => {
     const MonthYear = date.toLocaleDateString('en-GB', {
       month: 'short',
       year: 'numeric',
@@ -116,25 +127,32 @@ export default function Home() {
       'Aggregate',
     )
 
-    Promise.all([getDoc(expenseSummaryRef), getDoc(incomeSummaryRef)])
-      .then(([expenseDocSnapshot, incomeDocSnapshot]) => {
-        if (expenseDocSnapshot.exists()) {
-          const expenseData = expenseDocSnapshot.data()
-          setCurrentMonthExpense(expenseData.sum || 0)
-        } else {
-          setCurrentMonthExpense(0)
-        }
+    try {
+      const [expenseDocSnapshot, incomeDocSnapshot] = await Promise.all([
+        getDoc(expenseSummaryRef),
+        getDoc(incomeSummaryRef),
+      ])
 
-        if (incomeDocSnapshot.exists()) {
-          const incomeData = incomeDocSnapshot.data()
-          setCurrentMonthIncome(incomeData.sum || 0)
-        } else {
-          setCurrentMonthIncome(0)
-        }
-      })
-      .catch((error) => {
-        console.error('Error fetching summary documents: ', error)
-      })
+      if (expenseDocSnapshot.exists()) {
+        const expenseData = expenseDocSnapshot.data()
+        setCurrentMonthExpense(expenseData.sum || 0)
+      } else {
+        setCurrentMonthExpense(0)
+      }
+
+      if (incomeDocSnapshot.exists()) {
+        const incomeData = incomeDocSnapshot.data()
+        setCurrentMonthIncome(incomeData.sum || 0)
+      } else {
+        setCurrentMonthIncome(0)
+      }
+    } catch (error) {
+      console.error('Error fetching summary documents: ', error)
+    }
+  }
+
+  useEffect(() => {
+    fetchSummaryData()
   }, [])
 
   const handleDateChange = (event, selectedDate) => {
@@ -144,11 +162,11 @@ export default function Home() {
       setIsTodaySwitchOn(
         selectedDate.toDateString() === new Date().toDateString(),
       )
-      const formattedDate = selectedDate.toLocaleDateString('en-GB', {
-        day: 'numeric',
-        month: 'short',
-      })
-      setTitle(`${selected} ${formattedDate}`)
+      // const formattedDate = selectedDate.toLocaleDateString('en-GB', {
+      //   day: 'numeric',
+      //   month: 'short',
+      // })
+      // setTitle(`${selected} ${formattedDate}`)
     }
   }
 
@@ -204,28 +222,28 @@ export default function Home() {
 
   const handleCategorySelection = (value) => {
     setSelected(value)
-    const formattedDate = date.toLocaleDateString('en-GB', {
-      day: 'numeric',
-      month: 'short',
-    })
-    setTitle(`${value} ${formattedDate}`)
+    // const formattedDate = date.toLocaleDateString('en-GB', {
+    //   day: 'numeric',
+    //   month: 'short',
+    // })
+    // setTitle(`${value} ${formattedDate}`)
   }
 
   const handleSwitchToggle = (value) => {
     setIsTodaySwitchOn(value)
     if (value) {
       setDate(new Date())
-      const formattedDate = new Date().toLocaleDateString('en-GB', {
-        day: 'numeric',
-        month: 'short',
-      })
-      setTitle(`${selected} ${formattedDate}`)
+      // const formattedDate = new Date().toLocaleDateString('en-GB', {
+      //   day: 'numeric',
+      //   month: 'short',
+      // })
+      // setTitle(`${selected} ${formattedDate}`)
     } else {
-      const formattedDate = date.toLocaleDateString('en-GB', {
-        day: 'numeric',
-        month: 'short',
-      })
-      setTitle(`${selected} ${formattedDate}`)
+      // const formattedDate = date.toLocaleDateString('en-GB', {
+      //   day: 'numeric',
+      //   month: 'short',
+      // })
+      // setTitle(`${selected} ${formattedDate}`)
     }
   }
 
@@ -274,7 +292,17 @@ export default function Home() {
 
   return (
     <ScreenTemplate>
-      <ScrollView style={styles.main} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={styles.main}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={[colors.primary]}
+          />
+        }
+      >
         <View style={[styles.top]}>
           <TouchableOpacity
             style={styles.container}
@@ -323,37 +351,25 @@ export default function Home() {
               value={title}
               onChangeText={(text) => setTitle(text)}
             />
-            {!isExpenditureDataEmpty && !isSavingsDateEmpty ? (
-              <SelectList
-                boxStyles={{
-                  height: 45,
-                  borderColor: '#BABABA',
-                  borderRadius: 50,
-                  backgroundColor: '#F2F3F4',
-                  width: 300,
-                  borderWidth: 1,
-                  paddingHorizontal: 10,
-                }}
-                dropdownTextStyles={{ fontSize: 14, color: 'white' }}
-                dropdownStyles={{ backgroundColor: '#1c2833ba' }}
-                setSelected={handleCategorySelection}
-                search={false}
-                data={type === 'Expenditure' ? ExpenditureData : SavingsDate}
-                save="value"
-                placeholder="Select Category"
-              />
-            ) : (
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <TouchableOpacity
-                  style={styles.buttonDanger}
-                  onPress={NavigateToCategories}
-                >
-                  <Text style={[styles.buttonText]}>
-                    Click here to add categories
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            )}
+
+            <SelectList
+              boxStyles={{
+                height: 45,
+                borderColor: '#BABABA',
+                borderRadius: 50,
+                backgroundColor: '#F2F3F4',
+                width: 300,
+                borderWidth: 1,
+                paddingHorizontal: 10,
+              }}
+              dropdownTextStyles={{ fontSize: 14, color: 'white' }}
+              dropdownStyles={{ backgroundColor: '#1c2833ba' }}
+              setSelected={handleCategorySelection}
+              search={false}
+              data={type === 'Expenditure' ? ExpenditureData : SavingsDate}
+              save="value"
+              placeholder="Select Category"
+            />
 
             <TextInput
               style={[styles.input]}
@@ -378,7 +394,7 @@ export default function Home() {
                 style={styles.button}
                 onPress={HandleSubmitData}
               >
-                <Text style={styles.buttonText}>Add to database</Text>
+                <Text style={styles.buttonText}>Submit log</Text>
               </TouchableOpacity>
             </View>
             {showDatePicker && renderDatePicker()}

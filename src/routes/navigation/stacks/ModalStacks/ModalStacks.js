@@ -5,6 +5,7 @@ import { HomeTitleContext } from '../../../../context/HomeTitleContext'
 import Post from '../../../../scenes/post'
 import QuickAdd from '../../../../scenes/quickAdd'
 import Print from '../../../../scenes/print'
+import Month from '../../../../scenes/month'
 
 const Stack = createStackNavigator()
 

@@ -11,10 +11,11 @@ import {
 import IconButton from '../components/IconButton'
 import { colors } from '../theme'
 import { submitData } from './SubmitUserData'
-import { showToast } from './ShowToast'
 import FontIcon from 'react-native-vector-icons/FontAwesome5'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { deleteQuickAdd } from './deletequickadd'
+
+import { showToast } from './ShowToast'
 
 const QuickAddComponent = ({
   data,
@@ -121,6 +122,7 @@ const QuickAddItem = ({
   userData,
   handleAddLog,
   deleteQuickAdd,
+  editingQuickAdd,
 }) => {
   const { scheme } = useContext(ColorSchemeContext)
   const isDark = scheme === 'dark'
@@ -133,14 +135,28 @@ const QuickAddItem = ({
     )
   }
 
+  // const existingTitle = editingQuickAdd && editingQuickAdd.title
+  // const existingCategory = editingQuickAdd && editingQuickAdd.category
+  // const existingAmounts = editingQuickAdd && editingQuickAdd.amounts
+
+  const [editingtitle, setName] = useState(
+    editingQuickAdd && editingQuickAdd.title,
+  )
+  const [editingcategory, setCategory] = useState(
+    editingQuickAdd && editingQuickAdd.category,
+  )
+  const [editingamounts, setAmount] = useState(
+    editingQuickAdd && editingQuickAdd.amounts,
+  )
+
+  const handleEditQuickAdd = async () => {
+    // showToast((title = 'Editing quickadd'), isdark)
+    alert('Editing')
+  }
+
   const handleDeleteQuickAdd = async () => {
     try {
       await deleteQuickAdd(userData.id, title)
-      showToast({
-        title: 'Success',
-        body: 'Quick Add deleted',
-        isDark: isDark,
-      })
     } catch (error) {
       console.error('Error deleting quick add:', error)
       Alert.alert(
@@ -174,18 +190,18 @@ const QuickAddItem = ({
         </View>
       </View>
       <View style={styles.buttonContainer}>
-        <IconButton
+        {/* <IconButton
           icon="pen"
           color={colors.white}
           size={20}
-          // onPress={() => headerButtonPress()}
+          onPress={() => handleEditQuickAdd()}
           containerStyle={{ paddingRight: 15 }}
-        />
+        /> */}
         <IconButton
           icon="trash"
           color={colors.white}
           size={20}
-          onPress={handleDeleteQuickAdd} // Call handleDeleteQuickAdd function on press
+          onPress={handleDeleteQuickAdd}
           containerStyle={{ paddingRight: 15 }}
         />
         <TouchableOpacity

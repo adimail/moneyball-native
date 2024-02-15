@@ -103,32 +103,52 @@ export default function QuickAdd() {
     <ScreenTemplate>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.container}>
-          <Text style={[styles.title, { color: isDark ? 'white' : 'black' }]}>
+          <Text
+            style={[
+              {
+                fontSize: 15,
+                textAlign: 'center',
+                color: 'white',
+                backgroundColor: colors.darkPurple,
+                padding: 10,
+                width: '110%',
+              },
+            ]}
+          >
             Create a new template for Quick Add
           </Text>
           <View style={styles.inputContainer}>
             <TextInput
-              style={[styles.input, { color: isDark ? 'white' : 'black' }]}
+              style={[
+                styles.input,
+                { color: 'black', backgroundColor: colors.lightGrayPurple },
+              ]}
               value={title}
               onChangeText={setName}
               placeholder="Title"
-              placeholderTextColor={isDark ? 'white' : 'black'}
+              placeholderTextColor={'black'}
             />
-            <View>
+            <Text style={[styles.title, { color: 'white' }]}>
+              Setup the most frequent you spend
+            </Text>
+            <View
+              style={{
+                display: 'flex',
+                gap: 5,
+                flexDirection: 'row',
+                width: '100%',
+                justifyContent: 'space-around',
+              }}
+            >
               {[1, 2, 3].map((index) => (
                 <View style={styles.inline} key={index}>
-                  <Text
-                    style={[
-                      styles.title,
-                      { color: isDark ? 'white' : 'black' },
-                    ]}
-                  >
-                    Amount {index}
-                  </Text>
                   <TextInput
                     style={[
                       styles.numeric,
-                      { color: isDark ? 'white' : 'black' },
+                      {
+                        color: 'black',
+                        backgroundColor: colors.lightGrayPurple,
+                      },
                     ]}
                     keyboardType="numeric"
                     value={amounts[index - 1]}
@@ -138,7 +158,7 @@ export default function QuickAdd() {
                       setAmount(newAmounts)
                     }}
                     placeholder={`Amount ${index}`}
-                    placeholderTextColor={isDark ? 'white' : 'black'}
+                    placeholderTextColor={'black'}
                   />
                 </View>
               ))}
@@ -167,11 +187,33 @@ export default function QuickAdd() {
 
           <Button
             label={'Generate Quick Add'}
-            color={colors.primary}
+            color={colors.darkInput}
             onPress={() => {
               handlGenrateQuickAdd()
             }}
           />
+        </View>
+        <View style={styles.aboutContainer}>
+          <Text style={[styles.title, { color: isDark ? 'white' : 'black' }]}>
+            What are Quick Adds?
+          </Text>
+          <Text
+            style={[styles.aboutText, { color: isDark ? 'white' : 'black' }]}
+          >
+            Shortcuts for expenses that you do on regular basis
+          </Text>
+          <Text
+            style={[styles.aboutText, { color: isDark ? 'white' : 'black' }]}
+          >
+            For example, I use Auto Rickshaw on daily basis. Sometimes I spend
+            25₹ sometimes 10₹ sometimes 120₹. So I need a way to add such
+            expenses in a single click.
+          </Text>
+          <Text
+            style={[styles.aboutText, { color: isDark ? 'white' : 'black' }]}
+          >
+            Using spreadsheet will take you only so far
+          </Text>
         </View>
       </ScrollView>
     </ScreenTemplate>
@@ -185,10 +227,24 @@ const styles = StyleSheet.create({
   darkContent: {
     backgroundColor: '#34495E',
   },
+  aboutContainer: {
+    marginVertical: 20,
+    paddingHorizontal: 20,
+    justifyContent: 'flex-start',
+    width: 300,
+    alignSelf: 'center',
+  },
+  aboutText: {
+    fontSize: 16,
+    marginVertical: 10,
+  },
   container: {
     flex: 1,
     alignItems: 'center',
     padding: 10,
+    backgroundColor: colors.blueLight,
+    borderBottomRightRadius: 40,
+    borderBottomLeftRadius: 40,
   },
   title: {
     fontSize: 20,
@@ -204,12 +260,13 @@ const styles = StyleSheet.create({
   inputContainer: {
     display: 'flex',
     flexDirection: 'column',
-    width: '100%',
+    width: 300,
     alignItems: 'center',
     marginVertical: 30,
     gap: 10,
   },
   input: {
+    width: '100%',
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 50,
@@ -238,16 +295,16 @@ const styles = StyleSheet.create({
   },
   inline: {
     display: 'flex',
-    gap: 15,
     flexDirection: 'row',
+    alignItems: 'center',
   },
   numeric: {
     borderWidth: 1,
     borderColor: '#ccc',
-    borderRadius: 50,
+    borderRadius: 10,
     paddingHorizontal: 10,
     color: colors.primaryText,
-    width: 200,
+    width: 90,
     height: 45,
   },
 })
