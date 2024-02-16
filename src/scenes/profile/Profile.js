@@ -22,6 +22,33 @@ export default function Profile() {
     text: isDark ? colors.white : colors.primaryText,
   }
 
+  const [monthsSinceJoined, setMonthsSinceJoined] = useState([])
+
+  const joinedDate = userData.joined.toDate()
+  const joinedDateMillis = userData.joined.toDate().getTime()
+
+  const currentDate = new Date()
+  const currentDateMillis = new Date().getTime()
+  const differenceMillis = currentDateMillis - joinedDateMillis
+  const monthsPassed = Math.floor(differenceMillis / (1000 * 60 * 60 * 24 * 30))
+
+  useEffect(() => {
+    let currentMonth = new Date(joinedDate)
+    const months = []
+
+    while (currentMonth <= currentDate) {
+      const formattedMonth = currentMonth.toLocaleDateString('en-GB', {
+        month: 'short',
+        year: 'numeric',
+      })
+
+      months.push(formattedMonth)
+      currentMonth.setMonth(currentMonth.getMonth() + 1)
+    }
+
+    setMonthsSinceJoined(months)
+  }, [userData.joined])
+
   const goDetail = () => {
     navigation.navigate('Edit', { userData: userData })
   }
@@ -83,10 +110,19 @@ export default function Profile() {
         <Text style={[styles.title, { color: colorScheme.text }]}>
           {userData.fullName}
         </Text>
-        <Text style={[styles.field, { color: colorScheme.text }]}>Mail:</Text>
         <Text style={[styles.title, { color: colorScheme.text }]}>
           {userData.email}
         </Text>
+        <Text style={[styles.title, { color: colorScheme.text }]}>
+          {'Joined: ' +
+            (joinedDate &&
+              joinedDate.toLocaleDateString('en-GB', {
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric',
+              }))}
+        </Text>
+
         <Button label="Edit" color={colors.primary} onPress={goDetail} />
         <Button
           label="Delete account"

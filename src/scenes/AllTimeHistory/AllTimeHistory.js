@@ -21,16 +21,15 @@ export default function AllTimeHistory() {
   const colorScheme = {
     text: isDark ? colors.white : colors.primaryText,
   }
-  const [incomeSummaries, setIncomeSummaries] = useState([])
   const [isRefreshing, setIsRefreshing] = useState(false)
 
   const joinedDate = new Date(userData.joined)
-  const formattedDate = `${joinedDate.toLocaleString('default', {
-    month: 'short',
-  })} ${joinedDate.getFullYear()}`
 
   const onRefresh = () => {
     setIsRefreshing(true)
+    setTimeout(() => {
+      setIsRefreshing(false)
+    }, 2000)
   }
 
   return (
@@ -41,11 +40,7 @@ export default function AllTimeHistory() {
         refreshControl={
           <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
         }
-      >
-        <Text style={[styles.summary, { color: colorScheme.text }]}>
-          {formattedDate}
-        </Text>
-      </ScrollView>
+      ></ScrollView>
     </ScreenTemplate>
   )
 }
@@ -56,16 +51,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  title: {
-    fontSize: 24,
-    marginBottom: 10,
-  },
-  subtitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginTop: 20,
-  },
-  summary: {
+  text: {
     fontSize: 18,
     marginBottom: 10,
   },
