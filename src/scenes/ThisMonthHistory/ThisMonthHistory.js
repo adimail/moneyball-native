@@ -13,7 +13,6 @@ import Button from '../../components/Button'
 import { colors, fontSize } from 'theme'
 import { ColorSchemeContext } from '../../context/ColorSchemeContext'
 import { UserDataContext } from '../../context/UserDataContext'
-import { useNavigation } from '@react-navigation/native'
 import CustomSwitch from '../../components/toggleSwitch'
 import {
   collection,
@@ -30,7 +29,6 @@ import { showToast } from '../../utils/ShowToast'
 import IconButton from '../../components/IconButton'
 
 export default function ThisMonthHistory() {
-  const navigation = useNavigation()
   const { userData } = useContext(UserDataContext)
   const { scheme } = useContext(ColorSchemeContext)
   const isDark = scheme === 'dark'
@@ -76,7 +74,7 @@ export default function ThisMonthHistory() {
 
   const fetchDataForCurrentMonth = async () => {
     try {
-      setIsRefreshing(true) // Set refreshing indicator to true when starting the refresh
+      setIsRefreshing(true)
 
       const expenseCollectionRef = collection(
         firestore,
@@ -128,7 +126,7 @@ export default function ThisMonthHistory() {
     } catch (error) {
       console.error('Error fetching data:', error)
     } finally {
-      setIsRefreshing(false) // Set refreshing indicator to false after data fetching is done
+      setIsRefreshing(false)
     }
   }
 
@@ -235,7 +233,14 @@ export default function ThisMonthHistory() {
 
         <View style={styles.content}>
           <View style={{ width: '100%', alignItems: 'center' }}>
-            <View style={[styles.separator]} />
+            <View
+              style={[
+                styles.separator,
+                {
+                  backgroundColor: isDark ? 'white' : 'black',
+                },
+              ]}
+            />
 
             <View style={styles.logBook}>
               {dataToDisplay &&
@@ -325,6 +330,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    borderWidth: 0.3,
+    borderColor: 'white',
   },
   switchContainer: {
     position: 'absolute',
@@ -341,7 +348,6 @@ const styles = StyleSheet.create({
     height: 1,
     width: '90%',
     alignSelf: 'center',
-    backgroundColor: 'white',
   },
   column: {
     width: '75%',

@@ -35,6 +35,14 @@ const styles = StyleSheet.create({
     height: 50,
     alignSelf: 'center',
     margin: 10,
+    shadowColor: '#fff',
+    shadowOffset: {
+      width: 0,
+      height: 5,
+    },
+    shadowOpacity: 0.5,
+    shadowRadius: 5,
+    elevation: 5,
   },
   title: {
     fontSize: 17,

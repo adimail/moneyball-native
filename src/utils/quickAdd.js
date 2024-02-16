@@ -74,7 +74,12 @@ const QuickAddComponent = ({
 
       {data.length <= 3 ? (
         <TouchableOpacity onPress={() => NavigateToQuickAdd()}>
-          <View style={[styles.item, { alignItems: 'center' }]}>
+          <View
+            style={[
+              styles.item,
+              { alignItems: 'center', backgroundColor: colors.gray },
+            ]}
+          >
             <FontIcon name="plus" color={colors.white} size={81} />
             <Text
               style={{ color: colors.white, fontSize: 18, textAlign: 'center' }}
@@ -167,7 +172,12 @@ const QuickAddItem = ({
   }
 
   return (
-    <View style={styles.item}>
+    <View
+      style={[
+        styles.item,
+        { backgroundColor: isDark ? colors.primaryText : colors.gray },
+      ]}
+    >
       <View style={styles.body}>
         <Text style={[styles.text, { color: 'white', paddingBottom: 5 }]}>
           {title}
@@ -236,7 +246,6 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'space-between',
     padding: 10,
-    backgroundColor: colors.primaryText,
     alignItems: 'center',
     marginHorizontal: 15,
     borderRadius: 20,
@@ -251,6 +260,8 @@ const styles = StyleSheet.create({
     width: 80,
     alignItems: 'center',
     margin: 5,
+    borderWidth: 0.5,
+    borderColor: 'white',
   },
   buttonText: {
     color: 'white',

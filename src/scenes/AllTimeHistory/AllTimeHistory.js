@@ -6,6 +6,7 @@ import {
   ScrollView,
   Alert,
   RefreshControl,
+  TouchableOpacity,
 } from 'react-native'
 import ScreenTemplate from '../../components/ScreenTemplate'
 import { firestore } from '../../firebase/config'
@@ -13,6 +14,7 @@ import { doc } from 'firebase/firestore'
 import { ColorSchemeContext } from '../../context/ColorSchemeContext'
 import { UserDataContext } from '../../context/UserDataContext'
 import { colors, fontSize } from '../../theme'
+import { useNavigation } from '@react-navigation/native'
 
 export default function AllTimeHistory() {
   const { userData, setUserData } = useContext(UserDataContext)
@@ -22,11 +24,21 @@ export default function AllTimeHistory() {
     text: isDark ? colors.white : colors.primaryText,
   }
   const [refreshing, setRefreshing] = useState(false)
+  const navigation = useNavigation()
 
   const [monthsSinceJoined, setMonthsSinceJoined] = useState([])
-
   const joinedDate = userData.joined.toDate()
   const currentDate = new Date()
+
+  const navigatetomonth = (monthName) => {
+    navigation.navigate('ModalStacks', {
+      screen: 'Month',
+      params: {
+        month: monthName,
+        userData: userData,
+      },
+    })
+  }
 
   useEffect(() => {
     let currentMonth = new Date(joinedDate)
@@ -41,7 +53,6 @@ export default function AllTimeHistory() {
       months.push(formattedMonth)
       currentMonth.setMonth(currentMonth.getMonth() + 1)
     }
-
     setMonthsSinceJoined(months)
   }, [userData.joined])
 
@@ -56,23 +67,23 @@ export default function AllTimeHistory() {
     <ScreenTemplate>
       <ScrollView
         showsVerticalScrollIndicator={false}
-        style={{ paddingTop: 20 }}
+        style={[styles.main, { paddingTop: 20 }]}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       >
         <View>
-          <Text style={[styles.title, { color: colorScheme.text }]}>
-            Months since joined:
-          </Text>
-          {monthsSinceJoined.map((month, index) => (
-            <Text
-              key={index}
-              style={[styles.title, { color: colorScheme.text }]}
-            >
-              {month}
-            </Text>
-          ))}
+          <View style={styles.history}>
+            {monthsSinceJoined.map((month, index) => (
+              <TouchableOpacity
+                onPress={() => navigatetomonth(month)}
+                key={index}
+                style={styles.monthcard}
+              >
+                <Text style={[styles.title]}>{month}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
         </View>
       </ScrollView>
     </ScreenTemplate>
@@ -85,30 +96,30 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   title: {
-    fontSize: fontSize.xxxLarge,
-    marginBottom: 20,
+    fontSize: fontSize.xLarge,
     textAlign: 'center',
+    color: 'white',
+    backgroundColor: colors.primaryText,
+    width: '100%',
+    paddingVertical: 4,
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15,
   },
-  field: {
-    fontSize: fontSize.middle,
-    textAlign: 'center',
+  history: {
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-around',
+    margin: 10,
   },
-  avatar: {
-    margin: 30,
-    alignSelf: 'center',
-    borderWidth: 7,
-    borderColor: 'gray',
-    borderRadius: 500,
-  },
-  footerView: {
-    flex: 1,
-    alignItems: 'center',
-    marginBottom: 20,
-    marginTop: 20,
-  },
-  footerLink: {
-    color: colors.blueLight,
-    fontWeight: 'bold',
-    fontSize: fontSize.large,
+  monthcard: {
+    backgroundColor: colors.lightPurple,
+    width: '30%',
+    maxWidth: 200,
+    height: 100,
+    margin: 15,
+    borderRadius: 15,
+    borderWidth: 1,
+    borderColor: colors.gray,
   },
 })

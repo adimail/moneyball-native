@@ -42,6 +42,14 @@ export const ModalStacks = () => {
                 headerBackTitle: '',
               }}
             />
+            <Stack.Screen
+              name="Month"
+              component={Month}
+              options={{
+                title: ctx.title,
+                headerBackTitle: '',
+              }}
+            />
             <Stack.Screen name="Print" component={Print} />
           </Stack.Navigator>
         )}
