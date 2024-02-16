@@ -54,10 +54,24 @@ export default function Registration() {
         email,
         fullName,
         avatar: defaultAvatar,
-        expenditure: ['college', 'food'],
-        income: ['parents', 'internship'],
+        expenditure: [
+          'College',
+          'food',
+          'Dmart',
+          'Travel',
+          'Electronics',
+          'Internet',
+          'Other',
+        ],
+        income: ['parents', 'internship', 'Stocks'],
         quickadd: [
           { title: 'Metro', category: 'Metro', amounts: ['21', '7', '12'] },
+          {
+            title: 'Canteen',
+            category: 'College',
+            amounts: ['20', '25', '60'],
+          },
+          { title: 'Tea', category: 'Food', amounts: ['12', '24', '15'] },
         ],
         joined: new Date(),
       }

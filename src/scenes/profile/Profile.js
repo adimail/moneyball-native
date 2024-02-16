@@ -1,5 +1,12 @@
-import React, { useState, useContext, useEffect } from 'react'
-import { Text, View, StyleSheet, ScrollView, Alert } from 'react-native'
+import React, { useState, useContext, useEffect, useLayoutEffect } from 'react'
+import {
+  Text,
+  View,
+  StyleSheet,
+  ScrollView,
+  Alert,
+  Platform,
+} from 'react-native'
 import { Avatar } from '@rneui/themed'
 import ScreenTemplate from '../../components/ScreenTemplate'
 import Button from '../../components/Button'
@@ -12,6 +19,8 @@ import { colors, fontSize } from '../../theme'
 import { signOut, deleteUser } from 'firebase/auth'
 import { auth } from '../../firebase/config'
 import { Restart } from '../../utils/Restart'
+import { MaterialIcons } from '@expo/vector-icons'
+import IconButton from '../../components/IconButton'
 
 export default function Profile() {
   const { userData, setUserData } = useContext(UserDataContext)
@@ -31,6 +40,33 @@ export default function Profile() {
   const currentDateMillis = new Date().getTime()
   const differenceMillis = currentDateMillis - joinedDateMillis
   const monthsPassed = Math.floor(differenceMillis / (1000 * 60 * 60 * 24 * 30))
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <View style={{ paddingRight: 10 }}>
+          <IconButton
+            icon="code"
+            color={colors.lightPurple}
+            size={23}
+            onPress={() => ReaddeveloperInfo()}
+            containerStyle={{ paddingRight: 9 }}
+          />
+        </View>
+      ),
+    })
+  }, [navigation])
+
+  const ReaddeveloperInfo = () => {
+    // Alert.alert('Quick Add', 'Render Quick Add')
+    navigation.navigate('ModalStacks', {
+      screen: 'Developer',
+      params: {
+        data: userData,
+        from: 'Home screen',
+      },
+    })
+  }
 
   useEffect(() => {
     let currentMonth = new Date(joinedDate)
@@ -64,6 +100,11 @@ export default function Profile() {
   }
 
   const accountDelete = async () => {
+    if (Platform.OS === 'web') {
+      alert('Use mobile application to delete your account')
+      return
+    }
+
     Alert.alert(
       'Delete Account',
       'Are you sure you want to delete your account?',

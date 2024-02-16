@@ -21,12 +21,14 @@ import {
   doc,
   getDoc,
   setDoc,
+  writeBatch,
 } from 'firebase/firestore'
 import { firestore } from '../../firebase/config'
 import Log from '../../components/log'
 import Card from '../../components/expenseCard'
 import { showToast } from '../../utils/ShowToast'
 import IconButton from '../../components/IconButton'
+import { Platform } from 'react-native'
 
 export default function ThisMonthHistory() {
   const { userData } = useContext(UserDataContext)
@@ -142,15 +144,17 @@ export default function ThisMonthHistory() {
 
   const deleteLog = async () => {
     try {
+      const batch = writeBatch(firestore)
+
+      // Delete transaction directly without fetching it
       const transactionRef = doc(
         firestore,
         `transactions-${userData.id}/${type}/${CurrentMonth}`,
         selectedLog.id,
       )
-      const transactionSnapshot = await getDoc(transactionRef)
-      const transactionData = transactionSnapshot.data()
-      const amountToDelete = transactionData.amount
+      batch.delete(transactionRef)
 
+      // Update summary by subtracting the amount of the deleted log
       const summaryRef = doc(
         firestore,
         `summaries-${userData.id}`,
@@ -162,22 +166,31 @@ export default function ThisMonthHistory() {
       if (summarySnapshot.exists()) {
         const summaryData = summarySnapshot.data()
         const currentSum = summaryData.sum || 0
-        const updatedSum = currentSum - amountToDelete
-        await setDoc(summaryRef, { sum: updatedSum })
+        const updatedSum = currentSum - selectedLog.amount
+        batch.update(summaryRef, { sum: updatedSum })
       }
 
-      await deleteDoc(transactionRef)
+      await batch.commit()
 
       showToast({
-        title: 'Log Deleted. Refresh to view changes',
+        title: 'Log Deleted',
         isDark,
       })
+
+      fetchDataForCurrentMonth()
+      fetchSummaryData('Expenditure')
+      fetchSummaryData('Income')
     } catch (error) {
       console.error('Error deleting log:', error)
     }
   }
 
   const confirmDeleteLog = (log) => {
+    if (Platform.OS === 'web') {
+      alert('Use mobile application to delete your account')
+      return
+    }
+
     Alert.alert(
       'Confirm Deletion',
       'Are you sure you want to delete this log?',
@@ -186,7 +199,7 @@ export default function ThisMonthHistory() {
           text: 'Cancel',
           style: 'cancel',
         },
-        { text: 'OK', onPress: () => deleteLog() },
+        { text: 'OK', onPress: deleteLog },
       ],
       { cancelable: false },
     )
@@ -207,6 +220,12 @@ export default function ThisMonthHistory() {
       setIsRefreshing(false)
     }, 2000)
   }
+
+  useEffect(() => {
+    if (selectedLog !== null) {
+      confirmDeleteLog(selectedLog)
+    }
+  }, [selectedLog])
 
   return (
     <ScreenTemplate>
@@ -229,6 +248,10 @@ export default function ThisMonthHistory() {
         <Card
           title={`${CurrentMonth} aggregate`}
           amount={type === 'Income' ? totalIncome : totalExpense}
+        />
+        <Card
+          title={`Income - expenditure`}
+          amount={totalIncome - totalExpense}
         />
 
         <View style={styles.content}>
@@ -258,10 +281,7 @@ export default function ThisMonthHistory() {
                     <TouchableOpacity
                       style={styles.log}
                       key={log.id}
-                      onPress={() => {
-                        setSelectedLog(log)
-                        confirmDeleteLog(log)
-                      }}
+                      onPress={() => setSelectedLog(log)}
                     >
                       <View style={styles.column}>
                         <Text style={[styles.title]} numberOfLines={1}>
@@ -304,6 +324,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     display: 'flex',
     gap: 9,
+    marginBottom: 100,
   },
   amount: {
     fontSize: 20,

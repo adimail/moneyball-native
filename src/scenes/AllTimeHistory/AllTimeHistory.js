@@ -53,7 +53,8 @@ export default function AllTimeHistory() {
       months.push(formattedMonth)
       currentMonth.setMonth(currentMonth.getMonth() + 1)
     }
-    setMonthsSinceJoined(months)
+
+    setMonthsSinceJoined(months.reverse())
   }, [userData.joined])
 
   const onRefresh = () => {

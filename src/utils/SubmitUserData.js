@@ -1,6 +1,11 @@
 import { doc, collection, getDoc, setDoc } from 'firebase/firestore'
 import { firestore } from '../firebase/config'
 
+// Function to log errors
+const logError = (error) => {
+  console.error('Error adding document: ', error)
+}
+
 export const submitData = (
   type,
   title,
@@ -59,7 +64,7 @@ export const submitData = (
         resolve() // Resolve the promise once everything is done
       })
       .catch((error) => {
-        console.error('Error adding document: ', error)
+        logError(error) // Log error
         reject(error) // Reject the promise if there's an error
       })
   })

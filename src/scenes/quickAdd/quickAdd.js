@@ -23,7 +23,6 @@ import {
   arrayUnion,
 } from 'firebase/firestore'
 import { showToast } from '../../utils/ShowToast'
-import IconButton from '../../components/IconButton'
 import { SelectList } from 'react-native-dropdown-select-list'
 import Button from '../../components/Button'
 import { useNavigation } from '@react-navigation/native'
