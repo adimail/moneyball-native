@@ -73,6 +73,14 @@ export default function AllTimeHistory() {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       >
+        <Text style={[styles.header, { color: colorScheme.text }]}>
+          {'All time history since ' +
+            (joinedDate &&
+              joinedDate.toLocaleDateString('en-GB', {
+                month: 'short',
+                year: 'numeric',
+              }))}
+        </Text>
         <View>
           <View style={styles.history}>
             {monthsSinceJoined.map((month, index) => (
@@ -97,11 +105,11 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   title: {
+    color: 'white',
     fontSize: fontSize.xLarge,
     textAlign: 'center',
-    color: 'white',
-    backgroundColor: colors.primaryText,
     width: '100%',
+    backgroundColor: colors.primaryText,
     paddingVertical: 4,
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
@@ -122,5 +130,13 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     borderWidth: 1,
     borderColor: colors.gray,
+  },
+  header: {
+    fontSize: fontSize.xLarge,
+    textAlign: 'center',
+    width: '100%',
+    borderBottomWidth: 1,
+    borderBottomColor: '#fff',
+    paddingBottom: 10,
   },
 })
