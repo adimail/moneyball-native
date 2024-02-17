@@ -194,6 +194,35 @@ export default function Developer() {
             Aditya Godse
           </Text>
         </Text>
+
+        <Text
+          style={[
+            styles.content,
+            {
+              backgroundColor: colorScheme.input,
+              color: colorScheme.text,
+              paddingBottom: 10,
+            },
+          ]}
+        >
+          Aditya is an undergrad engineering student who is very passionate
+          about technology. As a user, student, friend or a stranger if you have
+          any suggestions, requests, ideas you can reach me at
+          adimail2404@gmail.com
+        </Text>
+        <Text
+          style={[
+            styles.content,
+            {
+              backgroundColor: colorScheme.input,
+              color: colorScheme.text,
+              paddingBottom: 30,
+            },
+          ]}
+        >
+          I also prefer twitter DMs for talks. Nice to meet you stranger. See
+          you around.
+        </Text>
       </ScrollView>
     </ScreenTemplate>
   )

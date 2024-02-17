@@ -7,6 +7,7 @@ import {
   Alert,
   Platform,
   Linking,
+  TouchableOpacity,
 } from 'react-native'
 import { Avatar } from '@rneui/themed'
 import ScreenTemplate from '../../components/ScreenTemplate'
@@ -154,12 +155,45 @@ export default function Profile() {
               onPress={onSignOutPress}
             />
           </View>
+          <Text
+            style={[
+              {
+                color: colorScheme.text,
+                textAlign: 'center',
+                marginBottom: 20,
+                fontSize: 15,
+              },
+            ]}
+          >
+            Moneyball is accessible on both Android and web platforms, with your
+            data securely stored in the cloud, enabling you to access it from
+            anywhere.
+          </Text>
+          <TouchableOpacity
+            onPress={() => {
+              Linking.openURL('https://www.moneyball-hub.web.app')
+            }}
+          >
+            <Text
+              style={[
+                {
+                  color: '#6996ff',
+                  textAlign: 'center',
+                  marginBottom: 50,
+                  fontSize: 15,
+                },
+              ]}
+            >
+              www.moneyball-hub.web.app
+            </Text>
+          </TouchableOpacity>
+
           <View
             style={{
               flexDirection: 'row',
               justifyContent: 'space-around',
               width: '100%',
-              paddingHorizontal: 33,
+              paddingHorizontal: 27,
               marginVertical: 10,
             }}
           >
@@ -184,7 +218,7 @@ export default function Profile() {
               containerStyle={{ paddingRight: 9 }}
             />
             <FontAwesome6
-              name="twitter"
+              name="x-twitter"
               size={20}
               color={colorScheme.text}
               onPress={openTwitter}
@@ -210,7 +244,7 @@ export default function Profile() {
 const styles = StyleSheet.create({
   top: {
     height: 111,
-    backgroundColor: colors.pink,
+    backgroundColor: colors.lightPurple,
     position: 'absolute',
     width: '100%',
   },
@@ -234,8 +268,8 @@ const styles = StyleSheet.create({
   avatar: {
     margin: 30,
     alignSelf: 'center',
-    borderWidth: 7,
-    borderColor: 'gray',
+    borderWidth: 2,
+    borderColor: '#fff',
     borderRadius: 500,
   },
   footerView: {

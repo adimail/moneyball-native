@@ -54,7 +54,27 @@ export default function QuickAdd() {
 
   const handlGenrateQuickAdd = async () => {
     if (!title || !category || !amounts) {
-      Alert.alert('Error', 'Please fill in all fields.')
+      Alert.alert('Error', 'Please fill in all fields ')
+      return
+    }
+
+    const isValidTitle = /^[a-zA-Z0-9 ]{4,}$/.test(title.trim())
+
+    if (!isValidTitle) {
+      Alert.alert(
+        'Error',
+        'Please enter a valid title with at least 4 characters (excluding special characters like period, comma, semicolon).',
+      )
+      return
+    }
+
+    const isValidAmounts = amounts.every((amount) => /^\d+$/.test(amount))
+
+    if (!isValidAmounts) {
+      Alert.alert(
+        'Error',
+        'Please enter valid amounts containing only numbers.',
+      )
       return
     }
 
@@ -124,10 +144,10 @@ export default function QuickAdd() {
               value={title}
               onChangeText={setName}
               placeholder="Title"
-              placeholderTextColor={'black'}
+              placeholderTextColor={'gray'}
             />
             <Text style={[styles.title, { color: 'white' }]}>
-              Setup the most frequent you spend
+              Setup the shortcut for most frequent exependitures
             </Text>
             <View
               style={{
@@ -156,7 +176,7 @@ export default function QuickAdd() {
                       setAmount(newAmounts)
                     }}
                     placeholder={`Amount ${index}`}
-                    placeholderTextColor={'black'}
+                    placeholderTextColor={'gray'}
                   />
                 </View>
               ))}
@@ -203,14 +223,16 @@ export default function QuickAdd() {
           <Text
             style={[styles.aboutText, { color: isDark ? 'white' : 'black' }]}
           >
-            For example, I use Auto Rickshaw on daily basis. Sometimes I spend
-            25₹ sometimes 10₹ sometimes 120₹. So I need a way to add such
-            expenses in a single click.
+            For instance, if you frequently use an auto-rickshaw/Metro, with
+            varying fares such as 25₹, 10₹, or 50₹, this feature enables you to
+            swiftly add these expenses with just a single click. This simplifies
+            the tracking of both small and large expenses, providing you with an
+            easy overview of your spending habits.
           </Text>
           <Text
             style={[styles.aboutText, { color: isDark ? 'white' : 'black' }]}
           >
-            Using spreadsheet will take you only so far
+            "Using spreadsheet will take you only so far" -Moneyball
           </Text>
         </View>
       </ScrollView>

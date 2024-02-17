@@ -73,6 +73,9 @@ export default function AllTimeHistory() {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       >
+        <Text style={[styles.title, { color: isDark ? 'white' : 'black' }]}>
+          All time history
+        </Text>
         <View>
           <View style={styles.history}>
             {monthsSinceJoined.map((month, index) => (

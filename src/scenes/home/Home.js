@@ -188,9 +188,30 @@ export default function Home() {
   }
 
   const HandleSubmitData = () => {
-    if (title.trim().length < 3 || !category || !amount || date === null) {
-      alert(
-        'Please fill in all required fields and ensure the title is at least 3 characters long',
+    // Check if all fields are filled
+    if (!title || !category || !amount || date === null) {
+      alert('Please fill in all required fields')
+      return
+    }
+
+    const isValidTitle = /^[a-zA-Z0-9 ]{4,}$/.test(title.trim())
+
+    // Check if title is valid
+    if (!isValidTitle) {
+      Alert.alert(
+        'Error',
+        'Please enter a valid title with at least 4 characters (excluding special characters like period, comma, semicolon).',
+      )
+      return
+    }
+
+    // Check if amount contains only numbers
+    const isValidAmount = /^\d+$/.test(amount)
+
+    if (!isValidAmount) {
+      Alert.alert(
+        'Error',
+        'Please enter a valid amount containing only numbers.',
       )
       return
     }
@@ -213,8 +234,6 @@ export default function Home() {
 
         setAmount('')
         setTitle('')
-        setDate(new Date())
-        setCategory('')
       })
       .catch((error) => {
         console.error('Error adding document: ', error)
@@ -322,11 +341,11 @@ export default function Home() {
               value={amount}
               onChangeText={(text) => setAmount(text)}
             />
-            <View style={styles.inline}>
+            <View style={[styles.inline]}>
               <MaterialIcons
                 name="date-range"
                 size={30}
-                color={colors.primaryText}
+                color={colors.black}
                 onPress={() => {
                   setShowDatePicker(true)
                 }}

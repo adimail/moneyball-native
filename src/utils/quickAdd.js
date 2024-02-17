@@ -72,7 +72,7 @@ const QuickAddComponent = ({
           />
         ))}
 
-      {data.length <= 3 ? (
+      {data.length <= 5 ? (
         <TouchableOpacity onPress={() => NavigateToQuickAdd()}>
           <View
             style={[
@@ -112,7 +112,7 @@ const QuickAddComponent = ({
           <Text
             style={{ color: colors.white, fontSize: 15, textAlign: 'center' }}
           >
-            You have reached the maximum limit of quick adds (4)
+            You have reached the maximum limit of quick adds (6)
           </Text>
         </View>
       )}
