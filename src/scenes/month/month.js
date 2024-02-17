@@ -225,7 +225,7 @@ export default function Month({ route }) {
 
   const confirmDeleteLog = (log) => {
     if (Platform.OS === 'web') {
-      alert('Use mobile application to delete logs')
+      alert('Use mobile application to delete your account')
       return
     }
 

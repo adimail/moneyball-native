@@ -123,16 +123,27 @@ export default function Profile() {
   const confirmAccountDeletion = async () => {
     const tokensDocumentRef = doc(firestore, 'tokens', userData.id)
     const usersDocumentRef = doc(firestore, 'users', userData.id)
+    const summariesDocumentRef = doc(firestore, `summaries-${userData.id}`)
+    const transactionsDocumentRef = doc(
+      firestore,
+      `transactions-${userData.id}`,
+    )
 
+    // Delete tokens document
     await deleteDoc(tokensDocumentRef)
+    // Delete users document
     await deleteDoc(usersDocumentRef)
+    // Delete summaries document
+    await deleteDoc(summariesDocumentRef)
+    // Delete transactions document
+    await deleteDoc(transactionsDocumentRef)
 
     const user = auth.currentUser
     deleteUser(user)
       .then(() => {
         signOut(auth)
           .then(() => {
-            console.log('User deleted')
+            console.log('user deleted')
           })
           .catch((error) => {
             console.log(error.message)
@@ -145,42 +156,37 @@ export default function Profile() {
 
   return (
     <ScreenTemplate>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={styles.top}></View>
-        <View style={styles.main}>
-          <View style={styles.avatar}>
-            <Avatar size="xlarge" rounded source={{ uri: userData.avatar }} />
-          </View>
-          <Text style={[styles.title, { color: colorScheme.text }]}>
-            {userData.fullName}
-          </Text>
-          <Text style={[styles.subtitle, { color: colorScheme.text }]}>
-            {userData.email}
-          </Text>
-          <Text style={[styles.subtitle, { color: colorScheme.text }]}>
-            {'Joined: ' +
-              (joinedDate &&
-                joinedDate.toLocaleDateString('en-GB', {
-                  day: 'numeric',
-                  month: 'short',
-                  year: 'numeric',
-                }))}
-          </Text>
+      <ScrollView style={styles.main} showsVerticalScrollIndicator={false}>
+        <View style={styles.avatar}>
+          <Avatar size="xlarge" rounded source={{ uri: userData.avatar }} />
+        </View>
+        <Text style={[styles.field, { color: colorScheme.text }]}>Name:</Text>
+        <Text style={[styles.title, { color: colorScheme.text }]}>
+          {userData.fullName}
+        </Text>
+        <Text style={[styles.title, { color: colorScheme.text }]}>
+          {userData.email}
+        </Text>
+        <Text style={[styles.title, { color: colorScheme.text }]}>
+          {'Joined: ' +
+            (joinedDate &&
+              joinedDate.toLocaleDateString('en-GB', {
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric',
+              }))}
+        </Text>
 
-          <View style={{ marginTop: 20 }}>
-            <Button label="Edit" color={colors.primary} onPress={goDetail} />
-            <Button label="How to use Moneyball" color={colors.primary} />
-            <Button
-              label="Delete account"
-              color={colors.secondary}
-              onPress={accountDelete}
-            />
-          </View>
-          <View style={styles.footerView}>
-            <Text onPress={onSignOutPress} style={styles.footerLink}>
-              Sign out
-            </Text>
-          </View>
+        <Button label="Edit" color={colors.primary} onPress={goDetail} />
+        <Button
+          label="Delete account"
+          color={colors.secondary}
+          onPress={accountDelete}
+        />
+        <View style={styles.footerView}>
+          <Text onPress={onSignOutPress} style={styles.footerLink}>
+            Sign out
+          </Text>
         </View>
       </ScrollView>
     </ScreenTemplate>
@@ -188,26 +194,14 @@ export default function Profile() {
 }
 
 const styles = StyleSheet.create({
-  top: {
-    backgroundColor: colors.lightPurple,
-    width: '100%',
-    height: 111,
-    position: 'absolute',
-  },
   main: {
     flex: 1,
-    width: 300,
-    alignSelf: 'center',
+    width: '100%',
   },
   title: {
     fontSize: fontSize.xxxLarge,
     marginBottom: 20,
     textAlign: 'center',
-  },
-  subtitle: {
-    fontSize: 15,
-    marginBottom: 5,
-    textAlign: 'left',
   },
   field: {
     fontSize: fontSize.middle,
@@ -216,8 +210,8 @@ const styles = StyleSheet.create({
   avatar: {
     margin: 30,
     alignSelf: 'center',
-    borderWidth: 3,
-    borderColor: '#fff',
+    borderWidth: 7,
+    borderColor: 'gray',
     borderRadius: 500,
   },
   footerView: {

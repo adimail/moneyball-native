@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   Alert,
   RefreshControl,
-  Vibration,
 } from 'react-native'
 import ScreenTemplate from '../../components/ScreenTemplate'
 import Button from '../../components/Button'
@@ -226,7 +225,7 @@ export default function ThisMonthHistory() {
 
   const confirmDeleteLog = (log) => {
     if (Platform.OS === 'web') {
-      alert('Use mobile application to delete logs')
+      alert('Use mobile application to delete your account')
       return
     }
 
@@ -387,7 +386,7 @@ export default function ThisMonthHistory() {
             </View>
 
             <Text style={{ color: isDark ? 'white' : 'black' }}>
-              Sort by Date & Costs. Filter by categories
+              Filter by Date, Costs and categories of logs
             </Text>
 
             <ScrollView
@@ -448,10 +447,7 @@ export default function ThisMonthHistory() {
                             },
                           ]}
                           key={log.id}
-                          onLongPress={() => {
-                            setSelectedLog(log)
-                            Vibration.vibrate(50)
-                          }}
+                          onLongPress={() => setSelectedLog(log)}
                         >
                           <View style={styles.column}>
                             <Text style={[styles.title]} numberOfLines={1}>
