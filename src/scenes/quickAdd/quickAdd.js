@@ -13,7 +13,6 @@ import { ColorSchemeContext } from '../../context/ColorSchemeContext'
 import { HomeTitleContext } from '../../context/HomeTitleContext'
 import { UserDataContext } from '../../context/UserDataContext'
 import { colors } from '../../theme'
-import CustomSwitch from '../../components/toggleSwitch'
 import { firestore } from '../../firebase/config'
 import {
   collection,

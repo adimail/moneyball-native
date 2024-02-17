@@ -225,8 +225,7 @@ export default function Month({ route }) {
         <CustomSwitch
           selectionMode={1}
           roundCorner={true}
-          option1={'Expenditure'}
-          option2={'Income'}
+          options={['Expenditure', 'Income']}
           onSelectSwitch={onSelectSwitch}
           selectionColor={'#1C2833'}
         />
