@@ -184,9 +184,12 @@ export default function Developer() {
         </Text>
 
         <Text
-          style={[styles.subheading, { backgroundColor: colorScheme.input }]}
+          style={[
+            styles.subheading,
+            { backgroundColor: colorScheme.input, color: colorScheme.text },
+          ]}
         >
-          This mobile application is made{' '}
+          This cross platform application is made by{' '}
           <Text style={{ color: colors.blueLight }} onPress={handleLinkPress}>
             Aditya Godse
           </Text>

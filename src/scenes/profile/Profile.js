@@ -6,6 +6,7 @@ import {
   ScrollView,
   Alert,
   Platform,
+  Linking,
 } from 'react-native'
 import { Avatar } from '@rneui/themed'
 import ScreenTemplate from '../../components/ScreenTemplate'
@@ -21,6 +22,8 @@ import { auth } from '../../firebase/config'
 import { Restart } from '../../utils/Restart'
 import { MaterialIcons } from '@expo/vector-icons'
 import IconButton from '../../components/IconButton'
+import { MaterialCommunityIcons } from '@expo/vector-icons'
+import { FontAwesome6 } from '@expo/vector-icons'
 
 export default function Profile() {
   const { userData, setUserData } = useContext(UserDataContext)
@@ -89,6 +92,24 @@ export default function Profile() {
     navigation.navigate('Edit', { userData: userData })
   }
 
+  const openGithub = () => {
+    Linking.openURL('https://github.com/adimail/moneyball-native')
+  }
+
+  const openWebLink = () => {
+    Linking.openURL('https://moneyball-hub.web.app')
+  }
+
+  const openAndroidLink = () => {
+    Linking.openURL(
+      'https://drive.google.com/drive/folders/1Ghb0r-gG7VcAaMwBQXA6KrrJSTTtHFTL?usp=sharing',
+    )
+  }
+
+  const openTwitter = () => {
+    Linking.openURL('https://twitter.com/adityagodse381')
+  }
+
   const onSignOutPress = () => {
     signOut(auth)
       .then(async () => {
@@ -99,93 +120,86 @@ export default function Profile() {
       })
   }
 
-  const accountDelete = async () => {
-    if (Platform.OS === 'web') {
-      alert('Use mobile application to delete your account')
-      return
-    }
-
-    Alert.alert(
-      'Delete Account',
-      'Are you sure you want to delete your account? This action cannot be undone and all you data will be lost',
-      [
-        {
-          text: 'Cancel',
-          onPress: () => console.log('Cancel Pressed'),
-          style: 'cancel',
-        },
-        { text: 'Yes', onPress: () => confirmAccountDeletion() },
-      ],
-      { cancelable: false },
-    )
-  }
-
-  const confirmAccountDeletion = async () => {
-    const tokensDocumentRef = doc(firestore, 'tokens', userData.id)
-    const usersDocumentRef = doc(firestore, 'users', userData.id)
-    const summariesDocumentRef = doc(firestore, `summaries-${userData.id}`)
-    const transactionsDocumentRef = doc(
-      firestore,
-      `transactions-${userData.id}`,
-    )
-
-    // Delete tokens document
-    await deleteDoc(tokensDocumentRef)
-    // Delete users document
-    await deleteDoc(usersDocumentRef)
-    // Delete summaries document
-    await deleteDoc(summariesDocumentRef)
-    // Delete transactions document
-    await deleteDoc(transactionsDocumentRef)
-
-    const user = auth.currentUser
-    deleteUser(user)
-      .then(() => {
-        signOut(auth)
-          .then(() => {
-            console.log('user deleted')
-          })
-          .catch((error) => {
-            console.log(error.message)
-          })
-      })
-      .catch((error) => {
-        console.log(error)
-      })
-  }
-
   return (
     <ScreenTemplate>
-      <ScrollView style={styles.main} showsVerticalScrollIndicator={false}>
-        <View style={styles.avatar}>
-          <Avatar size="xlarge" rounded source={{ uri: userData.avatar }} />
-        </View>
-        <Text style={[styles.field, { color: colorScheme.text }]}>Name:</Text>
-        <Text style={[styles.title, { color: colorScheme.text }]}>
-          {userData.fullName}
-        </Text>
-        <Text style={[styles.title, { color: colorScheme.text }]}>
-          {userData.email}
-        </Text>
-        <Text style={[styles.title, { color: colorScheme.text }]}>
-          {'Joined: ' +
-            (joinedDate &&
-              joinedDate.toLocaleDateString('en-GB', {
-                day: 'numeric',
-                month: 'short',
-                year: 'numeric',
-              }))}
-        </Text>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View style={styles.top}></View>
 
-        <Button label="Edit" color={colors.primary} onPress={goDetail} />
-        <Button
-          label="Delete account"
-          color={colors.secondary}
-          onPress={accountDelete}
-        />
-        <View style={styles.footerView}>
-          <Text onPress={onSignOutPress} style={styles.footerLink}>
-            Sign out
+        <View style={styles.main}>
+          <View style={styles.avatar}>
+            <Avatar size="xlarge" rounded source={{ uri: userData.avatar }} />
+          </View>
+          <Text style={[styles.title, { color: colorScheme.text }]}>
+            {userData.fullName}
+          </Text>
+          <Text style={[styles.subtitle, { color: colorScheme.text }]}>
+            {userData.email}
+          </Text>
+          <Text style={[styles.subtitle, { color: colorScheme.text }]}>
+            {'Joined: ' +
+              (joinedDate &&
+                joinedDate.toLocaleDateString('en-GB', {
+                  day: 'numeric',
+                  month: 'short',
+                  year: 'numeric',
+                }))}
+          </Text>
+
+          <View style={{ paddingVertical: 30 }}>
+            <Button label="Edit" color={colors.primary} onPress={goDetail} />
+            <Button label="how to use Moneyball" color={colors.primary} />
+            <Button
+              label="Sign out"
+              color={colors.secondary}
+              onPress={onSignOutPress}
+            />
+          </View>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-around',
+              width: '100%',
+              paddingHorizontal: 33,
+              marginVertical: 10,
+            }}
+          >
+            <IconButton
+              icon="github"
+              color={colorScheme.text}
+              size={20}
+              onPress={openGithub}
+              containerStyle={{ paddingRight: 9 }}
+            />
+            <MaterialCommunityIcons
+              name="web"
+              size={20}
+              color={colorScheme.text}
+              onPress={openWebLink}
+            />
+            <IconButton
+              icon="android"
+              color="#3DDC84"
+              size={20}
+              onPress={openAndroidLink}
+              containerStyle={{ paddingRight: 9 }}
+            />
+            <FontAwesome6
+              name="twitter"
+              size={20}
+              color={colorScheme.text}
+              onPress={openTwitter}
+            />
+          </View>
+          <Text
+            style={[
+              {
+                color: colorScheme.text,
+                textAlign: 'center',
+                marginBottom: 50,
+              },
+            ]}
+          >
+            Made with love by Aditya Godse
           </Text>
         </View>
       </ScrollView>
@@ -194,14 +208,24 @@ export default function Profile() {
 }
 
 const styles = StyleSheet.create({
+  top: {
+    height: 111,
+    backgroundColor: colors.pink,
+    position: 'absolute',
+    width: '100%',
+  },
   main: {
     flex: 1,
-    width: '100%',
+    width: 300,
+    alignSelf: 'center',
   },
   title: {
     fontSize: fontSize.xxxLarge,
     marginBottom: 20,
     textAlign: 'center',
+  },
+  subtitle: {
+    fontSize: 15,
   },
   field: {
     fontSize: fontSize.middle,

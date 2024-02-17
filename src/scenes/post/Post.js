@@ -173,10 +173,15 @@ export default function Post() {
             <TextInput
               style={[styles.input, { color: isDark ? 'white' : 'black' }]}
               value={newCategory}
-              onChangeText={setNewCategory}
+              onChangeText={(text) => {
+                if (/^\S.{2,}$/.test(text)) {
+                  setNewCategory(text)
+                }
+              }}
               placeholder="Enter new category"
               placeholderTextColor={isDark ? 'white' : 'black'}
             />
+
             <Button
               title={`Add New ${
                 type === 'Expenditure' ? 'Expense' : 'Income'
