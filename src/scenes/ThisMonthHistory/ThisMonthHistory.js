@@ -368,7 +368,7 @@ export default function ThisMonthHistory() {
               <View style={{ display: 'flex', flexDirection: 'row', gap: 5 }}>
                 <MaterialCommunityIcons
                   name="sort-alphabetical-ascending"
-                  size={24}
+                  size={35}
                   color={order === 'asc' ? colors.primary : colors.gray}
                   onPress={() => {
                     setOrder('asc')
@@ -376,7 +376,7 @@ export default function ThisMonthHistory() {
                 />
                 <MaterialCommunityIcons
                   name="sort-alphabetical-descending"
-                  size={24}
+                  size={35}
                   color={order === 'desc' ? colors.primary : colors.gray}
                   onPress={() => {
                     setOrder('desc')

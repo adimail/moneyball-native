@@ -107,7 +107,7 @@ export default function Profile() {
 
     Alert.alert(
       'Delete Account',
-      'Are you sure you want to delete your account?',
+      'Are you sure you want to delete your account? This action cannot be undone and all you data will be lost',
       [
         {
           text: 'Cancel',
@@ -123,8 +123,21 @@ export default function Profile() {
   const confirmAccountDeletion = async () => {
     const tokensDocumentRef = doc(firestore, 'tokens', userData.id)
     const usersDocumentRef = doc(firestore, 'users', userData.id)
+    const summariesDocumentRef = doc(firestore, `summaries-${userData.id}`)
+    const transactionsDocumentRef = doc(
+      firestore,
+      `transactions-${userData.id}`,
+    )
+
+    // Delete tokens document
     await deleteDoc(tokensDocumentRef)
+    // Delete users document
     await deleteDoc(usersDocumentRef)
+    // Delete summaries document
+    await deleteDoc(summariesDocumentRef)
+    // Delete transactions document
+    await deleteDoc(transactionsDocumentRef)
+
     const user = auth.currentUser
     deleteUser(user)
       .then(() => {
