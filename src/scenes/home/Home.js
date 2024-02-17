@@ -262,7 +262,9 @@ export default function Home() {
             }}
           >
             <Card
-              title="Current month aggregate"
+              title={`Current Month ${
+                type === 'Income' ? 'Income' : 'Expenses'
+              }`}
               amount={
                 type === 'Income' ? CurrentMonthIncome : CurrentMonthExpense
               }

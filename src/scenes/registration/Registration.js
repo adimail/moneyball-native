@@ -56,7 +56,7 @@ export default function Registration() {
         avatar: defaultAvatar,
         expenditure: [
           'College',
-          'food',
+          'Food',
           'Dmart',
           'Travel',
           'Electronics',

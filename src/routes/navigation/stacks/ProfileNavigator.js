@@ -6,6 +6,7 @@ import HeaderStyle from './headerComponents/HeaderStyle'
 
 import Profile from '../../../scenes/profile'
 import Edit from '../../../scenes/edit'
+import UserGuide from '../../../scenes/userguide/userguide'
 
 const Stack = createStackNavigator()
 const RootStack = createStackNavigator()
@@ -26,6 +27,13 @@ export const ProfileNavigator = () => {
         <Stack.Screen
           name="Edit"
           component={Edit}
+          options={({ navigation }) => ({
+            headerBackground: scheme === 'dark' ? null : () => <HeaderStyle />,
+          })}
+        />
+        <Stack.Screen
+          name="UserGuide"
+          component={UserGuide}
           options={({ navigation }) => ({
             headerBackground: scheme === 'dark' ? null : () => <HeaderStyle />,
           })}

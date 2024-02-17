@@ -29,6 +29,8 @@ import Card from '../../components/expenseCard'
 import { showToast } from '../../utils/ShowToast'
 import { Platform } from 'react-native'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
+import { useFocusEffect } from '@react-navigation/native'
+import { HomeTitleContext } from '../../context/HomeTitleContext'
 
 export default function Month({ route }) {
   const { month, userData } = route.params
@@ -37,6 +39,7 @@ export default function Month({ route }) {
   const colorScheme = {
     text: isDark ? colors.white : colors.primaryText,
   }
+  const { setTitle } = useContext(HomeTitleContext)
   const [type, setType] = useState('Expenditure')
   const [expenseData, setExpenseData] = useState(null)
   const [incomeData, setIncomeData] = useState(null)
@@ -179,6 +182,10 @@ export default function Month({ route }) {
   const onSelectCategoryFilter = (value) => {
     setCategoryFilter(value)
   }
+
+  useFocusEffect(() => {
+    setTitle(`${month} History`)
+  })
 
   const deleteLog = async () => {
     try {

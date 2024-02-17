@@ -93,6 +93,10 @@ export default function Profile() {
     navigation.navigate('Edit', { userData: userData })
   }
 
+  const goToUserGuide = () => {
+    navigation.navigate('UserGuide')
+  }
+
   const openGithub = () => {
     Linking.openURL('https://github.com/adimail/moneyball-native')
   }
@@ -148,7 +152,11 @@ export default function Profile() {
 
           <View style={{ paddingVertical: 30 }}>
             <Button label="Edit" color={colors.primary} onPress={goDetail} />
-            <Button label="how to use Moneyball" color={colors.primary} />
+            <Button
+              label="how to use Moneyball"
+              color={colors.primary}
+              onPress={goToUserGuide}
+            />
             <Button
               label="Sign out"
               color={colors.secondary}
