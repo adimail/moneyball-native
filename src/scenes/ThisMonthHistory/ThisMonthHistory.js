@@ -281,7 +281,7 @@ export default function ThisMonthHistory() {
                     <TouchableOpacity
                       style={styles.log}
                       key={log.id}
-                      onPress={() => setSelectedLog(log)}
+                      onLongPress={() => setSelectedLog(log)}
                     >
                       <View style={styles.column}>
                         <Text style={[styles.title]} numberOfLines={1}>
