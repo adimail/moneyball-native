@@ -207,8 +207,8 @@ export default function Developer() {
         >
           Aditya is an undergrad engineering student who is very passionate
           about technology. As a user, student, friend or a stranger if you have
-          any suggestions, issues, requests, ideas about moneyball or anything
-          related to technology, you can reach me at adimail2404@gmail.com
+          any suggestions, requests, ideas you can reach me at
+          adimail2404@gmail.com
         </Text>
         <Text
           style={[
