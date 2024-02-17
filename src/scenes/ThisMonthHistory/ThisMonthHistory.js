@@ -27,8 +27,8 @@ import { firestore } from '../../firebase/config'
 import Log from '../../components/log'
 import Card from '../../components/expenseCard'
 import { showToast } from '../../utils/ShowToast'
-import IconButton from '../../components/IconButton'
 import { Platform } from 'react-native'
+import { MaterialCommunityIcons } from '@expo/vector-icons'
 
 export default function ThisMonthHistory() {
   const { userData } = useContext(UserDataContext)
@@ -43,6 +43,16 @@ export default function ThisMonthHistory() {
   const [selectedLog, setSelectedLog] = useState(null)
   const [isRefreshing, setIsRefreshing] = useState(false)
 
+  const [filter, setFilter] = useState('Date')
+  const [categoryfilter, setCategoryFilter] = useState('All')
+
+  const [incomeCategories, setIncomeCategories] = useState(['All'])
+  const [expenseCategories, setExpenseCategories] = useState(['All'])
+  const [showfilters, setShowFilters] = useState(false)
+  const [order, setOrder] = useState('desc')
+
+  const [isLoading, setIsLoading] = useState(false)
+
   const CurrentMonth = new Date().toLocaleDateString('en-GB', {
     month: 'short',
     year: 'numeric',
@@ -50,6 +60,27 @@ export default function ThisMonthHistory() {
 
   const [totalExpense, setTotalExpense] = useState(0)
   const [totalIncome, setTotalIncome] = useState(0)
+
+  useEffect(() => {
+    if (incomeData) {
+      const uniqueIncomeCategories = extractUniqueCategories(incomeData)
+      setIncomeCategories(['All', ...uniqueIncomeCategories])
+    }
+    if (expenseData) {
+      const uniqueExpenseCategories = extractUniqueCategories(expenseData)
+      setExpenseCategories(['All', ...uniqueExpenseCategories])
+    }
+  }, [incomeData, expenseData])
+
+  const extractUniqueCategories = (logs) => {
+    const categories = logs.reduce((uniqueCategories, log) => {
+      if (!uniqueCategories.includes(log.category)) {
+        return [...uniqueCategories, log.category]
+      }
+      return uniqueCategories
+    }, [])
+    return categories
+  }
 
   const fetchSummaryData = async (dataType) => {
     try {
@@ -142,6 +173,13 @@ export default function ThisMonthHistory() {
     setType(value)
   }
 
+  const onSelectFilter = (value) => {
+    setFilter(value)
+  }
+  const onSelectCategoryFilter = (value) => {
+    setCategoryFilter(value)
+  }
+
   const deleteLog = async () => {
     try {
       const batch = writeBatch(firestore)
@@ -206,13 +244,57 @@ export default function ThisMonthHistory() {
   }
 
   const dataToDisplay = useMemo(() => {
-    return type === 'Expenditure' ? expenseData : incomeData
-  }, [type, expenseData, incomeData])
+    let filteredData = []
+
+    if (type === 'Expenditure' && expenseData) {
+      filteredData = [...expenseData]
+    } else if (type === 'Income' && incomeData) {
+      filteredData = [...incomeData]
+    }
+
+    // Apply filter based on selected filter type
+    if (filter === 'Date') {
+      // Sort by date
+      filteredData = filteredData.sort((a, b) => {
+        if (order === 'asc') {
+          return (
+            new Date(a.date.seconds * 1000) - new Date(b.date.seconds * 1000)
+          )
+        } else {
+          return (
+            new Date(b.date.seconds * 1000) - new Date(a.date.seconds * 1000)
+          )
+        }
+      })
+    } else if (filter === 'Amount') {
+      // Sort by amount
+      filteredData = filteredData.sort((a, b) => {
+        if (order === 'asc') {
+          return a.amount - b.amount
+        } else {
+          return b.amount - a.amount
+        }
+      })
+    }
+
+    // Apply category filter
+    if (categoryfilter !== 'All') {
+      filteredData = filteredData.filter(
+        (log) => log.category === categoryfilter,
+      )
+    }
+
+    return filteredData
+  }, [type, expenseData, incomeData, filter, categoryfilter, order])
 
   const onRefresh = () => {
     setIsRefreshing(true)
+    setIsLoading(true)
 
     fetchDataForCurrentMonth()
+      .then(() => setIsLoading(false))
+      .catch(() => setIsLoading(false))
+
     fetchSummaryData('Expenditure')
     fetchSummaryData('Income')
 
@@ -236,20 +318,29 @@ export default function ThisMonthHistory() {
           <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
         }
       >
-        <CustomSwitch
-          selectionMode={1}
-          roundCorner={true}
-          options={['Expenditure', 'Income']}
-          onSelectSwitch={onSelectSwitch}
-          selectionColor={'#1C2833'}
-        />
+        <View
+          style={{
+            alignItems: 'center',
+            paddingBottom: 10,
+            width: 300,
+            alignSelf: 'center',
+          }}
+        >
+          <CustomSwitch
+            selectionMode={1}
+            roundCorner={true}
+            options={['Expenditure', 'Income']}
+            onSelectSwitch={onSelectSwitch}
+            selectionColor={'#1C2833'}
+          />
+        </View>
 
         <Card
-          title={`${CurrentMonth} aggregate`}
+          title={`${CurrentMonth} ${type === 'Income' ? 'Income' : 'Expenses'}`}
           amount={type === 'Income' ? totalIncome : totalExpense}
         />
         <Card
-          title={`Income - expenditure`}
+          title={`Income - Expenditure`}
           amount={totalIncome - totalExpense}
         />
 
@@ -264,45 +355,123 @@ export default function ThisMonthHistory() {
               ]}
             />
 
+            <View
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                gap: 30,
+                maxWidth: 300,
+                marginTop: 10,
+                alignItems: 'center',
+              }}
+            >
+              <View style={{ display: 'flex', flexDirection: 'row', gap: 5 }}>
+                <MaterialCommunityIcons
+                  name="sort-alphabetical-ascending"
+                  size={24}
+                  color={order === 'asc' ? colors.primary : colors.gray}
+                  onPress={() => {
+                    setOrder('asc')
+                  }}
+                />
+                <MaterialCommunityIcons
+                  name="sort-alphabetical-descending"
+                  size={24}
+                  color={order === 'desc' ? colors.primary : colors.gray}
+                  onPress={() => {
+                    setOrder('desc')
+                  }}
+                />
+              </View>
+            </View>
+
+            <Text style={{ color: isDark ? 'white' : 'black' }}>
+              Filter by Date, Costs and categories of logs
+            </Text>
+
+            <ScrollView
+              horizontal={true}
+              contentContainerStyle={styles.scrollViewContainer}
+              showsVerticalScrollIndicator={false}
+            >
+              <CustomSwitch
+                selectionMode={1}
+                roundCorner={true}
+                options={['Date', 'Amount']}
+                onSelectSwitch={onSelectFilter}
+                selectionColor={'#1C2833'}
+                height={38}
+                borderRadius={10}
+              />
+              <CustomSwitch
+                selectionMode={1}
+                roundCorner={true}
+                options={
+                  type === 'Income' ? incomeCategories : expenseCategories
+                }
+                onSelectSwitch={onSelectCategoryFilter}
+                selectionColor={'#1C2833'}
+                height={36}
+                borderRadius={10}
+              />
+            </ScrollView>
+
             <View style={styles.logBook}>
-              {dataToDisplay &&
-                (dataToDisplay.length === 0 ? (
-                  <Text
-                    style={[
-                      styles.title,
-                      { color: isDark ? 'white' : 'black' },
-                    ]}
-                  >
-                    No data to display
-                  </Text>
-                ) : (
-                  dataToDisplay.map((log) => (
-                    <TouchableOpacity
-                      style={styles.log}
-                      key={log.id}
-                      onLongPress={() => setSelectedLog(log)}
-                    >
-                      <View style={styles.column}>
-                        <Text style={[styles.title]} numberOfLines={1}>
-                          {log.title}
-                        </Text>
-                        <Text style={styles.date}>
-                          {new Date(log.date.seconds * 1000).toLocaleDateString(
-                            'en-US',
+              {isLoading ? ( // Check if loading
+                <Text
+                  style={[styles.title, { color: isDark ? 'white' : 'black' }]}
+                >
+                  Fetching data from cloud ☁️
+                </Text>
+              ) : (
+                dataToDisplay && (
+                  <>
+                    {dataToDisplay.length === 0 ? (
+                      <Text
+                        style={[
+                          styles.title,
+                          { color: isDark ? 'white' : 'black' },
+                        ]}
+                      >
+                        No data to display
+                      </Text>
+                    ) : (
+                      dataToDisplay.map((log) => (
+                        <TouchableOpacity
+                          style={[
+                            styles.log,
                             {
-                              month: 'short',
-                              day: '2-digit',
-                              weekday: 'short',
+                              backgroundColor: isDark
+                                ? colors.primaryText
+                                : colors.primary,
                             },
-                          )}
-                        </Text>
-                      </View>
-                      <View>
-                        <Text style={styles.amount}>₹ {log.amount}</Text>
-                      </View>
-                    </TouchableOpacity>
-                  ))
-                ))}
+                          ]}
+                          key={log.id}
+                          onLongPress={() => setSelectedLog(log)}
+                        >
+                          <View style={styles.column}>
+                            <Text style={[styles.title]} numberOfLines={1}>
+                              {log.title}
+                            </Text>
+                            <Text style={styles.date}>
+                              {new Date(
+                                log.date.seconds * 1000,
+                              ).toLocaleDateString('en-US', {
+                                month: 'short',
+                                day: '2-digit',
+                                weekday: 'short',
+                              })}
+                            </Text>
+                          </View>
+                          <View>
+                            <Text style={styles.amount}>₹ {log.amount}</Text>
+                          </View>
+                        </TouchableOpacity>
+                      ))
+                    )}
+                  </>
+                )
+              )}
             </View>
           </View>
         </View>
@@ -346,7 +515,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     width: '87%',
     height: 40,
-    backgroundColor: colors.primaryText,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -364,7 +532,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   separator: {
-    marginVertical: 20,
+    marginTop: 20,
     height: 1,
     width: '90%',
     alignSelf: 'center',
@@ -374,5 +542,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+  },
+  scrollViewContainer: {
+    alignItems: 'center',
+    marginVertical: 20,
+    paddingHorizontal: 20,
   },
 })

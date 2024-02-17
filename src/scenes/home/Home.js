@@ -12,13 +12,11 @@ import {
   StyleSheet,
   TextInput,
   Switch,
-  Image,
   Alert,
   RefreshControl,
 } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import ScreenTemplate from '../../components/ScreenTemplate'
-import Button from '../../components/Button'
 import { firestore } from '../../firebase/config'
 import {
   doc,
@@ -48,20 +46,8 @@ export default function Home() {
   const { userData } = useContext(UserDataContext)
   const { scheme } = useContext(ColorSchemeContext)
   const isDark = scheme === 'dark'
-  const colorScheme = {
-    content: isDark ? styles.darkContent : styles.lightContent,
-    text: isDark ? colors.white : colors.primaryText,
-  }
 
   const [refreshing, setRefreshing] = useState(false)
-
-  const onRefresh = () => {
-    setRefreshing(true)
-    fetchSummaryData()
-    setTimeout(() => {
-      setRefreshing(false)
-    }, 2000)
-  }
 
   // expense categories
   const ExpenditureData = userData && userData['expenditure']
@@ -72,27 +58,14 @@ export default function Home() {
   const [amount, setAmount] = useState(null)
   const [date, setDate] = useState(new Date())
   const [type, setType] = useState('Expenditure')
-  const [selected, setSelected] = React.useState('')
   const [category, setCategory] = useState('')
 
   const [CurrentMonthExpense, setCurrentMonthExpense] = useState(0)
   const [CurrentMonthIncome, setCurrentMonthIncome] = useState(0)
 
   const [showDatePicker, setShowDatePicker] = useState(false)
-  const [isTodaySwitchOn, setIsTodaySwitchOn] = useState(
-    date.toDateString() === new Date().toDateString(),
-  )
-
-  const isExpenditureDataEmpty = false
-  const isSavingsDateEmpty = false
 
   const QuickAddData = userData && userData['quickadd']
-
-  // const QuickAddData = [
-  //   { title: 'Rickshaw', category: 'Rickshaw', amounts: ['20', '25', '10'] },
-  //   { title: 'Metro', category: 'Metro', amounts: ['21', '7', '12'] },
-  //   { title: 'Top Up', category: 'Accessories and Internet', amounts: ['19'] },
-  // ]
 
   const MonthYear = useMemo(() => {
     return date.toLocaleDateString('en-GB', {
@@ -101,8 +74,12 @@ export default function Home() {
     })
   }, [date])
 
-  const handleCurrentMonthCardPress = () => {
-    navigation.navigate('History')
+  const onRefresh = () => {
+    setRefreshing(true)
+    fetchSummaryData()
+    setTimeout(() => {
+      setRefreshing(false)
+    }, 2000)
   }
 
   const fetchSummaryData = async () => {
@@ -159,14 +136,6 @@ export default function Home() {
     setShowDatePicker(false)
     if (selectedDate) {
       setDate(selectedDate)
-      setIsTodaySwitchOn(
-        selectedDate.toDateString() === new Date().toDateString(),
-      )
-      // const formattedDate = selectedDate.toLocaleDateString('en-GB', {
-      //   day: 'numeric',
-      //   month: 'short',
-      // })
-      // setTitle(`${selected} ${formattedDate}`)
     }
   }
 
@@ -199,7 +168,6 @@ export default function Home() {
   }, [navigation])
 
   const NavigateToCategories = () => {
-    // Alert.alert('Quick Add', 'Render Quick Add')
     navigation.navigate('ModalStacks', {
       screen: 'Post',
       params: {
@@ -210,7 +178,6 @@ export default function Home() {
   }
 
   const NavigateToQuickAdd = () => {
-    // Alert.alert('Quick Add', 'Render Quick Add')
     navigation.navigate('ModalStacks', {
       screen: 'QuickAdd',
       params: {
@@ -220,74 +187,39 @@ export default function Home() {
     })
   }
 
-  const handleCategorySelection = (value) => {
-    setSelected(value)
-    // const formattedDate = date.toLocaleDateString('en-GB', {
-    //   day: 'numeric',
-    //   month: 'short',
-    // })
-    // setTitle(`${value} ${formattedDate}`)
-  }
-
-  const handleSwitchToggle = (value) => {
-    setIsTodaySwitchOn(value)
-    if (value) {
-      setDate(new Date())
-      // const formattedDate = new Date().toLocaleDateString('en-GB', {
-      //   day: 'numeric',
-      //   month: 'short',
-      // })
-      // setTitle(`${selected} ${formattedDate}`)
-    } else {
-      // const formattedDate = date.toLocaleDateString('en-GB', {
-      //   day: 'numeric',
-      //   month: 'short',
-      // })
-      // setTitle(`${selected} ${formattedDate}`)
-    }
-  }
-
-  React.useEffect(() => {
-    if (!isTodaySwitchOn) {
-      setShowDatePicker(true)
-    }
-  }, [isTodaySwitchOn])
-
   const HandleSubmitData = () => {
-    if (title && selected && amount !== null) {
-      submitData(
-        type,
-        title,
-        amount,
-        category,
-        userData,
-        date,
-        setCurrentMonthExpense,
+    if (title.trim().length < 3 || !category || !amount || date === null) {
+      alert(
+        'Please fill in all required fields and ensure the title is at least 3 characters long',
       )
-        .then(() => {
-          showToast({
-            title: 'Log Added',
-            body: title,
-            isDark,
-          })
-
-          setAmount('')
-          setTitle('')
-          setDate(new Date())
-          setIsTodaySwitchOn(true)
-          setCategory('')
-        })
-        .catch((error) => {
-          console.error('Error adding document: ', error)
-          Alert.alert('Error', 'Failed to add log. Please try again.')
-        })
-    } else {
-      alert('Please fill in all required fields')
+      return
     }
-  }
 
-  const onSelectSwitch = (value) => {
-    setType(value)
+    submitData(
+      type,
+      title,
+      amount,
+      category,
+      userData,
+      date,
+      setCurrentMonthExpense,
+    )
+      .then(() => {
+        showToast({
+          title: 'Log Added',
+          body: title,
+          isDark,
+        })
+
+        setAmount('')
+        setTitle('')
+        setDate(new Date())
+        setCategory('')
+      })
+      .catch((error) => {
+        console.error('Error adding document: ', error)
+        Alert.alert('Error', 'Failed to add log. Please try again.')
+      })
   }
 
   return (
@@ -306,7 +238,9 @@ export default function Home() {
         <View style={[styles.top]}>
           <TouchableOpacity
             style={styles.container}
-            onPress={handleCurrentMonthCardPress}
+            onPress={() => {
+              navigation.navigate('History')
+            }}
           >
             <Card
               title="Current month aggregate"
@@ -327,12 +261,21 @@ export default function Home() {
               })}
           </Text>
 
-          <View style={{ alignItems: 'center', paddingBottom: 10 }}>
+          <View
+            style={{
+              alignItems: 'center',
+              paddingBottom: 10,
+              width: 300,
+              alignSelf: 'center',
+            }}
+          >
             <CustomSwitch
               selectionMode={1}
               roundCorner={true}
               options={['Expenditure', 'Income']}
-              onSelectSwitch={onSelectSwitch}
+              onSelectSwitch={(value) => {
+                setType(value)
+              }}
               selectionColor={'#1C2833'}
             />
           </View>
@@ -363,7 +306,9 @@ export default function Home() {
               }}
               dropdownTextStyles={{ fontSize: 14, color: 'white' }}
               dropdownStyles={{ backgroundColor: '#1c2833ba' }}
-              setSelected={handleCategorySelection}
+              setSelected={(value) => {
+                setCategory(value)
+              }}
               search={false}
               data={type === 'Expenditure' ? ExpenditureData : SavingsDate}
               save="value"
@@ -378,17 +323,14 @@ export default function Home() {
               onChangeText={(text) => setAmount(text)}
             />
             <View style={styles.inline}>
-              <View style={styles.switchContainer}>
-                <Text style={(styles.switchLabel, { color: 'white' })}>
-                  Set current date
-                </Text>
-                <Switch
-                  trackColor={{ false: '#767577', true: '#81b0ff' }}
-                  thumbColor={isTodaySwitchOn ? '#fff' : '#f4f3f4'}
-                  value={isTodaySwitchOn}
-                  onValueChange={handleSwitchToggle}
-                />
-              </View>
+              <MaterialIcons
+                name="date-range"
+                size={30}
+                color={colors.primaryText}
+                onPress={() => {
+                  setShowDatePicker(true)
+                }}
+              />
               <TouchableOpacity
                 style={styles.button}
                 onPress={HandleSubmitData}
@@ -414,21 +356,6 @@ export default function Home() {
 }
 
 const styles = StyleSheet.create({
-  lightContent: {
-    backgroundColor: colors.lightyellow,
-    padding: 20,
-    borderRadius: 5,
-    marginTop: 30,
-    marginLeft: 30,
-    marginRight: 30,
-  },
-  darkContent: {
-    backgroundColor: colors.gray,
-    padding: 20,
-    borderRadius: 5,
-    marginLeft: 30,
-    marginRight: 30,
-  },
   main: {
     flex: 1,
     width: '100%',
@@ -444,10 +371,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     textAlign: 'center',
     fontSize: 20,
-  },
-  field: {
-    fontSize: fontSize.middle,
-    textAlign: 'center',
   },
   container: {
     display: 'flex',
@@ -475,16 +398,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignContent: 'center',
   },
-  buttonDanger: {
-    height: 45,
-    backgroundColor: colors.pink,
-    borderRadius: 10,
-    paddingHorizontal: 10,
-    alignItems: 'center',
-    display: 'flex',
-    justifyContent: 'center',
-    alignContent: 'center',
-  },
   buttonText: {
     color: 'white',
     fontSize: 16,
@@ -492,16 +405,11 @@ const styles = StyleSheet.create({
   inline: {
     display: 'flex',
     flexDirection: 'row',
-    width: 300,
+    width: 250,
     justifyContent: 'space-around',
     alignItems: 'center',
     paddingBottom: 6.8,
-  },
-  switchContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
+    paddingTop: 5,
   },
   separator: {
     marginVertical: 10,
@@ -514,7 +422,6 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 60,
     borderBottomRightRadius: 60,
     width: '100%',
-    // maxWidth: 1400,
     alignSelf: 'center',
   },
 })
