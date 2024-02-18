@@ -4,9 +4,9 @@ Cross paltform app to manage financial history via cloud using firebase as a bac
 
 ### Screenshots (web & android)
 
-![Android view](assets/ss/1.png)
-![Wev View](assets/ss/2.png)
-![Application](assets/ss/3.png)
+<img src="assets/ss/1.png" alt="Android View" style="max-width: 100%; margin: 10px 20px;">
+<img src="assets/ss/2.png" alt="Web View" style="max-width: 100%; margin: 10px 20px;">
+<img src="assets/ss/3.png" alt="Application" style="max-width: 100%; margin: 10px 20px;">
 
 ## Features
 
