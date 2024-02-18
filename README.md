@@ -4,9 +4,9 @@ Cross paltform app to manage financial history via cloud using firebase as a bac
 
 ### Screenshots (web & android)
 
-<img src="assets/ss/1.png" alt="Android View" style="max-width: 100%; margin: 10px 20px;">
-<img src="assets/ss/2.png" alt="Web View" style="max-width: 100%; margin: 10px 20px;">
-<img src="assets/ss/3.png" alt="Application" style="max-width: 100%; margin: 10px 20px;">
+<img src="assets/ss/1.png" alt="Android View" style="max-width: 90%; margin: 15px 30px;">
+<img src="assets/ss/2.png" alt="Web View" style="max-width: 90%; margin: 15px 30px;">
+<img src="assets/ss/3.png" alt="Application" style="max-width: 90%; margin: 15px 30px;">
 
 ## Features
 
@@ -30,6 +30,65 @@ For instance, if you frequently use an auto-rickshaw/Metro, with varying fares s
 
 ## Database modelling
 
+The first step in optimizing performance is to understand expected and actual query patterns.
+
+Few principles I try to abide while structuring my noSQL databases:
+
+- Big collection and small documents for efficient queries
+- Embed related objects in documents when possible.
+  - This will avoid the performance overhead of repeated requests for data stored in separate collections, which can be much slower than embedded fields.
+- Atomic operations for data consistensy and integrity
+- Having aggegration document for tracking complex and read-intensive operations
+- minimise document reads by using memo
+
+```json
+{
+  "users": {
+    "id": "string",
+    "fullname": "string",
+    "avtar": "string",
+    "quickadd": "quickadd"
+  },
+  "tokens": {
+    "id": "string",
+    "token": "string"
+  },
+  "transations": {
+    "Expenses": "array",
+    "Income": "array"
+  },
+  "summary": {
+    "Expenses": "array",
+    "Income": "array"
+  }
+}
+```
+
+```json
+{
+  "quickadd": {
+    "title": "string",
+    "amounts": {
+      "amount1": "integer",
+      "amount2": "integer",
+      "amount3": "integer"
+    },
+    "category": "string"
+  }
+}
+```
+
+```json
+{
+  "log": {
+    "title": "string",
+    "category": "string",
+    "type": "string",
+    "amount": "integer",
+    "date": "Date"
+  }
+}
+```
 
 
 ## EAS build
