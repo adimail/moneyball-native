@@ -4,9 +4,9 @@ Cross paltform app to manage financial history via cloud using firebase as a bac
 
 ### Screenshots (web & android)
 
-<img src="assets/ss/1.png" alt="Android View" style="max-width: 90%; margin: 15px 30px;">
-<img src="assets/ss/2.png" alt="Web View" style="max-width: 90%; margin: 15px 30px;">
-<img src="assets/ss/3.png" alt="Application" style="max-width: 90%; margin: 15px 30px;">
+<img src="assets/ss/1.png" alt="Android View" style="max-width: 90%; margin: 15px 50px;">
+<img src="assets/ss/2.png" alt="Web View" style="max-width: 90%; margin: 15px 50px;">
+<img src="assets/ss/3.png" alt="Application" style="max-width: 90%; margin: 15px 50px;">
 
 ## Features
 
@@ -19,6 +19,8 @@ Cross paltform app to manage financial history via cloud using firebase as a bac
 - Quick Add frequent expenses
 - Track expenses and incomes easily
 - Automic monthly categorization
+- Create/delete categories
+- Create/delete quick add templates
 
 ## Quick Add
 
