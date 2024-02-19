@@ -39,6 +39,7 @@ export default function Month({ route }) {
   const colorScheme = {
     text: isDark ? colors.white : colors.primaryText,
   }
+  const { setTitle } = useContext(HomeTitleContext)
   const [type, setType] = useState('Expenditure')
   const { setTitle } = useContext(HomeTitleContext)
   const [expenseData, setExpenseData] = useState(null)

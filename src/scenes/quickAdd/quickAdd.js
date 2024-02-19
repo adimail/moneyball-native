@@ -92,6 +92,13 @@ export default function QuickAdd() {
       return
     }
 
+    if (filteredAmounts.some((amount) => parseInt(amount) > 999)) {
+      alert(
+        'Hmmm... Quick add greater than 1k? Keep it less than or equal to 999. There is a reason why it is called quick add, logging the most frequent expenses',
+      )
+      return
+    }
+
     const newQuickAdd = { category, title, amounts: filteredAmounts }
     console.log(newQuickAdd)
 

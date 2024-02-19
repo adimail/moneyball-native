@@ -6,6 +6,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Alert,
+  Vibration,
   RefreshControl,
   Vibration,
 } from 'react-native'

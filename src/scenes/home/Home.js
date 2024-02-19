@@ -59,7 +59,7 @@ export default function Home() {
   const QuickAddData = userData && userData['quickadd']
 
   const MonthYear = useMemo(() => {
-    return date.toLocaleDateString('en-GB', {
+    return new Date().toLocaleDateString('en-GB', {
       month: 'short',
       year: 'numeric',
     })
