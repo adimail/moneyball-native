@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react'
-import { Text, StyleSheet, View, Linking } from 'react-native'
+import { Text, StyleSheet, View, Linking, TouchableOpacity } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import ScreenTemplate from '../../components/ScreenTemplate'
 import TextInputBox from '../../components/TextInputBox'
@@ -14,6 +14,7 @@ import { ColorSchemeContext } from '../../context/ColorSchemeContext'
 import { defaultAvatar } from '../../config'
 import { createUserWithEmailAndPassword } from 'firebase/auth'
 import { auth } from '../../firebase/config'
+import IconButton from '../../components/IconButton'
 
 export default function Registration() {
   const [fullName, setFullName] = useState('')
@@ -26,6 +27,12 @@ export default function Registration() {
   const isDark = scheme === 'dark'
   const colorScheme = {
     text: isDark ? colors.white : colors.primaryText,
+  }
+
+  const openAndroidLink = () => {
+    Linking.openURL(
+      'https://drive.google.com/drive/folders/1Ghb0r-gG7VcAaMwBQXA6KrrJSTTtHFTL?usp=sharing',
+    )
   }
 
   useEffect(() => {
@@ -133,6 +140,20 @@ export default function Registration() {
               </Text>
             </View>
           </View>
+          <TouchableOpacity
+            onPress={openAndroidLink}
+            style={{ alignItems: 'center', marginTop: 30, marginBottom: 30 }}
+          >
+            <IconButton
+              icon="android"
+              color="#3DDC84"
+              size={20}
+              containerStyle={{ paddingRight: 9 }}
+            />
+            <Text style={[styles.footerText, { color: colorScheme.text }]}>
+              Android Apk
+            </Text>
+          </TouchableOpacity>
         </View>
       </KeyboardAwareScrollView>
       <Spinner
