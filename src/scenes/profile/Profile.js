@@ -71,6 +71,9 @@ export default function Profile() {
       },
     })
   }
+  const gotomannual = () => {
+    navigation.navigate('Mannual', { userData: userData })
+  }
 
   useEffect(() => {
     let currentMonth = new Date(joinedDate)
@@ -147,8 +150,16 @@ export default function Profile() {
           </Text>
 
           <View style={{ paddingVertical: 30 }}>
-            <Button label="Edit" color={colors.primary} onPress={goDetail} />
-            <Button label="how to use Moneyball" color={colors.primary} />
+            <Button
+              label="Edit Profile"
+              color={colors.primary}
+              onPress={goDetail}
+            />
+            <Button
+              label="How to use Moneyball"
+              color={colors.primary}
+              onPress={gotomannual}
+            />
             <Button
               label="Sign out"
               color={colors.secondary}
@@ -171,7 +182,7 @@ export default function Profile() {
           </Text>
           <TouchableOpacity
             onPress={() => {
-              Linking.openURL('https://www.moneyball-hub.web.app')
+              openWebLink()
             }}
           >
             <Text
@@ -179,17 +190,17 @@ export default function Profile() {
                 {
                   color: '#6996ff',
                   textAlign: 'center',
-                  marginBottom: 50,
                   fontSize: 15,
                 },
               ]}
             >
-              www.moneyball-hub.web.app
+              https://moneyball-hub.web.app
             </Text>
           </TouchableOpacity>
 
           <View
             style={{
+              marginTop: 50,
               flexDirection: 'row',
               justifyContent: 'space-around',
               width: '100%',

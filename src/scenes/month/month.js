@@ -29,6 +29,8 @@ import Card from '../../components/expenseCard'
 import { showToast } from '../../utils/ShowToast'
 import { Platform } from 'react-native'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
+import { HomeTitleContext } from '../../context/HomeTitleContext'
+import { useFocusEffect } from '@react-navigation/native'
 
 export default function Month({ route }) {
   const { month, userData } = route.params
@@ -38,6 +40,7 @@ export default function Month({ route }) {
     text: isDark ? colors.white : colors.primaryText,
   }
   const [type, setType] = useState('Expenditure')
+  const { setTitle } = useContext(HomeTitleContext)
   const [expenseData, setExpenseData] = useState(null)
   const [incomeData, setIncomeData] = useState(null)
   const [selectedLog, setSelectedLog] = useState(null)
@@ -53,13 +56,14 @@ export default function Month({ route }) {
 
   const [isLoading, setIsLoading] = useState(false)
 
-  const CurrentMonth = new Date().toLocaleDateString('en-GB', {
-    month: 'short',
-    year: 'numeric',
-  })
+  const CurrentMonth = month
 
   const [totalExpense, setTotalExpense] = useState(0)
   const [totalIncome, setTotalIncome] = useState(0)
+
+  useFocusEffect(() => {
+    setTitle(`${month} History`)
+  })
 
   useEffect(() => {
     if (incomeData) {
@@ -503,6 +507,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     overflow: 'hidden',
     alignSelf: 'center',
+    maxWidth: '75%',
   },
   date: {
     color: 'white',

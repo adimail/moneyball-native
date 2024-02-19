@@ -11,34 +11,25 @@ import {
   ScrollView,
   StyleSheet,
   TextInput,
-  Switch,
   Alert,
   RefreshControl,
+  TouchableOpacity,
 } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
+import { colors, fontSize } from '../../theme'
 import ScreenTemplate from '../../components/ScreenTemplate'
 import { firestore } from '../../firebase/config'
-import {
-  doc,
-  onSnapshot,
-  getDoc,
-  getDocs,
-  setDoc,
-  collection,
-} from 'firebase/firestore'
-import { colors, fontSize } from '../../theme'
+import { doc, getDoc } from 'firebase/firestore'
 import { UserDataContext } from '../../context/UserDataContext'
 import { ColorSchemeContext } from '../../context/ColorSchemeContext'
-import { getKilobyteSize } from '../../utils/functions'
-import Card from '../../components/expenseCard'
-import DateTimePicker from '@react-native-community/datetimepicker'
-import { TouchableOpacity } from 'react-native'
-import { SelectList } from 'react-native-dropdown-select-list'
-import CustomSwitch from '../../components/toggleSwitch'
 import { showToast } from '../../utils/ShowToast'
-import QuickAddComponent from '../../utils/quickAdd'
 import { MaterialIcons } from '@expo/vector-icons'
 import { submitData } from '../../utils/SubmitUserData'
+import Card from '../../components/expenseCard'
+import DateTimePicker from '@react-native-community/datetimepicker'
+import { SelectList } from 'react-native-dropdown-select-list'
+import CustomSwitch from '../../components/toggleSwitch'
+import QuickAddComponent from '../../utils/quickAdd'
 
 export default function Home() {
   const navigation = useNavigation()
@@ -83,7 +74,7 @@ export default function Home() {
   }
 
   const fetchSummaryData = async () => {
-    const MonthYear = date.toLocaleDateString('en-GB', {
+    const MonthYear = new Date().toLocaleDateString('en-GB', {
       month: 'short',
       year: 'numeric',
     })
@@ -140,12 +131,25 @@ export default function Home() {
   }
 
   const renderDatePicker = () => {
+    // Get the start of the month when the user joined
+    const joinedDate = userData.joined.toDate()
+
+    const startOfMonth = new Date(
+      joinedDate.getFullYear(),
+      joinedDate.getMonth(),
+      1,
+    )
+
+    const minimumDate =
+      startOfMonth.getTime() < new Date().getTime() ? startOfMonth : new Date()
+
     return (
       <DateTimePicker
         value={date}
         mode="date"
         display="default"
         maximumDate={new Date()}
+        minimumDate={minimumDate}
         onChange={handleDateChange}
       />
     )
@@ -272,9 +276,10 @@ export default function Home() {
           <View style={[styles.separator]} />
 
           <Text style={[styles.text, { color: 'white' }]}>
-            {'Date: ' +
-              date.toLocaleDateString('en-GB', {
-                day: 'numeric',
+            {'Today: ' +
+              new Date().toLocaleDateString('en-GB', {
+                weekday: 'short',
+                day: '2-digit',
                 month: 'short',
                 year: 'numeric',
               })}
@@ -341,15 +346,25 @@ export default function Home() {
               value={amount}
               onChangeText={(text) => setAmount(text)}
             />
+
             <View style={[styles.inline]}>
-              <MaterialIcons
-                name="date-range"
-                size={30}
-                color={colors.black}
-                onPress={() => {
-                  setShowDatePicker(true)
-                }}
-              />
+              <View style={[{ alignItems: 'center' }]}>
+                <MaterialIcons
+                  name="date-range"
+                  size={30}
+                  color={colors.black}
+                  onPress={() => {
+                    setShowDatePicker(true)
+                  }}
+                />
+                <Text style={[{ color: 'white' }]}>
+                  {date.toLocaleDateString('en-GB', {
+                    day: 'numeric',
+                    month: 'short',
+                    year: 'numeric',
+                  })}
+                </Text>
+              </View>
               <TouchableOpacity
                 style={styles.button}
                 onPress={HandleSubmitData}

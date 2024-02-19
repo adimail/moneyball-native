@@ -1,18 +1,22 @@
 import React, { useEffect, useContext } from 'react'
-import { Text, View, StyleSheet } from "react-native";
-import { UserDataContext } from '../../context/UserDataContext';
+import { Text, View, StyleSheet } from 'react-native'
+import { UserDataContext } from '../../context/UserDataContext'
 import { ColorSchemeContext } from '../../context/ColorSchemeContext'
-import ScreenTemplate from '../../components/ScreenTemplate';
-import { firestore } from '../../firebase/config';
-import { doc, onSnapshot } from 'firebase/firestore';
+import ScreenTemplate from '../../components/ScreenTemplate'
+import { firestore } from '../../firebase/config'
+import { doc, onSnapshot } from 'firebase/firestore'
 import { decode, encode } from 'base-64'
-import { colors, fontSize } from '../../theme';
-import { onAuthStateChanged } from 'firebase/auth';
-import { auth } from '../../firebase/config';
+import { colors, fontSize } from '../../theme'
+import { onAuthStateChanged } from 'firebase/auth'
+import { auth } from '../../firebase/config'
 import { useAtom } from 'jotai'
-import { checkedAtom, loggedInAtom } from '../../utils/atom';
-if (!global.btoa) { global.btoa = encode }
-if (!global.atob) { global.atob = decode }
+import { checkedAtom, loggedInAtom } from '../../utils/atom'
+if (!global.btoa) {
+  global.btoa = encode
+}
+if (!global.atob) {
+  global.atob = decode
+}
 
 export default function Initial() {
   const [, setChecked] = useAtom(checkedAtom)
@@ -21,8 +25,8 @@ export default function Initial() {
   const { scheme } = useContext(ColorSchemeContext)
   const isDark = scheme === 'dark'
   const colorScheme = {
-    container: isDark? colors.dark: colors.white,
-    text: isDark? colors.white : colors.primaryText
+    container: isDark ? colors.dark : colors.white,
+    text: isDark ? colors.white : colors.primaryText,
   }
 
   useEffect(() => {
@@ -39,13 +43,20 @@ export default function Initial() {
         setLoggedIn(false)
         setChecked(true)
       }
-    });
-  }, []);
+    })
+  }, [])
 
   return (
     <ScreenTemplate>
-      <View style={[styles.container, {backgroundColor: colorScheme.container}]}>
-        <Text style={[styles.title, {color: colorScheme.text}]}>loading...</Text>
+      <View
+        style={[styles.container, { backgroundColor: colorScheme.container }]}
+      >
+        <Text style={[styles.title, { color: colorScheme.text }]}>
+          Fetching data from cloud...
+        </Text>
+        <Text style={[styles.title, { color: colorScheme.text }]}>
+          ☁️ ☁️ ☁️
+        </Text>
       </View>
     </ScreenTemplate>
   )
@@ -60,6 +71,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: fontSize.xxxLarge,
     marginBottom: 20,
-    textAlign: 'center'
+    textAlign: 'center',
   },
 })

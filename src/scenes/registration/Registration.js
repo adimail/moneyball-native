@@ -63,7 +63,7 @@ export default function Registration() {
           'Internet',
           'Other',
         ],
-        income: ['parents', 'internship', 'Stocks'],
+        income: ['Parents', 'Internship', 'Stocks'],
         quickadd: [
           { title: 'Metro', category: 'Metro', amounts: ['21', '7', '12'] },
           {

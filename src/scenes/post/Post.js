@@ -174,9 +174,7 @@ export default function Post() {
               style={[styles.input, { color: isDark ? 'white' : 'black' }]}
               value={newCategory}
               onChangeText={(text) => {
-                if (/^\S.{2,}$/.test(text)) {
-                  setNewCategory(text)
-                }
+                setNewCategory(text)
               }}
               placeholder="Enter new category"
               placeholderTextColor={isDark ? 'white' : 'black'}
