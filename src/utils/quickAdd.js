@@ -112,7 +112,7 @@ const QuickAddComponent = ({
           <Text
             style={{ color: colors.white, fontSize: 15, textAlign: 'center' }}
           >
-            You have reached the maximum limit of quick adds (6)
+            You can add maximum 6 Quick Adds
           </Text>
         </View>
       )}
@@ -175,7 +175,9 @@ const QuickAddItem = ({
     <View
       style={[
         styles.item,
-        { backgroundColor: isDark ? colors.primaryText : colors.gray },
+        {
+          backgroundColor: isDark ? colors.primaryText : colors.darkInput,
+        },
       ]}
     >
       <View style={styles.body}>
@@ -194,7 +196,17 @@ const QuickAddItem = ({
                 ]}
                 onPress={() => handleAmountPress(index)}
               >
-                <Text style={styles.amountText}>{amount}</Text>
+                <Text
+                  style={[
+                    styles.amountText,
+                    {
+                      backgroundColor:
+                        selectedAmountIndex === index ? '#212F3D' : '#566573',
+                    },
+                  ]}
+                >
+                  {amount}
+                </Text>
               </TouchableOpacity>
             ))}
         </View>
@@ -294,14 +306,16 @@ const styles = StyleSheet.create({
   amountText: {
     color: 'white',
     fontSize: 15,
-    backgroundColor: '#2C3E50',
     padding: 2,
     borderRadius: 100,
     width: 41,
     textAlign: 'center',
   },
   selectedAmount: {
-    transform: [{ scale: 1.3 }],
+    borderRadius: 100,
+    transform: [{ scale: 1.2 }],
+    borderWidth: 1,
+    borderColor: colors.primary,
   },
 })
 

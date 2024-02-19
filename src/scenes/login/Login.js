@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react'
-import { Text, View, StyleSheet } from 'react-native'
+import { Text, View, StyleSheet, Linking, TouchableOpacity } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import ScreenTemplate from '../../components/ScreenTemplate'
 import Button from '../../components/Button'
@@ -14,6 +14,7 @@ import { ColorSchemeContext } from '../../context/ColorSchemeContext'
 import { LogBox } from 'react-native'
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import { auth } from '../../firebase/config'
+import IconButton from '../../components/IconButton'
 
 // To ignore a useless warning in terminal.
 // https://stackoverflow.com/questions/44603362/setting-a-timer-for-a-long-period-of-time-i-e-multiple-minutes
@@ -32,6 +33,12 @@ export default function Login() {
 
   const onFooterLinkPress = () => {
     navigation.navigate('Registration')
+  }
+
+  const openAndroidLink = () => {
+    Linking.openURL(
+      'https://drive.google.com/drive/folders/1Ghb0r-gG7VcAaMwBQXA6KrrJSTTtHFTL?usp=sharing',
+    )
   }
 
   const onLoginPress = async () => {
@@ -89,6 +96,20 @@ export default function Login() {
               </Text>
             </Text>
           </View>
+          <TouchableOpacity
+            onPress={openAndroidLink}
+            style={{ alignItems: 'center', marginTop: 30 }}
+          >
+            <IconButton
+              icon="android"
+              color="#3DDC84"
+              size={20}
+              containerStyle={{ paddingRight: 9 }}
+            />
+            <Text style={[styles.footerText, { color: colorScheme.text }]}>
+              Android Apk
+            </Text>
+          </TouchableOpacity>
         </View>
       </KeyboardAwareScrollView>
       <Spinner

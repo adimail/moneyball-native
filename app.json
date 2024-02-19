@@ -3,7 +3,11 @@
     "name": "Moneyball",
     "slug": "moneyball",
     "privacy": "public",
-    "platforms": ["ios", "android", "web"],
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
     "version": "1.0.0",
     "orientation": "default",
     "icon": "./assets/images/logo-sm.png",
@@ -17,7 +21,9 @@
       "fallbackToCacheTimeout": 10000,
       "url": "https://u.expo.dev/1650611b-a5b8-4420-9656-60c06429edd4"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "moneyball",
@@ -31,22 +37,33 @@
       "package": "com.ceprince.moneyball",
       "versionCode": 1,
       "userInterfaceStyle": "automatic",
-      "permissions": ["VIBRATE", "CAMERA"]
+      "permissions": [
+        "VIBRATE",
+        "CAMERA"
+      ]
     },
     "packagerOpts": {
       "config": "metro.config.js",
-      "sourceExts": ["js", "jsx", "svg", "ts", "tsx"]
+      "sourceExts": [
+        "js",
+        "jsx",
+        "svg",
+        "ts",
+        "tsx"
+      ]
     },
     "description": "",
-    "plugins": ["expo-font"],
+    "plugins": [
+      "expo-font"
+    ],
     "extra": {
       "eas": {
-        "projectId": "279380f9-9f3a-42c1-aa16-53bf95775813"
+        "projectId": "f28b1174-7f56-4067-829e-9b7ef973c97d"
       }
     },
     "runtimeVersion": {
       "policy": "appVersion"
     },
-    "owner": "ceprince"
+    "owner": "woodapple"
   }
 }

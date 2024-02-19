@@ -147,8 +147,11 @@ export default function Profile() {
           </Text>
 
           <View style={{ paddingVertical: 30 }}>
-            <Button label="Edit" color={colors.primary} onPress={goDetail} />
-            <Button label="how to use Moneyball" color={colors.primary} />
+            <Button
+              label="Edit Profile"
+              color={colors.primary}
+              onPress={goDetail}
+            />
             <Button
               label="Sign out"
               color={colors.secondary}
@@ -171,7 +174,7 @@ export default function Profile() {
           </Text>
           <TouchableOpacity
             onPress={() => {
-              Linking.openURL('https://www.moneyball-hub.web.app')
+              Linking.openURL('https://.moneyball-hub.web.app')
             }}
           >
             <Text

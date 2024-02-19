@@ -6,6 +6,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Alert,
+  Vibration,
   RefreshControl,
 } from 'react-native'
 import ScreenTemplate from '../../components/ScreenTemplate'
@@ -447,7 +448,10 @@ export default function ThisMonthHistory() {
                             },
                           ]}
                           key={log.id}
-                          onLongPress={() => setSelectedLog(log)}
+                          onLongPress={() => {
+                            Vibration.vibrate(50)
+                            setSelectedLog(log)
+                          }}
                         >
                           <View style={styles.column}>
                             <Text style={[styles.title]} numberOfLines={1}>
@@ -503,6 +507,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     overflow: 'hidden',
     alignSelf: 'center',
+    maxWidth: '75%',
   },
   date: {
     color: 'white',

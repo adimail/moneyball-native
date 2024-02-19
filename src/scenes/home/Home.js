@@ -68,7 +68,7 @@ export default function Home() {
   const QuickAddData = userData && userData['quickadd']
 
   const MonthYear = useMemo(() => {
-    return date.toLocaleDateString('en-GB', {
+    return new Date().toLocaleDateString('en-GB', {
       month: 'short',
       year: 'numeric',
     })
@@ -140,12 +140,25 @@ export default function Home() {
   }
 
   const renderDatePicker = () => {
+    // Get the start of the month when the user joined
+    const joinedDate = userData.joined.toDate()
+
+    const startOfMonth = new Date(
+      joinedDate.getFullYear(),
+      joinedDate.getMonth(),
+      1,
+    )
+
+    const minimumDate =
+      startOfMonth.getTime() < new Date().getTime() ? startOfMonth : new Date()
+
     return (
       <DateTimePicker
         value={date}
         mode="date"
         display="default"
         maximumDate={new Date()}
+        minimumDate={minimumDate}
         onChange={handleDateChange}
       />
     )
@@ -272,9 +285,10 @@ export default function Home() {
           <View style={[styles.separator]} />
 
           <Text style={[styles.text, { color: 'white' }]}>
-            {'Date: ' +
-              date.toLocaleDateString('en-GB', {
-                day: 'numeric',
+            {'Today: ' +
+              new Date().toLocaleDateString('en-GB', {
+                weekday: 'short',
+                day: '2-digit',
                 month: 'short',
                 year: 'numeric',
               })}
@@ -342,14 +356,23 @@ export default function Home() {
               onChangeText={(text) => setAmount(text)}
             />
             <View style={[styles.inline]}>
-              <MaterialIcons
-                name="date-range"
-                size={30}
-                color={colors.black}
-                onPress={() => {
-                  setShowDatePicker(true)
-                }}
-              />
+              <View style={[{ alignItems: 'center' }]}>
+                <MaterialIcons
+                  name="date-range"
+                  size={30}
+                  color={colors.black}
+                  onPress={() => {
+                    setShowDatePicker(true)
+                  }}
+                />
+                <Text style={[{ color: 'white' }]}>
+                  {date.toLocaleDateString('en-GB', {
+                    day: 'numeric',
+                    month: 'short',
+                    year: 'numeric',
+                  })}
+                </Text>
+              </View>
               <TouchableOpacity
                 style={styles.button}
                 onPress={HandleSubmitData}
