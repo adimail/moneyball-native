@@ -125,8 +125,14 @@ eas.json
 
 ## Build bundles
 
-```shell
-eas build -p [android/web/ios] --profile preview
+Android
+```
+eas build -p android --profile preview
+```
+
+Web
+```
+npx expo export --source-maps --platform web
 ```
 
 Use expo on android or ios to preview the application without the need for installing an imulator on the working machine
