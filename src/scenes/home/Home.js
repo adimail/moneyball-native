@@ -11,34 +11,25 @@ import {
   ScrollView,
   StyleSheet,
   TextInput,
-  Switch,
   Alert,
   RefreshControl,
+  TouchableOpacity,
 } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
+import { colors, fontSize } from '../../theme'
 import ScreenTemplate from '../../components/ScreenTemplate'
 import { firestore } from '../../firebase/config'
-import {
-  doc,
-  onSnapshot,
-  getDoc,
-  getDocs,
-  setDoc,
-  collection,
-} from 'firebase/firestore'
-import { colors, fontSize } from '../../theme'
+import { doc, getDoc } from 'firebase/firestore'
 import { UserDataContext } from '../../context/UserDataContext'
 import { ColorSchemeContext } from '../../context/ColorSchemeContext'
-import { getKilobyteSize } from '../../utils/functions'
-import Card from '../../components/expenseCard'
-import DateTimePicker from '@react-native-community/datetimepicker'
-import { TouchableOpacity } from 'react-native'
-import { SelectList } from 'react-native-dropdown-select-list'
-import CustomSwitch from '../../components/toggleSwitch'
 import { showToast } from '../../utils/ShowToast'
-import QuickAddComponent from '../../utils/quickAdd'
 import { MaterialIcons } from '@expo/vector-icons'
 import { submitData } from '../../utils/SubmitUserData'
+import Card from '../../components/expenseCard'
+import DateTimePicker from '@react-native-community/datetimepicker'
+import { SelectList } from 'react-native-dropdown-select-list'
+import CustomSwitch from '../../components/toggleSwitch'
+import QuickAddComponent from '../../utils/quickAdd'
 
 export default function Home() {
   const navigation = useNavigation()
@@ -83,7 +74,7 @@ export default function Home() {
   }
 
   const fetchSummaryData = async () => {
-    const MonthYear = date.toLocaleDateString('en-GB', {
+    const MonthYear = new Date().toLocaleDateString('en-GB', {
       month: 'short',
       year: 'numeric',
     })
@@ -355,6 +346,7 @@ export default function Home() {
               value={amount}
               onChangeText={(text) => setAmount(text)}
             />
+
             <View style={[styles.inline]}>
               <View style={[{ alignItems: 'center' }]}>
                 <MaterialIcons

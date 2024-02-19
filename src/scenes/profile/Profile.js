@@ -71,6 +71,9 @@ export default function Profile() {
       },
     })
   }
+  const gotomannual = () => {
+    navigation.navigate('Mannual', { userData: userData })
+  }
 
   useEffect(() => {
     let currentMonth = new Date(joinedDate)
@@ -182,17 +185,17 @@ export default function Profile() {
                 {
                   color: '#6996ff',
                   textAlign: 'center',
-                  marginBottom: 50,
                   fontSize: 15,
                 },
               ]}
             >
-              www.moneyball-hub.web.app
+              https://moneyball-hub.web.app
             </Text>
           </TouchableOpacity>
 
           <View
             style={{
+              marginTop: 50,
               flexDirection: 'row',
               justifyContent: 'space-around',
               width: '100%',

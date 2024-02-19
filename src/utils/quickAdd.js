@@ -232,7 +232,7 @@ const QuickAddItem = ({
             handleAddLog(title, amounts[selectedAmountIndex], category)
           }}
         >
-          <Text style={styles.buttonText}>Add Log</Text>
+          <Text style={[styles.buttonText]}>Add Log</Text>
         </TouchableOpacity>
       </View>
     </View>

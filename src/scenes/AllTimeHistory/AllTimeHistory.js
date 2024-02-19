@@ -73,7 +73,7 @@ export default function AllTimeHistory() {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       >
-        <Text style={[styles.title, { color: isDark ? 'white' : 'black' }]}>
+        <Text style={[styles.header, { color: isDark ? 'white' : 'black' }]}>
           All time history
         </Text>
         <View>
@@ -108,6 +108,11 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
+  },
+  header: {
+    fontSize: fontSize.xxxLarge,
+    textAlign: 'center',
+    color: 'white',
   },
   history: {
     display: 'flex',

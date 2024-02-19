@@ -41,6 +41,7 @@ export default function Month({ route }) {
   }
   const { setTitle } = useContext(HomeTitleContext)
   const [type, setType] = useState('Expenditure')
+  const { setTitle } = useContext(HomeTitleContext)
   const [expenseData, setExpenseData] = useState(null)
   const [incomeData, setIncomeData] = useState(null)
   const [selectedLog, setSelectedLog] = useState(null)

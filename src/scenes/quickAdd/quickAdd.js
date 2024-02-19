@@ -81,7 +81,14 @@ export default function QuickAdd() {
     const filteredAmounts = amounts.filter((amount) => amount !== '')
 
     if (filteredAmounts.length === 0) {
-      Alert.alert('Error', 'Please fill in at least one amount.')
+      Alert.alert('Error', 'Please fill in 3 amounts.')
+      return
+    }
+
+    if (filteredAmounts.some((amount) => parseInt(amount) > 999)) {
+      alert(
+        'Hmmm... Quick add greater than 1k? Keep it less than or equal to 999. There is a reason why it is called quick add, logging the most frequent expenses',
+      )
       return
     }
 

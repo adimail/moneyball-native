@@ -8,9 +8,9 @@ import {
   Alert,
   Vibration,
   RefreshControl,
+  Vibration,
 } from 'react-native'
 import ScreenTemplate from '../../components/ScreenTemplate'
-import Button from '../../components/Button'
 import { colors, fontSize } from 'theme'
 import { ColorSchemeContext } from '../../context/ColorSchemeContext'
 import { UserDataContext } from '../../context/UserDataContext'
@@ -25,7 +25,6 @@ import {
   writeBatch,
 } from 'firebase/firestore'
 import { firestore } from '../../firebase/config'
-import Log from '../../components/log'
 import Card from '../../components/expenseCard'
 import { showToast } from '../../utils/ShowToast'
 import { Platform } from 'react-native'
@@ -226,7 +225,7 @@ export default function ThisMonthHistory() {
 
   const confirmDeleteLog = (log) => {
     if (Platform.OS === 'web') {
-      alert('Use mobile application to delete your account')
+      alert('Use mobile application to delete your logs')
       return
     }
 
